@@ -1,45 +1,45 @@
-# Aggregate Functions - Summarizing Data
+# Hàm Tổng Hợp - Tóm Tắt Dữ Liệu
 
-Aggregate functions perform calculations on groups of rows and return a single result. They are essential for data analysis, reporting, and statistical calculations.
+Hàm tổng hợp thực hiện các phép tính trên nhóm hàng và trả về một kết quả duy nhất. Chúng rất quan trọng cho việc phân tích dữ liệu, báo cáo và tính toán thống kê.
 
-## Overview of Aggregate Functions
+## Tổng Quan Về Hàm Tổng Hợp
 
-Aggregate functions operate on sets of rows and return a single value. They are commonly used with GROUP BY to create summary reports.
+Hàm tổng hợp hoạt động trên tập hợp các hàng và trả về một giá trị duy nhất. Chúng thường được sử dụng với GROUP BY để tạo báo cáo tóm tắt.
 
-### Common Aggregate Functions:
-- **COUNT()** - Count rows or non-NULL values
-- **SUM()** - Calculate total of numeric values
-- **AVG()** - Calculate average of numeric values
-- **MIN()** - Find minimum value
-- **MAX()** - Find maximum value
-- **STDDEV()** - Calculate standard deviation
-- **VARIANCE()** - Calculate variance
+### Hàm Tổng Hợp Phổ Biến:
+- **COUNT()** - Đếm hàng hoặc giá trị không NULL
+- **SUM()** - Tính tổng các giá trị số
+- **AVG()** - Tính trung bình các giá trị số
+- **MIN()** - Tìm giá trị nhỏ nhất
+- **MAX()** - Tìm giá trị lớn nhất
+- **STDDEV()** - Tính độ lệch chuẩn
+- **VARIANCE()** - Tính phương sai
 
-## COUNT Function
+## Hàm COUNT
 
-### 1. COUNT(*) - Count All Rows
+### 1. COUNT(*) - Đếm Tất Cả Hàng
 ```sql
--- Count total number of employees
+-- Đếm tổng số nhân viên
 SELECT COUNT(*) AS total_employees
 FROM hr.employees;
 
--- Count employees in specific department
+-- Đếm nhân viên trong phòng ban cụ thể
 SELECT COUNT(*) AS it_employees
 FROM hr.employees
 WHERE department_id = 60;
 ```
 
-### 2. COUNT(column) - Count Non-NULL Values
+### 2. COUNT(column) - Đếm Giá Trị Không NULL
 ```sql
--- Count employees with commission (excludes NULLs)
+-- Đếm nhân viên có hoa hồng (loại trừ NULL)
 SELECT COUNT(commission_pct) AS employees_with_commission
 FROM hr.employees;
 
--- Count employees with phone numbers
+-- Đếm nhân viên có số điện thoại
 SELECT COUNT(phone_number) AS employees_with_phone
 FROM hr.employees;
 
--- Compare total vs non-NULL counts
+-- So sánh tổng số với số lượng không NULL
 SELECT 
     COUNT(*) AS total_employees,
     COUNT(commission_pct) AS employees_with_commission,
@@ -47,35 +47,35 @@ SELECT
 FROM hr.employees;
 ```
 
-### 3. COUNT(DISTINCT) - Count Unique Values
+### 3. COUNT(DISTINCT) - Đếm Giá Trị Duy Nhất
 ```sql
--- Count unique departments
+-- Đếm phòng ban duy nhất
 SELECT COUNT(DISTINCT department_id) AS unique_departments
 FROM hr.employees;
 
--- Count unique job types
+-- Đếm loại công việc duy nhất
 SELECT COUNT(DISTINCT job_id) AS unique_jobs
 FROM hr.employees;
 
--- Count unique managers
+-- Đếm quản lý duy nhất
 SELECT COUNT(DISTINCT manager_id) AS unique_managers
 FROM hr.employees;
 ```
 
-## SUM Function
+## Hàm SUM
 
-### 1. Basic SUM Operations
+### 1. Phép Tính SUM Cơ Bản
 ```sql
--- Total salary expense
+-- Tổng chi phí lương
 SELECT SUM(salary) AS total_salary_expense
 FROM hr.employees;
 
--- Total salary for specific department
+-- Tổng lương cho phòng ban cụ thể
 SELECT SUM(salary) AS it_department_salary
 FROM hr.employees
 WHERE department_id = 60;
 
--- Sum with condition handling
+-- Sum với xử lý điều kiện
 SELECT 
     SUM(salary) AS total_base_salary,
     SUM(salary * NVL(commission_pct, 0)) AS total_commission,
@@ -83,9 +83,9 @@ SELECT
 FROM hr.employees;
 ```
 
-### 2. Conditional SUM
+### 2. SUM Có Điều Kiện
 ```sql
--- Sum based on conditions using CASE
+-- Sum dựa trên điều kiện sử dụng CASE
 SELECT 
     SUM(salary) AS total_salary,
     SUM(CASE WHEN department_id = 60 THEN salary ELSE 0 END) AS it_salary,
@@ -94,27 +94,27 @@ SELECT
 FROM hr.employees;
 ```
 
-### 3. SUM with Product Tables
+### 3. SUM Với Bảng Sản Phẩm
 ```sql
--- Total inventory value
+-- Tổng giá trị tồn kho
 SELECT SUM(unit_price * units_in_stock) AS total_inventory_value
 FROM sales.products
 WHERE discontinued = 0;
 
--- Total order value
+-- Tổng giá trị đơn hàng
 SELECT SUM(unit_price * quantity) AS total_order_value
 FROM sales.order_details;
 ```
 
-## AVG Function
+## Hàm AVG
 
-### 1. Simple Averages
+### 1. Trung Bình Đơn Giản
 ```sql
--- Average salary across all employees
+-- Lương trung bình của tất cả nhân viên
 SELECT AVG(salary) AS average_salary
 FROM hr.employees;
 
--- Average salary by department
+-- Lương trung bình theo phòng ban
 SELECT 
     department_id,
     AVG(salary) AS avg_dept_salary,
@@ -125,9 +125,9 @@ GROUP BY department_id
 ORDER BY avg_dept_salary DESC;
 ```
 
-### 2. Weighted Averages
+### 2. Trung Bình Có Trọng Số
 ```sql
--- Average product price weighted by stock quantity
+-- Giá sản phẩm trung bình có trọng số theo số lượng tồn kho
 SELECT 
     AVG(unit_price) AS simple_avg_price,
     SUM(unit_price * units_in_stock) / SUM(units_in_stock) AS weighted_avg_price
@@ -135,9 +135,9 @@ FROM sales.products
 WHERE units_in_stock > 0;
 ```
 
-### 3. Filtering with AVG
+### 3. Lọc Với AVG
 ```sql
--- Employees earning above average salary
+-- Nhân viên có lương trên mức trung bình
 SELECT 
     employee_id,
     first_name,
@@ -149,11 +149,11 @@ WHERE salary > (SELECT AVG(salary) FROM hr.employees)
 ORDER BY salary DESC;
 ```
 
-## MIN and MAX Functions
+## Hàm MIN và MAX
 
-### 1. Basic MIN/MAX
+### 1. MIN/MAX Cơ Bản
 ```sql
--- Salary range information
+-- Thông tin phạm vi lương
 SELECT 
     MIN(salary) AS lowest_salary,
     MAX(salary) AS highest_salary,
@@ -162,16 +162,16 @@ SELECT
 FROM hr.employees;
 ```
 
-### 2. Date MIN/MAX
+### 2. MIN/MAX Ngày Tháng
 ```sql
--- Employment date range
+-- Phạm vi ngày tuyển dụng
 SELECT 
     MIN(hire_date) AS earliest_hire_date,
     MAX(hire_date) AS latest_hire_date,
     MAX(hire_date) - MIN(hire_date) AS hiring_span_days
 FROM hr.employees;
 
--- Most recent order information
+-- Thông tin đơn hàng gần đây nhất
 SELECT 
     MIN(order_date) AS first_order_date,
     MAX(order_date) AS last_order_date,
@@ -179,26 +179,26 @@ SELECT
 FROM sales.orders;
 ```
 
-### 3. String MIN/MAX
+### 3. MIN/MAX Chuỗi
 ```sql
--- Alphabetical name range
+-- Phạm vi tên theo thứ tự bảng chữ cái
 SELECT 
     MIN(last_name) AS first_alphabetically,
     MAX(last_name) AS last_alphabetically
 FROM hr.employees;
 
--- Product name range
+-- Phạm vi tên sản phẩm
 SELECT 
     MIN(product_name) AS first_product_alphabetically,
     MAX(product_name) AS last_product_alphabetically
 FROM sales.products;
 ```
 
-## Advanced Aggregate Functions
+## Hàm Tổng Hợp Nâng Cao
 
-### 1. Statistical Functions
+### 1. Hàm Thống Kê
 ```sql
--- Salary statistics
+-- Thống kê lương
 SELECT 
     COUNT(*) AS employee_count,
     AVG(salary) AS mean_salary,
@@ -209,9 +209,9 @@ SELECT
 FROM hr.employees;
 ```
 
-### 2. LISTAGG Function (String Aggregation)
+### 2. Hàm LISTAGG (Tổng Hợp Chuỗi)
 ```sql
--- Concatenate employee names by department
+-- Ghép tên nhân viên theo phòng ban
 SELECT 
     department_id,
     LISTAGG(first_name || ' ' || last_name, ', ') 
@@ -221,7 +221,7 @@ WHERE department_id IS NOT NULL
 GROUP BY department_id
 ORDER BY department_id;
 
--- Product names by category
+-- Tên sản phẩm theo danh mục
 SELECT 
     category_id,
     LISTAGG(product_name, '; ') 
@@ -231,11 +231,11 @@ GROUP BY category_id
 ORDER BY category_id;
 ```
 
-## GROUP BY with Aggregates
+## GROUP BY Với Hàm Tổng Hợp
 
-### 1. Basic Grouping
+### 1. Nhóm Cơ Bản
 ```sql
--- Employee count and average salary by department
+-- Số lượng nhân viên và lương trung bình theo phòng ban
 SELECT 
     department_id,
     COUNT(*) AS employee_count,
@@ -249,9 +249,9 @@ GROUP BY department_id
 ORDER BY department_id;
 ```
 
-### 2. Multiple Column Grouping
+### 2. Nhóm Nhiều Cột
 ```sql
--- Statistics by department and job
+-- Thống kê theo phòng ban và công việc
 SELECT 
     department_id,
     job_id,
@@ -264,15 +264,15 @@ GROUP BY department_id, job_id
 ORDER BY department_id, job_id;
 ```
 
-### 3. Grouping with Calculated Fields
+### 3. Nhóm Với Trường Tính Toán
 ```sql
--- Group employees by salary range
+-- Nhóm nhân viên theo phạm vi lương
 SELECT 
     CASE 
-        WHEN salary < 5000 THEN 'Low (< 5000)'
-        WHEN salary < 10000 THEN 'Medium (5000-9999)'
-        WHEN salary < 15000 THEN 'High (10000-14999)'
-        ELSE 'Very High (>= 15000)'
+        WHEN salary < 5000 THEN 'Thấp (< 5000)'
+        WHEN salary < 10000 THEN 'Trung Bình (5000-9999)'
+        WHEN salary < 15000 THEN 'Cao (10000-14999)'
+        ELSE 'Rất Cao (>= 15000)'
     END AS salary_range,
     COUNT(*) AS employee_count,
     AVG(salary) AS avg_salary_in_range,
@@ -281,19 +281,19 @@ SELECT
 FROM hr.employees
 GROUP BY 
     CASE 
-        WHEN salary < 5000 THEN 'Low (< 5000)'
-        WHEN salary < 10000 THEN 'Medium (5000-9999)'
-        WHEN salary < 15000 THEN 'High (10000-14999)'
-        ELSE 'Very High (>= 15000)'
+        WHEN salary < 5000 THEN 'Thấp (< 5000)'
+        WHEN salary < 10000 THEN 'Trung Bình (5000-9999)'
+        WHEN salary < 15000 THEN 'Cao (10000-14999)'
+        ELSE 'Rất Cao (>= 15000)'
     END
 ORDER BY MIN(salary);
 ```
 
-## HAVING Clause
+## Mệnh Đề HAVING
 
-### 1. Filtering Aggregated Results
+### 1. Lọc Kết Quả Tổng Hợp
 ```sql
--- Departments with more than 5 employees
+-- Phòng ban có hơn 5 nhân viên
 SELECT 
     department_id,
     COUNT(*) AS employee_count,
@@ -305,9 +305,9 @@ HAVING COUNT(*) > 5
 ORDER BY employee_count DESC;
 ```
 
-### 2. Complex HAVING Conditions
+### 2. Điều Kiện HAVING Phức Tạp
 ```sql
--- Departments with high average salary and multiple employees
+-- Phòng ban có lương trung bình cao và nhiều nhân viên
 SELECT 
     department_id,
     COUNT(*) AS employee_count,
@@ -321,9 +321,9 @@ HAVING COUNT(*) >= 3
 ORDER BY avg_salary DESC;
 ```
 
-### 3. HAVING with Multiple Conditions
+### 3. HAVING Với Nhiều Điều Kiện
 ```sql
--- Product categories with significant inventory value
+-- Danh mục sản phẩm có giá trị tồn kho đáng kể
 SELECT 
     category_id,
     COUNT(*) AS product_count,
@@ -338,10 +338,10 @@ HAVING COUNT(*) >= 2
 ORDER BY total_inventory_value DESC;
 ```
 
-## Combining WHERE and HAVING
+## Kết Hợp WHERE và HAVING
 
 ```sql
--- Complex filtering example
+-- Ví dụ lọc phức tạp
 SELECT 
     department_id,
     job_id,
@@ -349,20 +349,20 @@ SELECT
     AVG(salary) AS avg_salary,
     MAX(hire_date) AS most_recent_hire
 FROM hr.employees
-WHERE salary > 3000                    -- WHERE filters individual rows
+WHERE salary > 3000                    -- WHERE lọc từng hàng riêng lẻ
   AND hire_date >= DATE '1990-01-01'
   AND department_id IS NOT NULL
 GROUP BY department_id, job_id
-HAVING COUNT(*) >= 2                   -- HAVING filters grouped results
+HAVING COUNT(*) >= 2                   -- HAVING lọc kết quả đã nhóm
    AND AVG(salary) > 6000
 ORDER BY department_id, avg_salary DESC;
 ```
 
-## Nested Aggregates and Subqueries
+## Hàm Tổng Hợp Lồng Nhau và Truy Vấn Con
 
-### 1. Subqueries with Aggregates
+### 1. Truy Vấn Con Với Hàm Tổng Hợp
 ```sql
--- Employees earning above department average
+-- Nhân viên có lương trên mức trung bình phòng ban
 SELECT 
     e.employee_id,
     e.first_name,
@@ -383,9 +383,9 @@ WHERE e.salary > dept_avg.avg_salary
 ORDER BY e.department_id, difference DESC;
 ```
 
-### 2. Comparing to Overall Statistics
+### 2. So Sánh Với Thống Kê Tổng Thể
 ```sql
--- Departments vs company averages
+-- Phòng ban so với mức trung bình công ty
 SELECT 
     department_id,
     COUNT(*) AS dept_employee_count,
@@ -399,13 +399,13 @@ GROUP BY department_id
 ORDER BY dept_avg_salary DESC;
 ```
 
-## Real-World Reporting Examples
+## Ví Dụ Báo Cáo Thực Tế
 
-### 1. Executive Dashboard Summary
+### 1. Tóm Tắt Bảng Điều Khiển Điều Hành
 ```sql
--- Company-wide statistics
+-- Thống kê toàn công ty
 SELECT 
-    'Employee Summary' AS metric_category,
+    'Tóm Tắt Nhân Viên' AS metric_category,
     COUNT(*) AS total_employees,
     COUNT(DISTINCT department_id) AS total_departments,
     COUNT(DISTINCT job_id) AS total_job_types,
@@ -417,7 +417,7 @@ FROM hr.employees
 UNION ALL
 
 SELECT 
-    'Salary Distribution',
+    'Phân Bổ Lương',
     COUNT(CASE WHEN salary < 5000 THEN 1 END),
     COUNT(CASE WHEN salary BETWEEN 5000 AND 9999 THEN 1 END),
     COUNT(CASE WHEN salary BETWEEN 10000 AND 14999 THEN 1 END),
@@ -427,9 +427,9 @@ SELECT
 FROM hr.employees;
 ```
 
-### 2. Sales Performance Report
+### 2. Báo Cáo Hiệu Suất Bán Hàng
 ```sql
--- Product sales summary
+-- Tóm tắt bán hàng sản phẩm
 SELECT 
     p.product_name,
     COUNT(DISTINCT od.order_id) AS number_of_orders,
@@ -442,13 +442,13 @@ SELECT
 FROM sales.products p
 JOIN sales.order_details od ON p.product_id = od.product_id
 GROUP BY p.product_id, p.product_name
-HAVING SUM(od.quantity) >= 10  -- Only products with significant sales
+HAVING SUM(od.quantity) >= 10  -- Chỉ sản phẩm có doanh số đáng kể
 ORDER BY total_revenue DESC;
 ```
 
-### 3. Department Analysis Report
+### 3. Báo Cáo Phân Tích Phòng Ban
 ```sql
--- Comprehensive department analysis
+-- Phân tích phòng ban toàn diện
 SELECT 
     d.department_name,
     COUNT(e.employee_id) AS employee_count,
@@ -465,39 +465,39 @@ GROUP BY d.department_id, d.department_name
 ORDER BY employee_count DESC, avg_salary DESC;
 ```
 
-## Performance Considerations
+## Cân Nhắc Hiệu Suất
 
-### 1. Efficient Aggregate Queries
+### 1. Truy Vấn Tổng Hợp Hiệu Quả
 ```sql
--- Good: Use WHERE to filter before aggregating
+-- Tốt: Sử dụng WHERE để lọc trước khi tổng hợp
 SELECT 
     department_id,
     COUNT(*) AS active_employee_count,
     AVG(salary) AS avg_salary
 FROM hr.employees
-WHERE salary > 3000  -- Filter before grouping
+WHERE salary > 3000  -- Lọc trước khi nhóm
 GROUP BY department_id;
 
--- Less efficient: Filter after aggregating when possible
--- Use HAVING only when you need to filter on aggregate results
+-- Kém hiệu quả hơn: Lọc sau khi tổng hợp khi có thể
+-- Chỉ sử dụng HAVING khi cần lọc trên kết quả tổng hợp
 ```
 
-### 2. Index Usage
+### 2. Sử Dụng Index
 ```sql
--- Aggregates can benefit from indexes on GROUP BY columns
+-- Hàm tổng hợp có thể hưởng lợi từ index trên cột GROUP BY
 -- CREATE INDEX emp_dept_idx ON hr.employees(department_id);
 
--- Aggregates on indexed columns are faster
+-- Tổng hợp trên cột có index nhanh hơn
 SELECT department_id, COUNT(*)
 FROM hr.employees
-GROUP BY department_id;  -- Uses index if available
+GROUP BY department_id;  -- Sử dụng index nếu có
 ```
 
-## Common Aggregate Patterns
+## Mẫu Hàm Tổng Hợp Phổ Biến
 
-### 1. Running Totals (Preview of Analytic Functions)
+### 1. Tổng Tích Lũy (Xem Trước Hàm Phân Tích)
 ```sql
--- Simple cumulative calculation
+-- Tính toán tích lũy đơn giản
 SELECT 
     employee_id,
     first_name,
@@ -508,9 +508,9 @@ FROM hr.employees
 ORDER BY employee_id;
 ```
 
-### 2. Percentage Calculations
+### 2. Tính Phần Trăm
 ```sql
--- Department salary as percentage of total
+-- Lương phòng ban như phần trăm của tổng
 SELECT 
     department_id,
     SUM(salary) AS dept_total_salary,
@@ -521,9 +521,9 @@ GROUP BY department_id
 ORDER BY percentage_of_total DESC;
 ```
 
-### 3. Ranking and Comparison
+### 3. Xếp Hạng và So Sánh
 ```sql
--- Top 3 highest paid employees per department
+-- Top 3 nhân viên có lương cao nhất mỗi phòng ban
 SELECT 
     department_id,
     employee_id,
@@ -537,69 +537,69 @@ QUALIFY RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) <= 3
 ORDER BY department_id, salary_rank;
 ```
 
-## Exercises
+## Bài Tập
 
-### Exercise 1: Basic Aggregates
+### Bài Tập 1: Hàm Tổng Hợp Cơ Bản
 ```sql
--- Calculate the following for all employees:
--- Total count, average salary, min/max salary, 
--- count of employees with commission, average commission rate
--- Your query here:
+-- Tính toán những điều sau cho tất cả nhân viên:
+-- Tổng số lượng, lương trung bình, lương min/max, 
+-- số nhân viên có hoa hồng, tỷ lệ hoa hồng trung bình
+-- Viết truy vấn của bạn ở đây:
 ```
 
-### Exercise 2: Department Analysis
+### Bài Tập 2: Phân Tích Phòng Ban
 ```sql
--- For each department, show:
--- Department ID, employee count, total payroll, average salary,
--- highest and lowest salary, number of different job types
--- Only include departments with more than 2 employees
--- Your query here:
+-- Đối với mỗi phòng ban, hiển thị:
+-- ID phòng ban, số lượng nhân viên, tổng lương, lương trung bình,
+-- lương cao nhất và thấp nhất, số loại công việc khác nhau
+-- Chỉ bao gồm phòng ban có hơn 2 nhân viên
+-- Viết truy vấn của bạn ở đây:
 ```
 
-### Exercise 3: Product Inventory Analysis
+### Bài Tập 3: Phân Tích Tồn Kho Sản Phẩm
 ```sql
--- For each product category, calculate:
--- Number of products, average price, total inventory value,
--- number of discontinued products, percentage of products in stock
--- Order by total inventory value descending
--- Your query here:
+-- Đối với mỗi danh mục sản phẩm, tính toán:
+-- Số lượng sản phẩm, giá trung bình, tổng giá trị tồn kho,
+-- số sản phẩm đã ngừng sản xuất, phần trăm sản phẩm còn hàng
+-- Sắp xếp theo tổng giá trị tồn kho giảm dần
+-- Viết truy vấn của bạn ở đây:
 ```
 
-### Exercise 4: Advanced Analysis
+### Bài Tập 4: Phân Tích Nâng Cao
 ```sql
--- Create a report showing employees who earn more than
--- the average salary in their department, including:
--- Employee details, their salary, department average, difference
--- Your query here:
+-- Tạo báo cáo hiển thị nhân viên có lương cao hơn
+-- lương trung bình trong phòng ban của họ, bao gồm:
+-- Chi tiết nhân viên, lương của họ, trung bình phòng ban, chênh lệch
+-- Viết truy vấn của bạn ở đây:
 ```
 
-## Best Practices Summary
+## Tóm Tắt Thực Hành Tốt
 
-1. **Use appropriate aggregate functions** for your data type and analysis needs
-2. **Handle NULL values** explicitly in aggregate calculations
-3. **Use GROUP BY wisely** - include all non-aggregate columns
-4. **Apply HAVING** only when filtering on aggregate results
-5. **Filter early** with WHERE before aggregating when possible
-6. **Consider performance** - use indexes on GROUP BY columns
-7. **Format output** appropriately for reports
-8. **Test with edge cases** including NULL values and empty groups
+1. **Sử dụng hàm tổng hợp phù hợp** cho loại dữ liệu và nhu cầu phân tích của bạn
+2. **Xử lý giá trị NULL** một cách rõ ràng trong tính toán tổng hợp
+3. **Sử dụng GROUP BY khôn ngoan** - bao gồm tất cả cột không phải tổng hợp
+4. **Áp dụng HAVING** chỉ khi lọc trên kết quả tổng hợp
+5. **Lọc sớm** với WHERE trước khi tổng hợp khi có thể
+6. **Cân nhắc hiệu suất** - sử dụng index trên cột GROUP BY
+7. **Định dạng đầu ra** phù hợp cho báo cáo
+8. **Kiểm tra với trường hợp đặc biệt** bao gồm giá trị NULL và nhóm rỗng
 
-## Common Mistakes to Avoid
+## Lỗi Phổ Biến Cần Tránh
 
-1. **Forgetting GROUP BY** when mixing aggregates with regular columns
-2. **Using WHERE instead of HAVING** for aggregate conditions
-3. **Not handling NULL values** in calculations
-4. **Mixing aggregate and non-aggregate columns** incorrectly
-5. **Using aggregates in WHERE clause** (use HAVING instead)
-6. **Not considering performance** impact of complex aggregations
-7. **Forgetting to test** with empty groups or NULL values
+1. **Quên GROUP BY** khi trộn hàm tổng hợp với cột thường
+2. **Sử dụng WHERE thay vì HAVING** cho điều kiện tổng hợp
+3. **Không xử lý giá trị NULL** trong tính toán
+4. **Trộn cột tổng hợp và không tổng hợp** không đúng cách
+5. **Sử dụng hàm tổng hợp trong mệnh đề WHERE** (sử dụng HAVING thay thế)
+6. **Không cân nhắc ảnh hưởng hiệu suất** của tổng hợp phức tạp
+7. **Quên kiểm tra** với nhóm rỗng hoặc giá trị NULL
 
-## Next Steps
+## Các Bước Tiếp Theo
 
-Master aggregate functions before moving to:
-1. **Joins** - Combine data from multiple tables
-2. **Subqueries** - Use aggregates in complex queries  
-3. **Analytic Functions** - Advanced windowing and ranking
-4. **Data Warehousing** - Advanced aggregation techniques
+Thành thạo hàm tổng hợp trước khi chuyển sang:
+1. **Joins** - Kết hợp dữ liệu từ nhiều bảng
+2. **Subqueries** - Sử dụng hàm tổng hợp trong truy vấn phức tạp  
+3. **Analytic Functions** - Windowing và ranking nâng cao
+4. **Data Warehousing** - Kỹ thuật tổng hợp nâng cao
 
-Aggregate functions are fundamental to data analysis and reporting, so practice extensively with different scenarios!
+Hàm tổng hợp là nền tảng của phân tích dữ liệu và báo cáo, vì vậy hãy thực hành nhiều với các tình huống khác nhau!

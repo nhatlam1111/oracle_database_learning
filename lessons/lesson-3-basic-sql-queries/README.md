@@ -1,104 +1,104 @@
-# Lesson 3: Basic SQL Queries and Data Types
+# Bài 3: Truy Vấn SQL Cơ Bản và Kiểu Dữ Liệu
 
-This lesson introduces you to Oracle Database data types and fundamental SQL query operations. You'll learn about data types first (essential for creating tables), then move on to retrieving, filtering, sorting, and summarizing data using basic SQL statements.
+Bài học này giới thiệu bạn về các kiểu dữ liệu Oracle Database và các thao tác truy vấn SQL cơ bản. Bạn sẽ học về kiểu dữ liệu trước (điều cần thiết để tạo bảng), sau đó chuyển sang truy xuất, lọc, sắp xếp và tóm tắt dữ liệu bằng các câu lệnh SQL cơ bản.
 
-## Learning Objectives
-By the end of this lesson, you will be able to:
-- Master Oracle Database's built-in data types and their appropriate usage
-- Apply best practices for data type selection in database design
-- Write basic SELECT statements to retrieve data from tables
-- Filter data using WHERE clauses with various conditions
-- Sort query results using ORDER BY
-- Use aggregate functions to summarize data
-- Apply built-in functions for data manipulation
-- Understand data type conversion functions
-- Write efficient queries following best practices
+## Mục Tiêu Học Tập
+Sau khi hoàn thành bài học này, bạn sẽ có thể:
+- Thành thạo các kiểu dữ liệu tích hợp sẵn của Oracle Database và cách sử dụng phù hợp
+- Áp dụng các thực hành tốt nhất cho việc lựa chọn kiểu dữ liệu trong thiết kế cơ sở dữ liệu
+- Viết các câu lệnh SELECT cơ bản để truy xuất dữ liệu từ bảng
+- Lọc dữ liệu bằng mệnh đề WHERE với các điều kiện khác nhau
+- Sắp xếp kết quả truy vấn bằng ORDER BY
+- Sử dụng các hàm tổng hợp để tóm tắt dữ liệu
+- Áp dụng các hàm tích hợp sẵn để thao tác dữ liệu
+- Hiểu về các hàm chuyển đổi kiểu dữ liệu
+- Viết các truy vấn hiệu quả theo các thực hành tốt nhất
 
-## Lesson Structure
-1. **Oracle Database Data Types** ⭐ **ESSENTIAL FOUNDATION** - Master data types before creating tables
-2. **SELECT Statements** - Master the foundation of data retrieval
-3. **WHERE Clause and Filtering** - Learn to filter data with various conditions
-4. **Sorting with ORDER BY** - Control the presentation order of results
-5. **Aggregate Functions** - Summarize data with COUNT, SUM, AVG, etc.
+## Cấu Trúc Bài Học
+1. **Kiểu Dữ Liệu Oracle Database** ⭐ **NỀN TẢNG QUAN TRỌNG** - Thành thạo kiểu dữ liệu trước khi tạo bảng
+2. **Câu Lệnh SELECT** - Thành thạo nền tảng của việc truy xuất dữ liệu
+3. **Mệnh Đề WHERE và Lọc Dữ Liệu** - Học cách lọc dữ liệu với các điều kiện khác nhau
+4. **Sắp Xếp với ORDER BY** - Kiểm soát thứ tự trình bày kết quả
+5. **Hàm Tổng Hợp** - Tóm tắt dữ liệu với COUNT, SUM, AVG, v.v.
 
-## Prerequisites
-- Completed Lesson 1 (Introduction to Databases)
-- Completed Lesson 2 (Environment Setup)
-- Sample database created and accessible
-- SQL client configured and connected
+## Điều Kiện Tiên Quyết
+- Đã hoàn thành Bài 1 (Giới thiệu về Cơ sở dữ liệu)
+- Đã hoàn thành Bài 2 (Thiết lập Môi trường)
+- Cơ sở dữ liệu mẫu đã được tạo và có thể truy cập
+- Client SQL đã được cấu hình và kết nối
 
-## Estimated Time
-4-5 hours
+## Thời Gian Ước Tính
+4-5 tiếng
 
-## Files in This Lesson
-- `1-oracle-datatypes.md` ⭐ **NEW & COMPREHENSIVE** - Complete guide to Oracle data types
-- `2-select-statements.md` - Complete guide to SELECT statements and basic syntax
-- `3-where-clause-filtering.md` - Data filtering techniques and conditions
-- `4-sorting-order-by.md` - Sorting and organizing query results
-- `5-aggregate-functions.md` - Data summarization and aggregate operations
+## Tệp Tin Trong Bài Học Này
+- `1-oracle-datatypes.md` ⭐ **MỚI & TOÀN DIỆN** - Hướng dẫn đầy đủ về kiểu dữ liệu Oracle
+- `2-select-statements.md` - Hướng dẫn đầy đủ về câu lệnh SELECT và cú pháp cơ bản
+- `3-where-clause-filtering.md` - Kỹ thuật lọc dữ liệu và điều kiện
+- `4-sorting-order-by.md` - Sắp xếp và tổ chức kết quả truy vấn
+- `5-aggregate-functions.md` - Tóm tắt dữ liệu và các thao tác tổng hợp
 
-## Practical Examples
-- `../../src/basic-queries/oracle-datatypes-examples.sql` - Comprehensive data type examples
-- `../../src/basic-queries/select-statements.sql` - SELECT query examples
-- `../../src/basic-queries/where-filtering.sql` - WHERE clause examples
-- `../../src/basic-queries/sorting-examples.sql` - ORDER BY examples
-- `../../src/basic-queries/aggregate-examples.sql` - Aggregate function examples
+## Ví Dụ Thực Hành
+- `../../src/basic-queries/oracle-datatypes-examples.sql` - Ví dụ toàn diện về kiểu dữ liệu
+- `../../src/basic-queries/select-statements.sql` - Ví dụ truy vấn SELECT
+- `../../src/basic-queries/where-filtering.sql` - Ví dụ mệnh đề WHERE
+- `../../src/basic-queries/sorting-examples.sql` - Ví dụ ORDER BY
+- `../../src/basic-queries/aggregate-examples.sql` - Ví dụ hàm tổng hợp
 
-## Sample Data Required
-This lesson uses the HR and SALES schemas created in Lesson 2. Ensure you have:
-- HR schema: employees, departments, jobs, locations tables
-- SALES schema: customers, products, orders, order_details tables
+## Dữ Liệu Mẫu Cần Thiết
+Bài học này sử dụng schema HR và SALES được tạo trong Bài 2. Đảm bảo bạn có:
+- Schema HR: các bảng employees, departments, jobs, locations
+- Schema SALES: các bảng customers, products, orders, order_details
 
-## Next Steps
-After completing this lesson, you'll have solid foundation in Oracle data types and basic SQL queries, and be ready to proceed to Lesson 4 for intermediate SQL concepts including joins and subqueries.
+## Bước Tiếp Theo
+Sau khi hoàn thành bài học này, bạn sẽ có nền tảng vững chắc về kiểu dữ liệu Oracle và truy vấn SQL cơ bản, và sẵn sàng tiến tới Bài 4 cho các khái niệm SQL trung cấp bao gồm join và subquery.
 
-## Detailed Content Overview
+## Tổng Quan Nội Dung Chi Tiết
 
-### 1. Oracle Database Data Types ⭐ **START HERE**
-**File:** `1-oracle-datatypes.md`
+### 1. Kiểu Dữ Liệu Oracle Database ⭐ **BẮT ĐẦU TẠI ĐÂY**
+**Tệp:** `1-oracle-datatypes.md`
 
-This comprehensive guide covers all Oracle built-in data types:
+Hướng dẫn toàn diện này bao gồm tất cả các kiểu dữ liệu tích hợp sẵn của Oracle:
 
-#### Character Data Types
-- **VARCHAR2(size)** - Variable-length character data (most common)
-- **CHAR(size)** - Fixed-length character data
-- **NVARCHAR2(size)** - Variable-length Unicode character data
-- **NCHAR(size)** - Fixed-length Unicode character data
+#### Kiểu Dữ Liệu Ký Tự
+- **VARCHAR2(size)** - Dữ liệu ký tự độ dài biến đổi (phổ biến nhất)
+- **CHAR(size)** - Dữ liệu ký tự độ dài cố định
+- **NVARCHAR2(size)** - Dữ liệu ký tự Unicode độ dài biến đổi
+- **NCHAR(size)** - Dữ liệu ký tự Unicode độ dài cố định
 
-#### Numeric Data Types
-- **NUMBER(precision, scale)** - Variable-length numeric data
-- **INTEGER** - Whole numbers
-- **FLOAT(binary_precision)** - Floating-point numbers
-- **BINARY_FLOAT** - 32-bit IEEE 754 floating-point
-- **BINARY_DOUBLE** - 64-bit IEEE 754 floating-point
+#### Kiểu Dữ Liệu Số
+- **NUMBER(precision, scale)** - Dữ liệu số độ dài biến đổi
+- **INTEGER** - Số nguyên
+- **FLOAT(binary_precision)** - Số dấu phẩy động
+- **BINARY_FLOAT** - Dấu phẩy động IEEE 754 32-bit
+- **BINARY_DOUBLE** - Dấu phẩy động IEEE 754 64-bit
 
-#### Date and Time Data Types
-- **DATE** - Date and time (most common)
-- **TIMESTAMP(fractional_seconds_precision)** - Date and time with fractional seconds
-- **TIMESTAMP WITH TIME ZONE** - TIMESTAMP with time zone information
-- **TIMESTAMP WITH LOCAL TIME ZONE** - TIMESTAMP normalized to database time zone
-- **INTERVAL YEAR TO MONTH** - Period in years and months
-- **INTERVAL DAY TO SECOND** - Period in days, hours, minutes, seconds
+#### Kiểu Dữ Liệu Ngày và Thời Gian
+- **DATE** - Ngày và thời gian (phổ biến nhất)
+- **TIMESTAMP(fractional_seconds_precision)** - Ngày và thời gian với giây phân số
+- **TIMESTAMP WITH TIME ZONE** - TIMESTAMP với thông tin múi giờ
+- **TIMESTAMP WITH LOCAL TIME ZONE** - TIMESTAMP được chuẩn hóa theo múi giờ cơ sở dữ liệu
+- **INTERVAL YEAR TO MONTH** - Khoảng thời gian tính bằng năm và tháng
+- **INTERVAL DAY TO SECOND** - Khoảng thời gian tính bằng ngày, giờ, phút, giây
 
-#### Binary Data Types
-- **RAW(size)** - Variable-length binary data
-- **LONG RAW** - Variable-length binary data up to 2GB (deprecated)
+#### Kiểu Dữ Liệu Nhị Phân
+- **RAW(size)** - Dữ liệu nhị phân độ dài biến đổi
+- **LONG RAW** - Dữ liệu nhị phân độ dài biến đổi lên đến 2GB (đã lỗi thời)
 
-#### Large Object (LOB) Data Types
-- **CLOB** - Character Large Object for large text data
-- **NCLOB** - National Character Large Object for Unicode text
-- **BLOB** - Binary Large Object for binary data
-- **BFILE** - Binary file locator pointing to external files
+#### Kiểu Dữ Liệu Đối Tượng Lớn (LOB)
+- **CLOB** - Character Large Object cho dữ liệu văn bản lớn
+- **NCLOB** - National Character Large Object cho văn bản Unicode
+- **BLOB** - Binary Large Object cho dữ liệu nhị phân
+- **BFILE** - Locator tệp nhị phân trỏ đến tệp bên ngoài
 
-#### Specialized Data Types
-- **ROWID** - Unique identifier for table rows
-- **UROWID** - Universal ROWID for various table types
-- **JSON** - Native JSON data type (Oracle 21c+)
+#### Kiểu Dữ Liệu Chuyên Biệt
+- **ROWID** - Định danh duy nhất cho các hàng trong bảng
+- **UROWID** - Universal ROWID cho các loại bảng khác nhau
+- **JSON** - Kiểu dữ liệu JSON gốc (Oracle 21c+)
 
-#### Key Learning Points
-- **Data Type Selection Guidelines** - How to choose the right type
-- **Storage Requirements** - Understanding space usage
-- **Performance Considerations** - Impact on query performance
+#### Điểm Học Tập Chính
+- **Hướng Dẫn Lựa Chọn Kiểu Dữ Liệu** - Cách chọn kiểu phù hợp
+- **Yêu Cầu Lưu Trữ** - Hiểu về việc sử dụng không gian
+- **Cân Nhắc Hiệu Suất** - Tác động đến hiệu suất truy vấn
 - **Best Practices** - Industry standards and recommendations
 - **Common Conversions** - Converting between data types
 

@@ -1,251 +1,218 @@
-# Oracle Database Learning Roadmap
+# Lộ Trình Học Oracle Database
 
-Welcome to the Oracle Database Learning project! This roadmap is designed to guide you from beginner to advanced levels in Oracle Database and SQL. Follow the steps outlined below to enhance your understanding and skills.
+Chào mừng bạn đến với dự án Học Oracle Database! Lộ trình này được thiết kế để hướng dẫn bạn từ người mới bắt đầu đến trình độ nâng cao trong Oracle Database và SQL. Hãy làm theo các bước được nêu dưới đây để nâng cao hiểu biết và kỹ năng của bạn.
 
-## Learning Plan
+## Kế Hoạch Học Tập
 
-### 1. Introduction to Databases
-- **Lesson Path:** `lessons/lesson-1-introduction-to-databases/`
-- **Practice Files:** `src/` (sample database scripts)
-- Learn about:
-  - What a database is and its importance
-  - Different types of databases (relational vs non-relational)
-  - Oracle Database features and capabilities
-  - Role of databases in modern applications
+### 1. Giới Thiệu Về Cơ Sở Dữ Liệu
+- **Đường Dẫn Bài Học:** `lessons/lesson-1-introduction-to-databases/`
+- **Tệp Thực Hành:** `src/` (các script cơ sở dữ liệu mẫu)
+- Học về:
+  - Cơ sở dữ liệu là gì và tầm quan trọng của nó
+  - Các loại cơ sở dữ liệu khác nhau (quan hệ và phi quan hệ)
+  - Các tính năng và khả năng của Oracle Database
+  - Vai trò của cơ sở dữ liệu trong các ứng dụng hiện đại
 
-### 2. Setting Up Your Environment
-- **Lesson Path:** `lessons/lesson-2-setting-up-environment/`
-- **Practice Files:** `src/` (sample database scripts)
-- Learn about:
-  - Oracle installation options (XE, Cloud, Docker)
-  - Oracle Cloud Free Tier setup
-  - SQL client configuration (SQL Developer, VS Code)
-  - Creating sample HR and SALES schemas
+### 2. Thiết Lập Môi Trường
+- **Đường Dẫn Bài Học:** `lessons/lesson-2-setting-up-environment/`
+- **Tệp Thực Hành:** `src/` (các script cơ sở dữ liệu mẫu)
+- Học về:
+  - Các tùy chọn cài đặt Oracle (XE, Cloud, Docker)
+  - Thiết lập Oracle Cloud Free Tier
+  - Cấu hình SQL client (SQL Developer, VS Code)
+  - Tạo các schema mẫu HR và SALES
 
-### 3. Basic SQL Queries
-- **Lesson Path:** `lessons/lesson-3-basic-sql-queries/`
-- **Practice Files:** `src/basic-queries/`
-- Learn about:
-  - **Oracle Database Data Types** - Comprehensive guide to built-in data types:
-    - Character data types (VARCHAR2, CHAR, NVARCHAR2, NCHAR)
-    - Numeric data types (NUMBER, INTEGER, FLOAT, BINARY_FLOAT, BINARY_DOUBLE)
-    - Date and time data types (DATE, TIMESTAMP, INTERVAL)
-    - Binary data types (RAW, LONG RAW)
-    - Large Object types (CLOB, NCLOB, BLOB, BFILE)
-    - Specialized data types (ROWID, UROWID, JSON)
-    - Data type selection guidelines and best practices
-  - SELECT statements and basic syntax
-  - Filtering data with WHERE clause
-  - Sorting results with ORDER BY
-  - Using aggregate functions (COUNT, SUM, AVG, MIN, MAX)
+### 3. Truy Vấn SQL Cơ Bản
+- **Đường Dẫn Bài Học:** `lessons/lesson-3-basic-sql-queries/`
+- **Tệp Thực Hành:** `src/basic-queries/`
+- Học về:
+  - **Kiểu Dữ Liệu Oracle Database** - Hướng dẫn toàn diện về các kiểu dữ liệu tích hợp:
+    - Kiểu dữ liệu ký tự (VARCHAR2, CHAR, NVARCHAR2, NCHAR)
+    - Kiểu dữ liệu số (NUMBER, INTEGER, FLOAT, BINARY_FLOAT, BINARY_DOUBLE)
+    - Kiểu dữ liệu ngày và thời gian (DATE, TIMESTAMP, INTERVAL)
+    - Kiểu dữ liệu nhị phân (RAW, LONG RAW)
+    - Kiểu đối tượng lớn (CLOB, NCLOB, BLOB, BFILE)
+    - Kiểu dữ liệu chuyên biệt (ROWID, UROWID, JSON)
+    - Hướng dẫn lựa chọn kiểu dữ liệu và thực hành tốt nhất
+  - Câu lệnh SELECT và cú pháp cơ bản
+  - Lọc dữ liệu với mệnh đề WHERE
+  - Sắp xếp kết quả với ORDER BY
+  - Sử dụng các hàm tập hợp (COUNT, SUM, AVG, MIN, MAX)
 
-### 4. Intermediate SQL Concepts
-- **Lesson Path:** `lessons/lesson-4-intermediate-sql/`
-- **Practice Files:** `src/intermediate/`
-- Learn about:
-  - Table relationships and referential integrity
-  - JOIN operations (INNER, LEFT, RIGHT, FULL OUTER, CROSS)
-  - Advanced join techniques (self-joins, anti-joins, semi-joins)
-  - Subqueries (scalar, multi-row, correlated)
-  - EXISTS and NOT EXISTS patterns
+### 4. Khái Niệm SQL Trung Cấp
+- **Đường Dẫn Bài Học:** `lessons/lesson-4-intermediate-sql/`
+- **Tệp Thực Hành:** `src/intermediate/`
+- Học về:
+  - Mối quan hệ bảng và tính toàn vẹn tham chiếu
+  - Phép JOIN (INNER, LEFT, RIGHT, FULL OUTER, CROSS)
+  - Kỹ thuật join nâng cao (self-joins, anti-joins, semi-joins)
+  - Truy vấn con (scalar, multi-row, correlated)
+  - Mẫu EXISTS và NOT EXISTS
 
-### 5. Advanced SQL Techniques
-- **Lesson Path:** `lessons/lesson-5-advanced-sql/`
-- **Practice Files:** `src/advanced/`
-- Learn about:
-  - Views and materialized views
-  - Sequences, synonyms, and database objects
-  - Stored procedures and functions
-  - Triggers and event handling
-  - Advanced PL/SQL programming
-  - Error handling and debugging
-  - **Oracle Database Indexes** - Comprehensive guide to index types and optimization:
-    - B-Tree indexes (standard, unique, composite, function-based)
-    - Bitmap indexes for low-cardinality data
-    - Partitioned indexes and global/local strategies
-    - Spatial and text indexes for specialized data
-    - Index design principles and performance optimization
-    - Index maintenance, monitoring, and troubleshooting
+### 5. Kỹ Thuật SQL Nâng Cao
+- **Đường Dẫn Bài Học:** `lessons/lesson-5-advanced-sql/`
+- **Tệp Thực Hành:** `src/advanced/`
+- Học về:
+  - Views và materialized views
+  - Sequences, synonyms và các đối tượng cơ sở dữ liệu
+  - Stored procedures và functions
+  - Triggers và xử lý sự kiện
+  - Lập trình PL/SQL nâng cao
+  - Xử lý lỗi và debug
+  - **Oracle Database Indexes** - Hướng dẫn toàn diện về các loại index và tối ưu hóa:
+    - B-Tree indexes (tiêu chuẩn, duy nhất, tổng hợp, dựa trên hàm)
+    - Bitmap indexes cho dữ liệu có tính chọn lọc thấp
+    - Partitioned indexes và chiến lược global/local
+    - Spatial và text indexes cho dữ liệu chuyên biệt
+    - Nguyên tắc thiết kế index và tối ưu hóa hiệu suất
+    - Bảo trì, giám sát và khắc phục sự cố index
 
-### 6. Practice and Application
-- **Lesson Path:** `lessons/lesson-6-practice-application/`
-- **Practice Files:** `src/practice/lesson6-comprehensive/`
-- Learn about:
-  - Comprehensive skills assessment and gap analysis
-  - Real-world database projects (E-commerce, HR, Financial systems)
-  - Performance tuning and optimization techniques
-  - Professional development and certification preparation
-  - Capstone project development
-  - Industry-ready portfolio creation
+### 6. Thực Hành và Ứng Dụng
+- **Đường Dẫn Bài Học:** `lessons/lesson-6-practice-application/`
+- **Tệp Thực Hành:** `src/practice/lesson6-comprehensive/`
+- Học về:
+  - Đánh giá kỹ năng toàn diện và phân tích khoảng cách
+  - Các dự án cơ sở dữ liệu thực tế (Thương mại điện tử, HR, Hệ thống tài chính)
+  - Kỹ thuật điều chỉnh hiệu suất và tối ưu hóa
+  - Chuẩn bị phát triển chuyên môn và chứng chỉ
+  - Phát triển dự án capstone
+  - Tạo portfolio sẵn sàng cho ngành
 
-### 7. Additional Resources and References
-- **Documentation Path:** `docs/`
-- **Reference Files:** `docs/notes.md`, external links, and community resources
-- Comprehensive collection of:
-  - **Official Oracle Documentation** - Complete reference guides and manuals
+### 7. Tài Nguyên Bổ Sung và Tham Khảo
+- **Đường Dẫn Tài Liệu:** `docs/`
+- **Tệp Tham Khảo:** `docs/notes.md`, liên kết bên ngoài và tài nguyên cộng đồng
+- Bộ sưu tập toàn diện về:
+  - **Tài Liệu Chính Thức Oracle** - Hướng dẫn tham khảo và sách hướng dẫn đầy đủ
     - Oracle Database Concepts Guide
     - Oracle Database SQL Language Reference
     - Oracle Database Administrator's Guide
     - Oracle Database PL/SQL Language Reference
     - Oracle Database Performance Tuning Guide
-  - **Online Learning Platforms** - Interactive courses and tutorials
-    - Oracle University official courses
-    - Oracle Learning Library (free resources)
-    - LinkedIn Learning Oracle Database courses
-    - Coursera Oracle specializations
-    - Udemy practical Oracle courses
-  - **Community Resources** - Forums, blogs, and expert insights
-    - Oracle Community forums and discussions
-    - Stack Overflow Oracle Database tags
-    - Reddit r/oracle community
-    - Oracle ACE program and expert blogs
+  - **Nền Tảng Học Trực Tuyến** - Khóa học và hướng dẫn tương tác
+    - Khóa học chính thức Oracle University
+    - Oracle Learning Library (tài nguyên miễn phí)
+    - Khóa học Oracle Database trên LinkedIn Learning
+    - Chuyên môn hóa Oracle trên Coursera
+    - Khóa học Oracle thực hành trên Udemy
+  - **Tài Nguyên Cộng Đồng** - Diễn đàn, blog và hiểu biết chuyên gia
+    - Diễn đàn cộng đồng Oracle và thảo luận
+    - Thẻ Oracle Database trên Stack Overflow
+    - Cộng đồng Reddit r/oracle
+    - Chương trình Oracle ACE và blog chuyên gia
     - Oracle Technology Network (OTN)
-  - **Practice Platforms** - Hands-on learning environments
-    - Oracle Live SQL (free online SQL environment)
-    - Oracle Cloud Free Tier (always free resources)
-    - HackerRank SQL challenges
-    - LeetCode database problems
-    - SQLZoo interactive tutorials
-  - **Certification Resources** - Professional development materials
-    - Oracle Certification program overview
-    - Official certification study guides
-    - Practice exams and mock tests
-    - Certification preparation courses
-    - Professional development roadmaps
-  - **Tools and Extensions** - Development productivity enhancers
-    - Oracle SQL Developer (free IDE)
-    - VS Code Oracle extensions
-    - DataGrip Oracle support
-    - Toad for Oracle (commercial)
+  - **Nền Tảng Thực Hành** - Môi trường học thực hành
+    - Oracle Live SQL (môi trường SQL trực tuyến miễn phí)
+    - Oracle Cloud Free Tier (tài nguyên luôn miễn phí)
+    - Thử thách SQL trên HackerRank
+    - Bài toán cơ sở dữ liệu trên LeetCode
+    - Hướng dẫn tương tác SQLZoo
+  - **Tài Nguyên Chứng Chỉ** - Tài liệu phát triển chuyên môn
+    - Tổng quan chương trình Chứng chỉ Oracle
+    - Hướng dẫn học chính thức cho chứng chỉ
+    - Bài thi thực hành và bài thi thử
+    - Khóa học chuẩn bị chứng chỉ
+    - Lộ trình phát triển chuyên môn
+  - **Công Cụ và Tiện Ích Mở Rộng** - Nâng cao năng suất phát triển
+    - Oracle SQL Developer (IDE miễn phí)
+    - Tiện ích mở rộng Oracle cho VS Code
+    - Hỗ trợ Oracle trên DataGrip
+    - Toad for Oracle (thương mại)
     - Oracle Enterprise Manager
-  - **Books and Publications** - In-depth learning materials
-    - "Oracle Database 19c: The Complete Reference" by Bob Bryla
-    - "Expert Oracle Database Architecture" by Thomas Kyte
-    - "Oracle PL/SQL Programming" by Steven Feuerstein
-    - "Oracle Performance Tuning" by Richard Niemiec
-    - Oracle official whitepapers and technical documents
+  - **Sách và Xuất Bản Phẩm** - Tài liệu học tập sâu sắc
+    - "Oracle Database 19c: The Complete Reference" của Bob Bryla
+    - "Expert Oracle Database Architecture" của Thomas Kyte
+    - "Oracle PL/SQL Programming" của Steven Feuerstein
+    - "Oracle Performance Tuning" của Richard Niemiec
+    - Báo cáo chính thức Oracle và tài liệu kỹ thuật
 
-### 8. Continuous Learning and Career Development
-- **Learning Path:** `docs/career-development/`
-- **Progress Tracking:** `docs/learning-journal.md`, skill assessments, and milestone tracking
-- **Professional Development Framework:**
+### 8. Học Tập Liên Tục và Phát Triển Nghề Nghiệp
+- **Đường Dẫn Bài Học:** `lessons/lesson-8-continuous-learning/`
+- **Tài Nguyên Nghề Nghiệp:** Hướng dẫn phát triển chuyên môn và cơ hội thực tế
+- Phát triển toàn diện về:
+  - **Kỹ Năng Nâng Cao và Chuyên Môn** - Lộ trình từ trung cấp đến chuyên gia
+    - Kỹ thuật điều chỉnh hiệu suất nâng cao và phân tích chi tiết
+    - Chiến lược quản trị cơ sở dữ liệu cấp doanh nghiệp
+    - Kiến trúc dữ liệu và khoa học dữ liệu với Oracle
+    - Triển khai Oracle Cloud và migration strategies
+    - Bảo mật cơ sở dữ liệu và quản lý tuân thủ
+    - Tự động hóa DevOps và quản lý vòng đời ứng dụng
+  - **Công Nghệ Mới Nổi** - Xu hướng tương lai và đổi mới
+    - Tích hợp Oracle với Machine Learning và AI
+    - Kiến trúc microservices với Oracle Database
+    - Blockchain và công nghệ sổ cái phân tán
+    - Xử lý dữ liệu thời gian thực và phân tích luồng
+    - Oracle Autonomous Database và tự động hóa thông minh
+    - Serverless computing và cloud-native architectures
+  - **Lộ Trình Chứng Chỉ** - Phát triển chuyên môn có cấu trúc
+    - Oracle Database SQL Certified Associate (OCA)
+    - Oracle Database Administrator Certified Professional (OCP)
+    - Oracle Database Expert Certified Master (OCM)
+    - Oracle Cloud Infrastructure certifications
+    - Chứng chỉ chuyên biệt (Performance Tuning, Security, Cloud)
+    - Kế hoạch học tập và timeline thực tế
+  - **Thực Hành và Tiêu Chuẩn Ngành** - Phương pháp chuyên nghiệp
+    - Phương pháp luận quản lý dự án cơ sở dữ liệu
+    - Thực hành code review và kiểm soát chất lượng
+    - Quy trình backup, recovery và disaster planning
+    - Chiến lược capacity planning và scaling
+    - Tuân thủ bảo mật và audit trails
+    - Tài liệu kỹ thuật và knowledge management
+  - **Networking và Cộng Đồng** - Kết nối chuyên nghiệp
+    - Tham gia Oracle User Groups (OUG) và hội nghị kỹ thuật
+    - Đóng góp cho dự án mã nguồn mở và GitHub repositories
+    - Viết blog kỹ thuật và chia sẻ kiến thức
+    - Mentoring và leadership trong cộng đồng công nghệ
+    - Tham gia OpenWorld, Oracle conferences và sự kiện ngành
+    - Xây dựng thương hiệu cá nhân trong lĩnh vực Oracle
+  - **Kế Hoạch Học Tập Cá Nhân** - Hướng dẫn tự định hướng
+    - Đánh giá kỹ năng định kỳ và thiết lập mục tiêu
+    - Xây dựng thói quen học tập hàng ngày và hàng tuần
+    - Tạo lab environment cá nhân và môi trường thực nghiệm
+    - Theo dõi các xu hướng công nghệ và cập nhật kiến thức
+    - Tham gia hackathons, challenges và dự án thực tế
+    - Phát triển side projects và opensource contributions
 
-#### 8.1 Advanced Skill Development
-- **Performance Optimization Mastery**
-  - Query execution plan analysis and optimization
-  - Memory management and buffer pool tuning
-  - Partitioning strategies for large datasets
-  - Real Application Clusters (RAC) concepts
-  
-- **Database Administration Excellence**
-  - Backup and recovery strategies (RMAN)
-  - High availability and disaster recovery planning
-  - Security management and audit implementation
-  - Capacity planning and resource management
-  - Automated maintenance and monitoring
+## Cấu Trúc Thư Mục
 
-- **Advanced PL/SQL Programming**
-  - Object-oriented programming in PL/SQL
-  - Advanced cursor management and bulk operations
-  - Dynamic SQL and code generation techniques
-  - Package design patterns and best practices
-  - Integration with external systems and APIs
+```
+oracle-database-learning/
+├── README.md                          # Hướng dẫn chính
+├── lessons/                           # Tất cả nội dung bài học
+│   ├── lesson-1-introduction-to-databases/
+│   ├── lesson-2-setting-up-environment/
+│   ├── lesson-3-basic-sql-queries/
+│   ├── lesson-4-intermediate-sql/
+│   ├── lesson-5-advanced-sql/
+│   ├── lesson-6-practice-application/
+│   ├── lesson-7-additional-resources/
+│   └── lesson-8-continuous-learning/
+├── src/                               # Tệp SQL thực hành
+│   ├── basic-queries/
+│   ├── intermediate/
+│   ├── advanced/
+│   └── practice/
+└── docs/                              # Tài liệu bổ sung
+    ├── notes.md
+    └── references.md
+```
 
-#### 8.2 Emerging Technologies and Trends
-- **Cloud Database Services**
-  - Oracle Autonomous Database features and benefits
-  - Database migration strategies to cloud
-  - Multi-cloud and hybrid cloud architectures
-  - Container-based database deployments
-  - Microservices database patterns
+## Cách Bắt Đầu
 
-- **Modern Data Technologies**
-  - JSON and XML data handling in Oracle
-  - Graph database capabilities (Oracle Property Graph)
-  - Machine learning integration (Oracle ML)
-  - Big data analytics and data warehousing
-  - Real-time data processing and streaming
+1. **Bắt đầu với Lesson 1** để hiểu các khái niệm cơ bản về cơ sở dữ liệu
+2. **Tiến tới Lesson 2** để thiết lập môi trường học tập của bạn
+3. **Thực hành với các tệp SQL** trong thư mục `src/` tương ứng với mỗi bài học
+4. **Hoàn thành các bài tập** và thử thách trong mỗi bài học
+5. **Tham khảo tài liệu bổ sung** khi cần thiết
+6. **Tham gia cộng đồng** để hỗ trợ và thảo luận
 
-#### 8.3 Professional Certification Roadmap
-- **Foundation Level Certifications**
-  - Oracle Database SQL Certified Associate
-  - Oracle Database Foundations Associate
-  
-- **Professional Level Certifications**
-  - Oracle Database Administrator Certified Professional
-  - Oracle Database Developer Certified Professional
-  - Oracle Database Performance and Tuning Professional
-  
-- **Expert Level Certifications**
-  - Oracle Database Administrator Certified Master
-  - Oracle Database Cloud Administrator Associate
-  - Oracle Autonomous Database Specialist
+## Đóng Góp
 
-#### 8.4 Industry Best Practices and Standards
-- **Development Methodologies**
-  - Agile database development practices
-  - DevOps and CI/CD for database projects
-  - Version control strategies for database objects
-  - Code review processes and quality assurance
-  - Documentation standards and maintenance
+Chúng tôi hoan nghênh sự đóng góp! Vui lòng đọc hướng dẫn đóng góp và gửi pull request để cải thiện nội dung học tập này.
 
-- **Security and Compliance**
-  - Data privacy regulations (GDPR, CCPA) compliance
-  - Database security hardening guidelines
-  - Encryption and key management best practices
-  - Audit trail implementation and monitoring
-  - Access control and privilege management
+## Giấy Phép
 
-#### 8.5 Building Your Professional Network
-- **Community Engagement**
-  - Join local Oracle User Groups (OUGs)
-  - Participate in Oracle conferences and events
-  - Contribute to open-source database projects
-  - Share knowledge through blogs and presentations
-  - Mentor junior developers and database professionals
+Dự án này được cấp phép theo Giấy phép MIT - xem tệp [LICENSE](LICENSE) để biết chi tiết.
 
-- **Career Advancement Strategies**
-  - Build a portfolio of database projects and solutions
-  - Develop specialization in specific industry domains
-  - Create technical documentation and knowledge bases
-  - Pursue leadership roles in database teams
-  - Stay current with Oracle product roadmaps and releases
+---
 
-#### 8.6 Recommended Learning Schedule
-- **Weekly Practice (Minimum 5-10 hours)**
-  - Review and practice SQL queries and PL/SQL programming
-  - Work on personal database projects or contribute to open source
-  - Read Oracle documentation and technical blogs
-  - Complete online courses or certification study materials
-
-- **Monthly Goals**
-  - Complete one advanced tutorial or course module
-  - Implement a new database feature or technique in practice projects
-  - Review and update your learning journal and progress tracking
-  - Network with other Oracle professionals and share experiences
-
-- **Quarterly Milestones**
-  - Complete a significant database project or case study
-  - Take a certification exam or skills assessment
-  - Evaluate and update your learning objectives and career goals
-  - Contribute to the Oracle community through articles or presentations
-
-- **Annual Objectives**
-  - Achieve at least one professional certification
-  - Complete a major capstone project demonstrating advanced skills
-  - Establish yourself as a subject matter expert in specific Oracle technologies
-  - Develop and maintain a professional portfolio and online presence
-
-## Conclusion
-By following this comprehensive roadmap, you will build a solid foundation in Oracle Database and SQL, progressing from basic queries to advanced programming techniques and professional expertise. The journey from beginner to Oracle Database expert requires dedication, continuous learning, and practical application of concepts.
-
-Remember that mastery comes through consistent practice, real-world application, and staying current with evolving technologies. Use this roadmap as your guide, but don't hesitate to explore additional topics that align with your specific career goals and interests.
-
-**Key Success Factors:**
-- Maintain a growth mindset and embrace challenges
-- Build practical projects that demonstrate your skills
-- Engage with the Oracle community for support and networking
-- Stay updated with Oracle's latest features and best practices
-- Document your learning journey and share knowledge with others
-
-Happy learning, and welcome to the exciting world of Oracle Database development and administration!
+*Chúc bạn học tập vui vẻ với Oracle Database! 🚀*

@@ -1,8 +1,8 @@
-# WHERE Clause and Filtering Data
+# Mệnh Đề WHERE và Lọc Dữ Liệu
 
-The WHERE clause is used to filter records and retrieve only those that meet specific conditions. It's one of the most important parts of SQL for data analysis and reporting.
+Mệnh đề WHERE được sử dụng để lọc các bản ghi và chỉ truy xuất những bản ghi đáp ứng các điều kiện cụ thể. Đây là một trong những phần quan trọng nhất của SQL cho việc phân tích và báo cáo dữ liệu.
 
-## Basic WHERE Clause Syntax
+## Cú Pháp Mệnh Đề WHERE Cơ Bản
 
 ```sql
 SELECT column1, column2, ...
@@ -10,21 +10,21 @@ FROM table_name
 WHERE condition;
 ```
 
-## Comparison Operators
+## Toán Tử So Sánh
 
-### 1. Equality and Inequality
+### 1. Bằng và Không Bằng
 ```sql
--- Exact match
+-- Khớp chính xác
 SELECT employee_id, first_name, last_name, department_id
 FROM hr.employees
 WHERE department_id = 60;
 
--- Not equal (multiple ways)
+-- Không bằng (nhiều cách)
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 WHERE department_id != 60;
 
--- Alternative not equal operators
+-- Toán tử không bằng thay thế
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 WHERE department_id <> 60;
@@ -34,89 +34,89 @@ FROM hr.employees
 WHERE NOT department_id = 60;
 ```
 
-### 2. Numeric Comparisons
+### 2. So Sánh Số
 ```sql
--- Greater than
+-- Lớn hơn
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 WHERE salary > 10000;
 
--- Greater than or equal
+-- Lớn hơn hoặc bằng
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 WHERE salary >= 10000;
 
--- Less than
+-- Nhỏ hơn
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 WHERE salary < 5000;
 
--- Less than or equal
+-- Nhỏ hơn hoặc bằng
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 WHERE salary <= 5000;
 ```
 
-### 3. Date Comparisons
+### 3. So Sánh Ngày Tháng
 ```sql
--- Employees hired after a specific date
+-- Nhân viên được tuyển sau một ngày cụ thể
 SELECT employee_id, first_name, last_name, hire_date
 FROM hr.employees
 WHERE hire_date > DATE '1995-01-01';
 
--- Employees hired in the last 10 years
+-- Nhân viên được tuyển trong 10 năm qua
 SELECT employee_id, first_name, last_name, hire_date
 FROM hr.employees
 WHERE hire_date >= ADD_MONTHS(SYSDATE, -120);
 
--- Employees hired on a specific date
+-- Nhân viên được tuyển vào một ngày cụ thể
 SELECT employee_id, first_name, last_name, hire_date
 FROM hr.employees
 WHERE hire_date = DATE '1987-06-17';
 ```
 
-## String Pattern Matching
+## Khớp Mẫu Chuỗi
 
-### 1. LIKE Operator
-The LIKE operator is used for pattern matching with wildcards:
-- `%` - matches any sequence of characters (including zero characters)
-- `_` - matches exactly one character
+### 1. Toán Tử LIKE
+Toán tử LIKE được sử dụng để khớp mẫu với ký tự đại diện:
+- `%` - khớp với bất kỳ chuỗi ký tự nào (bao gồm không có ký tự)
+- `_` - khớp với chính xác một ký tự
 
 ```sql
--- Names starting with 'S'
+-- Tên bắt đầu bằng 'S'
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 WHERE first_name LIKE 'S%';
 
--- Names ending with 'n'
+-- Tên kết thúc bằng 'n'
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 WHERE first_name LIKE '%n';
 
--- Names containing 'an'
+-- Tên chứa 'an'
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 WHERE first_name LIKE '%an%';
 
--- Names with exactly 4 characters
+-- Tên có chính xác 4 ký tự
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 WHERE first_name LIKE '____';
 
--- Email addresses from specific domain
+-- Địa chỉ email từ domain cụ thể
 SELECT employee_id, first_name, last_name, email
 FROM hr.employees
 WHERE email LIKE '%@company.com';
 ```
 
-### 2. Case-Insensitive Searches
+### 2. Tìm Kiếm Không Phân Biệt Hoa Thường
 ```sql
--- Using UPPER function for case-insensitive search
+-- Sử dụng hàm UPPER cho tìm kiếm không phân biệt hoa thường
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 WHERE UPPER(first_name) LIKE 'STEVEN%';
 
--- Using LOWER function
+-- Sử dụng hàm LOWER
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 WHERE LOWER(first_name) LIKE 'steven%';
@@ -124,27 +124,27 @@ WHERE LOWER(first_name) LIKE 'steven%';
 
 ### 3. NOT LIKE
 ```sql
--- Names not starting with 'S'
+-- Tên không bắt đầu bằng 'S'
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 WHERE first_name NOT LIKE 'S%';
 
--- Email addresses not from specific domain
+-- Địa chỉ email không từ domain cụ thể
 SELECT employee_id, first_name, last_name, email
 FROM hr.employees
 WHERE email NOT LIKE '%@oldcompany.com';
 ```
 
-## Range and List Filtering
+## Lọc Theo Phạm Vi và Danh Sách
 
-### 1. BETWEEN Operator
+### 1. Toán Tử BETWEEN
 ```sql
--- Salary range
+-- Phạm vi lương
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 WHERE salary BETWEEN 5000 AND 10000;
 
--- Date range
+-- Phạm vi ngày tháng
 SELECT employee_id, first_name, last_name, hire_date
 FROM hr.employees
 WHERE hire_date BETWEEN DATE '1990-01-01' AND DATE '1999-12-31';
@@ -155,14 +155,14 @@ FROM hr.employees
 WHERE salary NOT BETWEEN 5000 AND 10000;
 ```
 
-### 2. IN Operator
+### 2. Toán Tử IN
 ```sql
--- Specific departments
+-- Phòng ban cụ thể
 SELECT employee_id, first_name, last_name, department_id
 FROM hr.employees
 WHERE department_id IN (10, 20, 30);
 
--- Specific job IDs
+-- ID công việc cụ thể
 SELECT employee_id, first_name, last_name, job_id
 FROM hr.employees
 WHERE job_id IN ('IT_PROG', 'SA_REP', 'FI_ACCOUNT');
@@ -172,22 +172,22 @@ SELECT employee_id, first_name, last_name, department_id
 FROM hr.employees
 WHERE department_id NOT IN (10, 20, 30);
 
--- String values with IN
+-- Giá trị chuỗi với IN
 SELECT product_id, product_name, category_id
 FROM sales.products
 WHERE product_name IN ('Chai', 'Chang', 'Aniseed Syrup');
 ```
 
-## NULL Value Handling
+## Xử Lý Giá Trị NULL
 
 ### 1. IS NULL
 ```sql
--- Employees without commission
+-- Nhân viên không có hoa hồng
 SELECT employee_id, first_name, last_name, commission_pct
 FROM hr.employees
 WHERE commission_pct IS NULL;
 
--- Employees without managers
+-- Nhân viên không có quản lý
 SELECT employee_id, first_name, last_name, manager_id
 FROM hr.employees
 WHERE manager_id IS NULL;
@@ -195,39 +195,39 @@ WHERE manager_id IS NULL;
 
 ### 2. IS NOT NULL
 ```sql
--- Employees with commission
+-- Nhân viên có hoa hồng
 SELECT employee_id, first_name, last_name, commission_pct
 FROM hr.employees
 WHERE commission_pct IS NOT NULL;
 
--- Products with reorder level set
+-- Sản phẩm có mức đặt hàng lại được thiết lập
 SELECT product_id, product_name, reorder_level
 FROM sales.products
 WHERE reorder_level IS NOT NULL;
 ```
 
-### 3. Important NULL Considerations
+### 3. Lưu Ý Quan Trọng Về NULL
 ```sql
--- NULL comparisons always return FALSE
--- These queries return no results even if NULL values exist:
-SELECT * FROM hr.employees WHERE commission_pct = NULL;  -- Wrong!
-SELECT * FROM hr.employees WHERE commission_pct != NULL; -- Wrong!
+-- So sánh NULL luôn trả về FALSE
+-- Các truy vấn này không trả về kết quả nào ngay cả khi có giá trị NULL:
+SELECT * FROM hr.employees WHERE commission_pct = NULL;  -- Sai!
+SELECT * FROM hr.employees WHERE commission_pct != NULL; -- Sai!
 
--- Correct way to check for NULL:
-SELECT * FROM hr.employees WHERE commission_pct IS NULL;     -- Correct
-SELECT * FROM hr.employees WHERE commission_pct IS NOT NULL; -- Correct
+-- Cách đúng để kiểm tra NULL:
+SELECT * FROM hr.employees WHERE commission_pct IS NULL;     -- Đúng
+SELECT * FROM hr.employees WHERE commission_pct IS NOT NULL; -- Đúng
 ```
 
-## Logical Operators
+## Toán Tử Logic
 
-### 1. AND Operator
+### 1. Toán Tử AND
 ```sql
--- Multiple conditions must be true
+-- Nhiều điều kiện phải đúng
 SELECT employee_id, first_name, last_name, salary, department_id
 FROM hr.employees
 WHERE salary > 8000 AND department_id = 60;
 
--- Three conditions
+-- Ba điều kiện
 SELECT employee_id, first_name, last_name, salary, hire_date
 FROM hr.employees
 WHERE salary > 5000 
@@ -235,14 +235,14 @@ WHERE salary > 5000
   AND hire_date > DATE '1990-01-01';
 ```
 
-### 2. OR Operator
+### 2. Toán Tử OR
 ```sql
--- Any condition can be true
+-- Bất kỳ điều kiện nào có thể đúng
 SELECT employee_id, first_name, last_name, salary, department_id
 FROM hr.employees
 WHERE salary > 15000 OR department_id = 90;
 
--- Multiple OR conditions
+-- Nhiều điều kiện OR
 SELECT employee_id, first_name, last_name, job_id
 FROM hr.employees
 WHERE job_id = 'IT_PROG' 
@@ -250,38 +250,38 @@ WHERE job_id = 'IT_PROG'
    OR job_id = 'FI_ACCOUNT';
 ```
 
-### 3. NOT Operator
+### 3. Toán Tử NOT
 ```sql
--- Negate conditions
+-- Phủ định điều kiện
 SELECT employee_id, first_name, last_name, department_id
 FROM hr.employees
 WHERE NOT department_id = 60;
 
--- NOT with complex conditions
+-- NOT với điều kiện phức tạp
 SELECT employee_id, first_name, last_name, salary, commission_pct
 FROM hr.employees
 WHERE NOT (salary < 5000 OR commission_pct IS NULL);
 ```
 
-## Operator Precedence and Parentheses
+## Ưu Tiên Toán Tử và Dấu Ngoặc Đơn
 
-### 1. Understanding Precedence
+### 1. Hiểu Về Ưu Tiên
 ```sql
--- Without parentheses (AND has higher precedence than OR)
+-- Không có dấu ngoặc đơn (AND có ưu tiên cao hơn OR)
 SELECT employee_id, first_name, last_name, salary, department_id
 FROM hr.employees
 WHERE department_id = 60 OR department_id = 90 AND salary > 15000;
--- This is interpreted as: department_id = 60 OR (department_id = 90 AND salary > 15000)
+-- Điều này được hiểu là: department_id = 60 OR (department_id = 90 AND salary > 15000)
 
--- With parentheses for clarity
+-- Với dấu ngoặc đơn để rõ ràng
 SELECT employee_id, first_name, last_name, salary, department_id
 FROM hr.employees
 WHERE (department_id = 60 OR department_id = 90) AND salary > 15000;
 ```
 
-### 2. Complex Conditions with Parentheses
+### 2. Điều Kiện Phức Tạp Với Dấu Ngoặc Đơn
 ```sql
--- Complex business logic
+-- Logic nghiệp vụ phức tạp
 SELECT employee_id, first_name, last_name, salary, department_id, commission_pct
 FROM hr.employees
 WHERE (department_id IN (80, 90) AND salary > 10000)
@@ -289,29 +289,29 @@ WHERE (department_id IN (80, 90) AND salary > 10000)
    OR (department_id = 60 AND hire_date < DATE '1995-01-01');
 ```
 
-## Advanced Filtering Techniques
+## Kỹ Thuật Lọc Nâng Cao
 
-### 1. Regular Expressions (Oracle Specific)
+### 1. Biểu Thức Chính Quy (Đặc Trưng Oracle)
 ```sql
--- Using REGEXP_LIKE for complex pattern matching
+-- Sử dụng REGEXP_LIKE cho khớp mẫu phức tạp
 SELECT employee_id, first_name, last_name, phone_number
 FROM hr.employees
 WHERE REGEXP_LIKE(phone_number, '^[0-9]{3}\.[0-9]{3}\.[0-9]{4}$');
 
--- Email validation with regex
+-- Xác thực email với regex
 SELECT employee_id, first_name, last_name, email
 FROM hr.employees
 WHERE REGEXP_LIKE(email, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$');
 
--- Names starting with vowels
+-- Tên bắt đầu bằng nguyên âm
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 WHERE REGEXP_LIKE(first_name, '^[AEIOU]', 'i');
 ```
 
-### 2. EXISTS Operator (Preview)
+### 2. Toán Tử EXISTS (Xem Trước)
 ```sql
--- Employees who have job history (preview of subqueries)
+-- Nhân viên có lịch sử công việc (xem trước về subqueries)
 SELECT e.employee_id, e.first_name, e.last_name
 FROM hr.employees e
 WHERE EXISTS (
@@ -321,92 +321,92 @@ WHERE EXISTS (
 );
 ```
 
-## Filtering with Functions
+## Lọc Với Hàm
 
-### 1. Date Functions in WHERE
+### 1. Hàm Ngày Tháng Trong WHERE
 ```sql
--- Employees hired in specific year
+-- Nhân viên được tuyển trong năm cụ thể
 SELECT employee_id, first_name, last_name, hire_date
 FROM hr.employees
 WHERE EXTRACT(YEAR FROM hire_date) = 1987;
 
--- Employees hired in current month
+-- Nhân viên được tuyển trong tháng hiện tại
 SELECT employee_id, first_name, last_name, hire_date
 FROM hr.employees
 WHERE EXTRACT(MONTH FROM hire_date) = EXTRACT(MONTH FROM SYSDATE);
 
--- Employees with service anniversary this month
+-- Nhân viên có kỷ niệm ngày làm việc trong tháng này
 SELECT employee_id, first_name, last_name, hire_date
 FROM hr.employees
 WHERE EXTRACT(MONTH FROM hire_date) = EXTRACT(MONTH FROM SYSDATE)
   AND EXTRACT(DAY FROM hire_date) = EXTRACT(DAY FROM SYSDATE);
 ```
 
-### 2. String Functions in WHERE
+### 2. Hàm Chuỗi Trong WHERE
 ```sql
--- Filter by string length
+-- Lọc theo độ dài chuỗi
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 WHERE LENGTH(first_name) > 6;
 
--- Filter by substring
+-- Lọc theo chuỗi con
 SELECT employee_id, first_name, last_name, email
 FROM hr.employees
 WHERE SUBSTR(email, 1, 1) = UPPER(SUBSTR(first_name, 1, 1));
 ```
 
-### 3. Numeric Functions in WHERE
+### 3. Hàm Số Trong WHERE
 ```sql
--- Round salary to nearest thousand
+-- Làm tròn lương đến nghìn gần nhất
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 WHERE MOD(salary, 1000) = 0;
 
--- Employees with salary ending in 00
+-- Nhân viên có lương kết thúc bằng 00
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 WHERE MOD(salary, 100) = 0;
 ```
 
-## Performance Considerations
+## Cân Nhắc Về Hiệu Suất
 
-### 1. Index-Friendly Queries
+### 1. Truy Vấn Thân Thiện Với Index
 ```sql
--- Good: Direct column comparison (can use index)
+-- Tốt: So sánh cột trực tiếp (có thể sử dụng index)
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 WHERE employee_id = 100;
 
--- Less efficient: Function on column (may not use index)
+-- Kém hiệu quả hơn: Hàm trên cột (có thể không sử dụng index)
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 WHERE UPPER(first_name) = 'STEVEN';
 
--- Better: Store data in consistent case or use function-based index
+-- Tốt hơn: Lưu trữ dữ liệu trong trường hợp nhất quán hoặc sử dụng function-based index
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 WHERE first_name = 'Steven';
 ```
 
-### 2. Selective Filtering
+### 2. Lọc Có Chọn Lọc
 ```sql
--- More selective condition first
+-- Điều kiện có tính chọn lọc cao hơn trước
 SELECT employee_id, first_name, last_name, salary, department_id
 FROM hr.employees
-WHERE salary > 15000        -- More selective
-  AND department_id = 60;   -- Less selective
+WHERE salary > 15000        -- Chọn lọc cao hơn
+  AND department_id = 60;   -- Chọn lọc thấp hơn
 
--- Use specific conditions when possible
+-- Sử dụng điều kiện cụ thể khi có thể
 SELECT employee_id, first_name, last_name
 FROM hr.employees
-WHERE employee_id BETWEEN 100 AND 110;  -- Range scan
+WHERE employee_id BETWEEN 100 AND 110;  -- Quét phạm vi
 ```
 
-## Real-World Examples
+## Ví Dụ Thực Tế
 
-### 1. Employee Search System
+### 1. Hệ Thống Tìm Kiếm Nhân Viên
 ```sql
--- Comprehensive employee search
+-- Tìm kiếm nhân viên toàn diện
 SELECT 
     employee_id,
     first_name || ' ' || last_name AS full_name,
@@ -416,15 +416,15 @@ SELECT
     salary,
     department_id
 FROM hr.employees
-WHERE (first_name LIKE '%ohn%' OR last_name LIKE '%ohn%')  -- Name search
-  AND salary BETWEEN 5000 AND 15000                        -- Salary range
-  AND hire_date >= DATE '1990-01-01'                       -- Hire date filter
-  AND commission_pct IS NOT NULL;                          -- Has commission
+WHERE (first_name LIKE '%ohn%' OR last_name LIKE '%ohn%')  -- Tìm kiếm tên
+  AND salary BETWEEN 5000 AND 15000                        -- Phạm vi lương
+  AND hire_date >= DATE '1990-01-01'                       -- Lọc ngày tuyển dụng
+  AND commission_pct IS NOT NULL;                          -- Có hoa hồng
 ```
 
-### 2. Product Inventory Report
+### 2. Báo Cáo Tồn Kho Sản Phẩm
 ```sql
--- Products needing attention
+-- Sản phẩm cần chú ý
 SELECT 
     product_id,
     product_name,
@@ -433,54 +433,54 @@ SELECT
     reorder_level,
     discontinued
 FROM sales.products
-WHERE (units_in_stock <= reorder_level OR units_in_stock = 0)  -- Low stock or out of stock
-  AND discontinued = 0                                         -- Active products only
-  AND unit_price > 10                                          -- Higher value items
+WHERE (units_in_stock <= reorder_level OR units_in_stock = 0)  -- Tồn kho thấp hoặc hết hàng
+  AND discontinued = 0                                         -- Chỉ sản phẩm đang hoạt động
+  AND unit_price > 10                                          -- Mặt hàng giá trị cao
 ORDER BY units_in_stock ASC;
 ```
 
-### 3. Sales Analysis
+### 3. Phân Tích Bán Hàng
 ```sql
--- High-value recent orders
+-- Đơn hàng giá trị cao gần đây
 SELECT 
     o.order_id,
     o.customer_id,
     o.order_date,
     o.freight
 FROM sales.orders o
-WHERE o.order_date >= ADD_MONTHS(SYSDATE, -6)  -- Last 6 months
-  AND o.freight > 50                           -- High shipping cost
-  AND o.shipped_date IS NOT NULL;              -- Already shipped
+WHERE o.order_date >= ADD_MONTHS(SYSDATE, -6)  -- 6 tháng qua
+  AND o.freight > 50                           -- Chi phí vận chuyển cao
+  AND o.shipped_date IS NOT NULL;              -- Đã giao hàng
 ```
 
-## Common WHERE Clause Patterns
+## Mẫu Mệnh Đề WHERE Phổ Biến
 
-### 1. Data Quality Checks
+### 1. Kiểm Tra Chất Lượng Dữ Liệu
 ```sql
--- Find potential data quality issues
+-- Tìm các vấn đề chất lượng dữ liệu tiềm ẩn
 SELECT employee_id, first_name, last_name, email, phone_number
 FROM hr.employees
-WHERE email IS NULL                          -- Missing email
-   OR phone_number IS NULL                   -- Missing phone
-   OR LENGTH(first_name) < 2                 -- Very short names
-   OR salary <= 0                            -- Invalid salary
-   OR hire_date > SYSDATE;                   -- Future hire date
+WHERE email IS NULL                          -- Thiếu email
+   OR phone_number IS NULL                   -- Thiếu số điện thoại
+   OR LENGTH(first_name) < 2                 -- Tên rất ngắn
+   OR salary <= 0                            -- Lương không hợp lệ
+   OR hire_date > SYSDATE;                   -- Ngày tuyển dụng trong tương lai
 ```
 
-### 2. Business Rule Validation
+### 2. Xác Thực Quy Tắc Nghiệp Vụ
 ```sql
--- Employees violating business rules
+-- Nhân viên vi phạm quy tắc nghiệp vụ
 SELECT employee_id, first_name, last_name, salary, commission_pct
 FROM hr.employees
-WHERE (job_id LIKE 'SA_%' AND commission_pct IS NULL)     -- Sales without commission
-   OR (job_id NOT LIKE 'SA_%' AND commission_pct IS NOT NULL) -- Non-sales with commission
-   OR (salary < 2000)                                     -- Below minimum wage
-   OR (salary > 50000 AND job_id LIKE '%CLERK%');         -- Clerk with high salary
+WHERE (job_id LIKE 'SA_%' AND commission_pct IS NULL)     -- Bán hàng không có hoa hồng
+   OR (job_id NOT LIKE 'SA_%' AND commission_pct IS NOT NULL) -- Không phải bán hàng nhưng có hoa hồng
+   OR (salary < 2000)                                     -- Dưới mức lương tối thiểu
+   OR (salary > 50000 AND job_id LIKE '%CLERK%');         -- Thư ký với lương cao
 ```
 
-### 3. Reporting Filters
+### 3. Bộ Lọc Báo Cáo
 ```sql
--- Monthly report filters
+-- Bộ lọc báo cáo hàng tháng
 SELECT 
     employee_id,
     first_name,
@@ -488,69 +488,69 @@ SELECT
     department_id,
     salary
 FROM hr.employees
-WHERE department_id IN (10, 20, 30, 40, 50)              -- Specific departments
-  AND salary BETWEEN 3000 AND 20000                      -- Salary range
-  AND hire_date BETWEEN DATE '2020-01-01' AND DATE '2023-12-31'  -- Date range
-  AND (commission_pct IS NULL OR commission_pct < 0.3);   -- Commission filter
+WHERE department_id IN (10, 20, 30, 40, 50)              -- Phòng ban cụ thể
+  AND salary BETWEEN 3000 AND 20000                      -- Phạm vi lương
+  AND hire_date BETWEEN DATE '2020-01-01' AND DATE '2023-12-31'  -- Phạm vi ngày
+  AND (commission_pct IS NULL OR commission_pct < 0.3);   -- Bộ lọc hoa hồng
 ```
 
-## Exercises
+## Bài Tập
 
-### Exercise 1: Basic Filtering
+### Bài Tập 1: Lọc Cơ Bản
 ```sql
--- Find all IT programmers with salary greater than 5000
--- Your query here:
+-- Tìm tất cả lập trình viên IT với lương lớn hơn 5000
+-- Truy vấn của bạn ở đây:
 ```
 
-### Exercise 2: Complex Conditions
+### Bài Tập 2: Điều Kiện Phức Tạp
 ```sql
--- Find employees who either:
--- 1. Work in department 60 with salary > 8000, OR
--- 2. Have commission and salary > 10000, OR  
--- 3. Are managers (manager_id IS NULL) in department 90
--- Your query here:
+-- Tìm nhân viên thỏa mãn một trong các điều kiện:
+-- 1. Làm việc ở phòng ban 60 với lương > 8000, HOẶC
+-- 2. Có hoa hồng và lương > 10000, HOẶC  
+-- 3. Là quản lý (manager_id IS NULL) ở phòng ban 90
+-- Truy vấn của bạn ở đây:
 ```
 
-### Exercise 3: String Pattern Matching
+### Bài Tập 3: Khớp Mẫu Chuỗi
 ```sql
--- Find all products whose names contain 'ch' (case insensitive)
--- and are not discontinued
--- Your query here:
+-- Tìm tất cả sản phẩm có tên chứa 'ch' (không phân biệt hoa thường)
+-- và không bị ngừng sản xuất
+-- Truy vấn của bạn ở đây:
 ```
 
-### Exercise 4: Date Filtering
+### Bài Tập 4: Lọc Ngày Tháng
 ```sql
--- Find employees hired in the 1990s who still work in their original department
--- (hint: check if they don't appear in job_history table)
--- Your query here:
+-- Tìm nhân viên được tuyển trong những năm 1990 và vẫn làm việc ở phòng ban ban đầu
+-- (gợi ý: kiểm tra xem họ không xuất hiện trong bảng job_history)
+-- Truy vấn của bạn ở đây:
 ```
 
-## Best Practices Summary
+## Tóm Tắt Thực Hành Tốt Nhất
 
-1. **Use appropriate operators** for each data type
-2. **Handle NULL values** explicitly with IS NULL/IS NOT NULL
-3. **Use parentheses** to clarify complex conditions
-4. **Be mindful of performance** when using functions on columns
-5. **Use specific conditions** rather than broad ranges when possible
-6. **Test edge cases** including NULL, empty strings, and boundary values
-7. **Consider case sensitivity** for string comparisons
-8. **Use indexes effectively** by avoiding functions on indexed columns
+1. **Sử dụng toán tử phù hợp** cho từng loại dữ liệu
+2. **Xử lý giá trị NULL** một cách rõ ràng với IS NULL/IS NOT NULL
+3. **Sử dụng dấu ngoặc đơn** để làm rõ các điều kiện phức tạp
+4. **Chú ý đến hiệu suất** khi sử dụng hàm trên các cột
+5. **Sử dụng điều kiện cụ thể** thay vì phạm vi rộng khi có thể
+6. **Kiểm tra các trường hợp biên** bao gồm NULL, chuỗi rỗng và giá trị biên
+7. **Xem xét tính phân biệt hoa thường** cho so sánh chuỗi
+8. **Sử dụng index hiệu quả** bằng cách tránh hàm trên các cột có index
 
-## Common Mistakes to Avoid
+## Lỗi Phổ Biến Cần Tránh
 
-1. **Using = or != with NULL** values (use IS NULL/IS NOT NULL)
-2. **Forgetting operator precedence** (use parentheses for clarity)
-3. **Case sensitivity issues** in string comparisons
-4. **Incorrect date formats** (use DATE literal or TO_DATE function)
-5. **Using LIKE without wildcards** (use = instead)
-6. **Not considering NULL** in NOT IN conditions
-7. **Overusing functions** on columns in WHERE clauses
+1. **Sử dụng = hoặc != với giá trị NULL** (sử dụng IS NULL/IS NOT NULL)
+2. **Quên ưu tiên toán tử** (sử dụng dấu ngoặc đơn cho rõ ràng)
+3. **Vấn đề phân biệt hoa thường** trong so sánh chuỗi
+4. **Định dạng ngày không chính xác** (sử dụng DATE literal hoặc hàm TO_DATE)
+5. **Sử dụng LIKE mà không có ký tự đại diện** (sử dụng = thay thế)
+6. **Không xem xét NULL** trong điều kiện NOT IN
+7. **Sử dụng quá nhiều hàm** trên các cột trong mệnh đề WHERE
 
-## Next Steps
+## Bước Tiếp Theo
 
-Master WHERE clause filtering before moving to:
-1. **ORDER BY** - Learn to sort your filtered results
-2. **Aggregate Functions** - Summarize your filtered data
-3. **GROUP BY and HAVING** - Group and filter aggregated data
+Thành thạo lọc mệnh đề WHERE trước khi chuyển sang:
+1. **ORDER BY** - Học cách sắp xếp kết quả đã lọc
+2. **Hàm Tổng Hợp** - Tóm tắt dữ liệu đã lọc
+3. **GROUP BY và HAVING** - Nhóm và lọc dữ liệu tổng hợp
 
-The WHERE clause is fundamental to all SQL queries, so practice extensively with different conditions and data types!
+Mệnh đề WHERE là cơ bản cho tất cả các truy vấn SQL, vì vậy hãy thực hành nhiều với các điều kiện và loại dữ liệu khác nhau!

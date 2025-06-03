@@ -1,40 +1,40 @@
-# Database Types
+# Các Loại Cơ Sở Dữ Liệu
 
-In the world of data management, databases are categorized into various types based on their structure, functionality, and the way they store and retrieve data. Understanding these types is crucial for selecting the right database for specific applications and use cases. This document will explore the two primary categories of databases: relational and non-relational.
+Trong thế giới quản lý dữ liệu, cơ sở dữ liệu được phân loại thành nhiều loại khác nhau dựa trên cấu trúc, chức năng và cách chúng lưu trữ và truy xuất dữ liệu. Hiểu các loại này là rất quan trọng để lựa chọn cơ sở dữ liệu phù hợp cho các ứng dụng và trường hợp sử dụng cụ thể. Tài liệu này sẽ khám phá hai loại cơ sở dữ liệu chính: quan hệ và phi quan hệ.
 
-## Relational Databases
+## Cơ Sở Dữ Liệu Quan Hệ
 
-Relational databases are structured to recognize relations among stored items of information. They use a schema to define the structure of the data, which is organized into tables (also known as relations). Each table consists of rows and columns, where:
+Cơ sở dữ liệu quan hệ được cấu trúc để nhận biết mối quan hệ giữa các mục thông tin được lưu trữ. Chúng sử dụng một schema để định nghĩa cấu trúc dữ liệu, được tổ chức thành các bảng (còn được gọi là quan hệ). Mỗi bảng bao gồm các hàng và cột, trong đó:
 
-- **Rows** represent individual records.
-- **Columns** represent attributes of the records.
+- **Hàng** đại diện cho các bản ghi riêng lẻ.
+- **Cột** đại diện cho các thuộc tính của bản ghi.
 
-### Key Features of Relational Databases:
-- **Structured Query Language (SQL)**: Relational databases use SQL for querying and managing data.
-- **Data Integrity**: They enforce data integrity through constraints such as primary keys, foreign keys, and unique constraints.
-- **ACID Compliance**: Relational databases typically adhere to ACID (Atomicity, Consistency, Isolation, Durability) properties, ensuring reliable transactions.
+### Các Tính Năng Chính Của Cơ Sở Dữ Liệu Quan Hệ:
+- **Structured Query Language (SQL)**: Cơ sở dữ liệu quan hệ sử dụng SQL để truy vấn và quản lý dữ liệu.
+- **Tính toàn vẹn dữ liệu**: Chúng thực thi tính toàn vẹn dữ liệu thông qua các ràng buộc như khóa chính, khóa ngoại và ràng buộc duy nhất.
+- **Tuân thủ ACID**: Cơ sở dữ liệu quan hệ thường tuân thủ các tính chất ACID (Nguyên tử, Nhất quán, Cô lập, Bền vững), đảm bảo các giao dịch đáng tin cậy.
 
-### Examples of Relational Databases:
+### Ví Dụ Về Cơ Sở Dữ Liệu Quan Hệ:
 - Oracle Database
 - MySQL
 - Microsoft SQL Server
 - PostgreSQL
 
-## Non-Relational Databases
+## Cơ Sở Dữ Liệu Phi Quan Hệ
 
-Non-relational databases, often referred to as NoSQL databases, are designed to handle unstructured or semi-structured data. They do not require a fixed schema and can store data in various formats, such as key-value pairs, documents, graphs, or wide-column stores.
+Cơ sở dữ liệu phi quan hệ, thường được gọi là cơ sở dữ liệu NoSQL, được thiết kế để xử lý dữ liệu không có cấu trúc hoặc bán cấu trúc. Chúng không yêu cầu schema cố định và có thể lưu trữ dữ liệu ở nhiều định dạng khác nhau, chẳng hạn như cặp khóa-giá trị, tài liệu, đồ thị hoặc lưu trữ cột rộng.
 
-### Key Features of Non-Relational Databases:
-- **Flexibility**: They allow for dynamic schemas, making it easier to adapt to changing data requirements.
-- **Scalability**: Non-relational databases are often designed to scale out by distributing data across multiple servers.
-- **High Performance**: They can provide faster data retrieval and write operations, especially for large volumes of data.
+### Các Tính Năng Chính Của Cơ Sở Dữ Liệu Phi Quan Hệ:
+- **Tính linh hoạt**: Chúng cho phép schema động, giúp dễ dàng thích ứng với các yêu cầu dữ liệu thay đổi.
+- **Khả năng mở rộng**: Cơ sở dữ liệu phi quan hệ thường được thiết kế để mở rộng bằng cách phân phối dữ liệu trên nhiều máy chủ.
+- **Hiệu suất cao**: Chúng có thể cung cấp truy xuất dữ liệu và thao tác ghi nhanh hơn, đặc biệt đối với khối lượng dữ liệu lớn.
 
-### Examples of Non-Relational Databases:
-- MongoDB (Document Store)
-- Cassandra (Wide-Column Store)
-- Redis (Key-Value Store)
-- Neo4j (Graph Database)
+### Ví Dụ Về Cơ Sở Dữ Liệu Phi Quan Hệ:
+- MongoDB (Lưu trữ tài liệu)
+- Cassandra (Lưu trữ cột rộng)
+- Redis (Lưu trữ khóa-giá trị)
+- Neo4j (Cơ sở dữ liệu đồ thị)
 
-## Conclusion
+## Kết Luận
 
-Choosing between a relational and a non-relational database depends on the specific needs of the application, including data structure, scalability requirements, and the complexity of queries. Understanding the differences between these types of databases is essential for effective data management and application development.
+Việc lựa chọn giữa cơ sở dữ liệu quan hệ và phi quan hệ phụ thuộc vào nhu cầu cụ thể của ứng dụng, bao gồm cấu trúc dữ liệu, yêu cầu khả năng mở rộng và độ phức tạp của các truy vấn. Hiểu sự khác biệt giữa các loại cơ sở dữ liệu này là điều cần thiết cho việc quản lý dữ liệu hiệu quả và phát triển ứng dụng.

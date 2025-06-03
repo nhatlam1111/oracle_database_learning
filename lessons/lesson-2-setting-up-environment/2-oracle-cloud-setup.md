@@ -1,250 +1,250 @@
-# Oracle Cloud Database Setup
+# Thiết Lập Oracle Cloud Database
 
-Oracle Cloud provides a powerful, free tier that includes Autonomous Database services perfect for learning Oracle Database without local installation requirements.
+Oracle Cloud cung cấp một gói miễn phí mạnh mẽ bao gồm các dịch vụ Autonomous Database hoàn hảo cho việc học Oracle Database mà không cần yêu cầu cài đặt cục bộ.
 
-## Oracle Cloud Free Tier Overview
+## Tổng Quan Oracle Cloud Free Tier
 
-### What's Included (Always Free)
-- **Autonomous Transaction Processing**: 20GB storage, 1 OCPU
-- **Autonomous Data Warehouse**: 20GB storage, 1 OCPU
-- **Compute VM**: 1/8 OCPU, 1GB memory
-- **Block Storage**: 200GB total
+### Những Gì Được Bao Gồm (Luôn Miễn Phí)
+- **Autonomous Transaction Processing**: 20GB lưu trữ, 1 OCPU
+- **Autonomous Data Warehouse**: 20GB lưu trữ, 1 OCPU
+- **Compute VM**: 1/8 OCPU, 1GB bộ nhớ
+- **Block Storage**: 200GB tổng cộng
 - **Object Storage**: 20GB
-- **No time limits** - truly free forever
+- **Không giới hạn thời gian** - thực sự miễn phí mãi mãi
 
-### Benefits for Learning
-- Latest Oracle Database features
-- Automatic patching and updates
-- Built-in security and encryption
-- SQL Developer Web included
-- Machine Learning capabilities
-- No local hardware requirements
+### Lợi Ích Cho Việc Học Tập
+- Các tính năng Oracle Database mới nhất
+- Tự động vá lỗi và cập nhật
+- Bảo mật và mã hóa tích hợp
+- SQL Developer Web được bao gồm
+- Khả năng Machine Learning
+- Không yêu cầu phần cứng cục bộ
 
-## Step-by-Step Setup Guide
+## Hướng Dẫn Thiết Lập Từng Bước
 
-### Step 1: Create Oracle Cloud Account
+### Bước 1: Tạo Tài Khoản Oracle Cloud
 
-1. Visit [cloud.oracle.com](https://cloud.oracle.com)
-2. Click "Start for free"
-3. Fill out registration form:
-   - Country/Territory
-   - Name and email
-   - Phone number (for verification)
-4. Verify phone number via SMS/call
-5. Add payment method (required but won't be charged for free tier)
-6. Complete account verification
+1. Truy cập [cloud.oracle.com](https://cloud.oracle.com)
+2. Nhấp "Start for free"
+3. Điền vào biểu mẫu đăng ký:
+   - Quốc gia/Lãnh thổ
+   - Tên và email
+   - Số điện thoại (để xác minh)
+4. Xác minh số điện thoại qua SMS/cuộc gọi
+5. Thêm phương thức thanh toán (bắt buộc nhưng sẽ không bị tính phí cho gói miễn phí)
+6. Hoàn tất xác minh tài khoản
 
-### Step 2: Access Oracle Cloud Console
+### Bước 2: Truy Cập Oracle Cloud Console
 
-1. Sign in to Oracle Cloud
-2. Navigate to the Oracle Cloud Infrastructure (OCI) Console
-3. Select your home region (choose closest to your location)
-4. Familiarize yourself with the dashboard
+1. Đăng nhập vào Oracle Cloud
+2. Điều hướng đến Oracle Cloud Infrastructure (OCI) Console
+3. Chọn vùng chủ (chọn gần nhất với vị trí của bạn)
+4. Làm quen với dashboard
 
-### Step 3: Create Autonomous Database
+### Bước 3: Tạo Autonomous Database
 
-1. **Navigate to Autonomous Database**:
-   - From main menu, select "Oracle Database"
-   - Choose "Autonomous Transaction Processing" (ATP)
+1. **Điều hướng đến Autonomous Database**:
+   - Từ menu chính, chọn "Oracle Database"
+   - Chọn "Autonomous Transaction Processing" (ATP)
 
-2. **Create Database Instance**:
-   - Click "Create Autonomous Database"
-   - Fill in required information:
+2. **Tạo Database Instance**:
+   - Nhấp "Create Autonomous Database"
+   - Điền thông tin bắt buộc:
      - **Display name**: `OracleLearnDB`
      - **Database name**: `LEARNDB`
      - **Workload type**: Transaction Processing
      - **Deployment type**: Shared Infrastructure
 
-3. **Configure Database**:
-   - **Always Free**: Toggle ON (important!)
-   - **Database version**: Latest available
-   - **OCPU count**: 1 (fixed for free tier)
-   - **Storage**: 20GB (maximum for free tier)
-   - **Auto scaling**: OFF (not available in free tier)
+3. **Cấu hình Database**:
+   - **Always Free**: Bật ON (quan trọng!)
+   - **Database version**: Phiên bản mới nhất có sẵn
+   - **OCPU count**: 1 (cố định cho gói miễn phí)
+   - **Storage**: 20GB (tối đa cho gói miễn phí)
+   - **Auto scaling**: OFF (không có sẵn trong gói miễn phí)
 
-4. **Set Administrator Credentials**:
-   - **Username**: ADMIN (default)
-   - **Password**: Choose strong password (save this!)
-   - **Confirm password**: Re-enter password
+4. **Đặt Thông Tin Đăng Nhập Administrator**:
+   - **Username**: ADMIN (mặc định)
+   - **Password**: Chọn mật khẩu mạnh (lưu lại!)
+   - **Confirm password**: Nhập lại mật khẩu
 
-5. **Choose Network Access**:
+5. **Chọn Network Access**:
    - **Access Type**: Secure access from everywhere
-   - **Mutual TLS**: Required (default)
+   - **Mutual TLS**: Required (mặc định)
 
-6. **Choose License Type**:
-   - **License Included** (for free tier)
+6. **Chọn License Type**:
+   - **License Included** (cho gói miễn phí)
 
-7. **Advanced Options** (optional):
-   - **Contact email**: Your email for notifications
-   - Tags: Add if needed for organization
+7. **Advanced Options** (tùy chọn):
+   - **Contact email**: Email của bạn để nhận thông báo
+   - Tags: Thêm nếu cần để tổ chức
 
-8. **Create Database**:
-   - Review settings
-   - Click "Create Autonomous Database"
-   - Wait 2-3 minutes for provisioning
+8. **Tạo Database**:
+   - Xem lại cài đặt
+   - Nhấp "Create Autonomous Database"
+   - Đợi 2-3 phút để cung cấp
 
-### Step 4: Access Your Database
+### Bước 4: Truy Cập Database Của Bạn
 
-Once database is created (status shows "Available"):
+Sau khi database được tạo (trạng thái hiển thị "Available"):
 
 1. **Database Actions (SQL Developer Web)**:
-   - Click on your database name
-   - Click "Database Actions"
-   - Sign in with ADMIN and your password
-   - You now have access to SQL Developer Web
+   - Nhấp vào tên database của bạn
+   - Nhấp "Database Actions"
+   - Đăng nhập với ADMIN và mật khẩu của bạn
+   - Bây giờ bạn có quyền truy cập SQL Developer Web
 
 2. **Download Client Credentials (Wallet)**:
-   - Click "DB Connection"
-   - Click "Download Wallet"
-   - Enter wallet password (save this!)
-   - Download and save the zip file
-   - This wallet is needed for desktop client connections
+   - Nhấp "DB Connection"
+   - Nhấp "Download Wallet"
+   - Nhập mật khẩu wallet (lưu lại!)
+   - Tải xuống và lưu file zip
+   - Wallet này cần thiết cho kết nối client desktop
 
-## Connecting with Desktop Tools
+## Kết Nối Với Công Cụ Desktop
 
-### SQL Developer Desktop Connection
+### Kết Nối SQL Developer Desktop
 
-1. **Download SQL Developer**:
-   - Visit [Oracle SQL Developer download page](https://www.oracle.com/tools/downloads/sqldev-downloads.html)
-   - Download and install
+1. **Tải SQL Developer**:
+   - Truy cập [trang tải SQL Developer của Oracle](https://www.oracle.com/tools/downloads/sqldev-downloads.html)
+   - Tải xuống và cài đặt
 
-2. **Create New Connection**:
-   - Open SQL Developer
+2. **Tạo Kết Nối Mới**:
+   - Mở SQL Developer
    - Right-click "Connections" → "New Connection"
-   - Fill connection details:
+   - Điền chi tiết kết nối:
      - **Connection Name**: Oracle Cloud Learn
      - **Username**: ADMIN
-     - **Password**: Your ADMIN password
+     - **Password**: Mật khẩu ADMIN của bạn
      - **Connection Type**: Cloud Wallet
-     - **Configuration File**: Browse to your downloaded wallet zip
-     - **Service**: Choose your database service name
+     - **Configuration File**: Duyệt đến file wallet zip đã tải
+     - **Service**: Chọn tên service database của bạn
 
-3. **Test and Connect**:
-   - Click "Test" to verify connection
-   - Click "Connect" to establish connection
+3. **Test và Kết Nối**:
+   - Nhấp "Test" để xác minh kết nối
+   - Nhấp "Connect" để thiết lập kết nối
 
-### Using SQL Developer Web
+### Sử Dụng SQL Developer Web
 
-SQL Developer Web is automatically available with your Autonomous Database:
+SQL Developer Web tự động có sẵn với Autonomous Database của bạn:
 
-1. **Access Features**:
-   - **SQL Worksheet**: Write and execute SQL commands
-   - **Data Modeler**: Design database schemas
-   - **REST Services**: Create REST APIs
-   - **JSON**: Work with JSON data
-   - **Database Actions**: Administrative tasks
+1. **Truy Cập Tính Năng**:
+   - **SQL Worksheet**: Viết và thực thi lệnh SQL
+   - **Data Modeler**: Thiết kế schema database
+   - **REST Services**: Tạo REST APIs
+   - **JSON**: Làm việc với dữ liệu JSON
+   - **Database Actions**: Các tác vụ quản trị
 
-2. **Navigation**:
-   - Use the left panel to browse database objects
-   - Create tables, views, and other database objects
-   - Monitor database performance
+2. **Điều Hướng**:
+   - Sử dụng panel bên trái để duyệt các đối tượng database
+   - Tạo tables, views và các đối tượng database khác
+   - Giám sát hiệu suất database
 
-## Working with Oracle Cloud Database
+## Làm Việc Với Oracle Cloud Database
 
-### Basic Operations
+### Các Thao Tác Cơ Bản
 
 1. **Start/Stop Database**:
-   - Navigate to your database in OCI Console
-   - Use "Start" or "Stop" buttons to control the database
-   - Stopping saves compute resources
+   - Điều hướng đến database của bạn trong OCI Console
+   - Sử dụng nút "Start" hoặc "Stop" để kiểm soát database
+   - Dừng database tiết kiệm tài nguyên tính toán
 
 2. **Scaling Resources**:
-   - Click "Scale Up/Down" (not available in free tier)
-   - Modify OCPU and storage as needed
-   - Changes take effect immediately
+   - Nhấp "Scale Up/Down" (không có sẵn trong gói miễn phí)
+   - Sửa đổi OCPU và storage theo nhu cầu
+   - Thay đổi có hiệu lực ngay lập tức
 
-3. **Backup and Recovery**:
-   - Automatic backups are enabled by default
-   - 60-day retention period
-   - Point-in-time recovery available
+3. **Backup và Recovery**:
+   - Backup tự động được bật theo mặc định
+   - Thời gian lưu trữ 60 ngày
+   - Point-in-time recovery có sẵn
 
-### Monitoring and Management
+### Giám Sát và Quản Lý
 
 1. **Performance Monitoring**:
-   - Built-in performance monitoring
-   - Real-time metrics and alerts
-   - Query performance insights
+   - Giám sát hiệu suất tích hợp
+   - Metrics và alerts thời gian thực
+   - Thông tin chi tiết về hiệu suất truy vấn
 
-2. **Security Features**:
-   - Always encrypted (at rest and in transit)
-   - Network access controls
-   - Audit logging enabled
+2. **Tính Năng Bảo Mật**:
+   - Luôn được mã hóa (khi nghỉ và truyền tải)
+   - Kiểm soát truy cập mạng
+   - Audit logging được bật
 
-## Cost Management
+## Quản Lý Chi Phí
 
-### Free Tier Limits
-- **Always Free**: 20GB storage, 1 OCPU
-- **$300 Free Credits**: For 30 days (optional upgrades)
-- **Monitoring**: Track usage in billing console
+### Giới Hạn Free Tier
+- **Always Free**: 20GB lưu trữ, 1 OCPU
+- **$300 Free Credits**: Trong 30 ngày (nâng cấp tùy chọn)
+- **Monitoring**: Theo dõi sử dụng trong billing console
 
 ### Best Practices
-- Monitor usage regularly
-- Stop database when not in use (saves credits if upgraded)
-- Use Always Free tier for learning
-- Set up billing alerts
+- Giám sát sử dụng thường xuyên
+- Dừng database khi không sử dụng (tiết kiệm credits nếu nâng cấp)
+- Sử dụng gói Always Free cho việc học tập
+- Thiết lập cảnh báo billing
 
-## Troubleshooting Common Issues
+## Khắc Phục Các Vấn Đề Thường Gặp
 
-### Connection Problems
+### Vấn Đề Kết Nối
 ```sql
--- Test connection from SQL Developer Web
+-- Test kết nối từ SQL Developer Web
 SELECT 'Connection successful' AS status FROM dual;
 
--- Check database status
+-- Kiểm tra trạng thái database
 SELECT instance_name, status FROM v$instance;
 ```
 
-### Wallet Issues
-- Ensure wallet is extracted to a secure location
-- Verify wallet password is correct
-- Check that sqlnet.ora points to correct wallet directory
+### Vấn Đề Wallet
+- Đảm bảo wallet được giải nén đến vị trí an toàn
+- Xác minh mật khẩu wallet chính xác
+- Kiểm tra sqlnet.ora trỏ đến thư mục wallet đúng
 
-### Performance Issues
-- Monitor CPU and storage usage
-- Check for long-running queries
-- Use built-in performance tools
+### Vấn Đề Hiệu Suất
+- Giám sát sử dụng CPU và storage
+- Kiểm tra các truy vấn chạy lâu
+- Sử dụng công cụ hiệu suất tích hợp
 
-## Security Best Practices
+## Best Practices Bảo Mật
 
-### Password Management
-- Use strong, unique passwords
-- Change default passwords immediately
-- Store passwords securely
+### Quản Lý Mật Khẩu
+- Sử dụng mật khẩu mạnh, duy nhất
+- Thay đổi mật khẩu mặc định ngay lập tức
+- Lưu trữ mật khẩu an toàn
 
-### Network Security
-- Use VPN when possible
-- Limit IP access if needed
-- Enable MFA on Oracle Cloud account
+### Bảo Mật Mạng
+- Sử dụng VPN khi có thể
+- Giới hạn truy cập IP nếu cần
+- Bật MFA trên tài khoản Oracle Cloud
 
-### Data Protection
-- Regular backups (automatic)
-- Test restore procedures
-- Monitor access logs
+### Bảo Vệ Dữ Liệu
+- Backup thường xuyên (tự động)
+- Test thủ tục restore
+- Giám sát access logs
 
-## Advanced Features Available
+## Tính Năng Nâng Cao Có Sẵn
 
 ### Machine Learning
-- In-database machine learning algorithms
-- AutoML capabilities
-- Python and R integration
+- Thuật toán machine learning trong database
+- Khả năng AutoML
+- Tích hợp Python và R
 
-### JSON Support
-- Native JSON data type
-- JSON query and manipulation functions
-- REST API generation
+### Hỗ Trợ JSON
+- Kiểu dữ liệu JSON gốc
+- Các hàm truy vấn và thao tác JSON
+- Tạo REST API
 
 ### Analytics
-- Built-in analytical functions
-- Data visualization tools
-- Integration with Oracle Analytics Cloud
+- Các hàm phân tích tích hợp
+- Công cụ trực quan hóa dữ liệu
+- Tích hợp với Oracle Analytics Cloud
 
-## Next Steps
+## Các Bước Tiếp Theo
 
-After setting up Oracle Cloud:
+Sau khi thiết lập Oracle Cloud:
 
-1. **Verify Connection**: Test both web and desktop client access
-2. **Explore Interface**: Familiarize yourself with Database Actions
-3. **Create Sample Data**: Follow the sample database creation guide
-4. **Start Learning**: Begin with basic SQL queries
+1. **Xác Minh Kết Nối**: Test cả truy cập web và desktop client
+2. **Khám Phá Interface**: Làm quen với Database Actions
+3. **Tạo Dữ Liệu Mẫu**: Theo dõi hướng dẫn tạo sample database
+4. **Bắt Đầu Học**: Bắt đầu với các truy vấn SQL cơ bản
 
-Your Oracle Cloud database is now ready for learning and development!
+Oracle Cloud database của bạn giờ đã sẵn sàng cho việc học tập và phát triển!

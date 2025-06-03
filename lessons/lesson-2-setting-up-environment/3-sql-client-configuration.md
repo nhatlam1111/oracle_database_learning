@@ -1,215 +1,215 @@
-# SQL Client Configuration
+# Cấu Hình SQL Client
 
-This guide covers setting up and configuring various SQL clients to work with your Oracle Database. You'll learn about different tools available and how to configure them for optimal development experience.
+Hướng dẫn này bao gồm việc thiết lập và cấu hình các SQL client khác nhau để làm việc với Oracle Database của bạn. Bạn sẽ học về các công cụ khác nhau có sẵn và cách cấu hình chúng để có trải nghiệm phát triển tối ưu.
 
-## Overview of SQL Clients
+## Tổng Quan Về SQL Clients
 
-### Oracle SQL Developer (Recommended)
-- **Official Oracle tool** - Free and fully supported
-- **Rich feature set** - Query editor, data modeler, debugger
-- **Cross-platform** - Windows, macOS, Linux
-- **Integrated tools** - Schema browser, explain plan, performance tuning
+### Oracle SQL Developer (Được Khuyến Nghị)
+- **Công cụ chính thức của Oracle** - Miễn phí và được hỗ trợ đầy đủ
+- **Bộ tính năng phong phú** - Query editor, data modeler, debugger
+- **Đa nền tảng** - Windows, macOS, Linux
+- **Công cụ tích hợp** - Schema browser, explain plan, performance tuning
 
-### Alternative Clients
-- **Oracle SQL Developer Web** - Browser-based (included with Cloud)
-- **Oracle SQLcl** - Command-line interface
-- **Toad for Oracle** - Third-party commercial tool
-- **DBeaver** - Free, universal database tool
-- **Visual Studio Code** - With Oracle extensions
+### Các Client Thay Thế
+- **Oracle SQL Developer Web** - Dựa trên trình duyệt (bao gồm với Cloud)
+- **Oracle SQLcl** - Giao diện dòng lệnh
+- **Toad for Oracle** - Công cụ thương mại của bên thứ ba
+- **DBeaver** - Công cụ database miễn phí, đa năng
+- **Visual Studio Code** - Với các extension Oracle
 
-## Oracle SQL Developer Setup
+## Thiết Lập Oracle SQL Developer
 
-### Download and Installation
+### Tải Xuống và Cài Đặt
 
-1. **Download SQL Developer**:
-   - Visit [Oracle SQL Developer Downloads](https://www.oracle.com/tools/downloads/sqldev-downloads.html)
-   - Choose appropriate version for your OS
-   - Download either:
-     - **With JDK included** (recommended for beginners)
-     - **Without JDK** (if you have Java 8 or 11 installed)
+1. **Tải SQL Developer**:
+   - Truy cập [Oracle SQL Developer Downloads](https://www.oracle.com/tools/downloads/sqldev-downloads.html)
+   - Chọn phiên bản phù hợp cho hệ điều hành của bạn
+   - Tải xuống một trong hai:
+     - **Có bao gồm JDK** (khuyến nghị cho người mới bắt đầu)
+     - **Không có JDK** (nếu bạn đã cài Java 8 hoặc 11)
 
-2. **Installation Process**:
-   - **Windows**: Run the installer or extract ZIP file
-   - **macOS**: Mount DMG and copy to Applications
-   - **Linux**: Extract TAR.GZ and run sqldeveloper.sh
+2. **Quy Trình Cài Đặt**:
+   - **Windows**: Chạy trình cài đặt hoặc giải nén file ZIP
+   - **macOS**: Mount DMG và copy vào Applications
+   - **Linux**: Giải nén TAR.GZ và chạy sqldeveloper.sh
 
-3. **First Launch**:
-   - Launch SQL Developer
-   - Accept license agreement
-   - Configure initial preferences
+3. **Khởi Chạy Lần Đầu**:
+   - Khởi chạy SQL Developer
+   - Chấp nhận thỏa thuận cấp phép
+   - Cấu hình các preferences ban đầu
 
-### Basic Configuration
+### Cấu Hình Cơ Bản
 
 #### General Preferences
-1. Go to **Tools** → **Preferences**
+1. Đi đến **Tools** → **Preferences**
 2. **Database** → **Advanced**:
-   - Set **Tnsnames Directory** (if using tnsnames.ora)
-   - Configure **SQL Array Fetch Size**: 500 (improves performance)
+   - Đặt **Tnsnames Directory** (nếu sử dụng tnsnames.ora)
+   - Cấu hình **SQL Array Fetch Size**: 500 (cải thiện hiệu suất)
 3. **Code Editor**:
-   - Enable **Line Numbers**
-   - Set **Tab Size**: 4 spaces
-   - Enable **Auto-completion**
+   - Bật **Line Numbers**
+   - Đặt **Tab Size**: 4 spaces
+   - Bật **Auto-completion**
 
 #### Connection Settings
 1. **Database** → **Connections**:
-   - Set **Connection Timeout**: 60 seconds
-   - Enable **Test Connection** on startup
-   - Configure **Connection Pool** settings
+   - Đặt **Connection Timeout**: 60 giây
+   - Bật **Test Connection** khi khởi động
+   - Cấu hình cài đặt **Connection Pool**
 
-### Creating Database Connections
+### Tạo Database Connections
 
-#### Local Oracle Database Connection
+#### Kết Nối Oracle Database Cục Bộ
 
-1. **Create New Connection**:
-   - Click **+** or right-click **Connections** → **New Connection**
-   - Enter connection details:
+1. **Tạo Kết Nối Mới**:
+   - Nhấp **+** hoặc right-click **Connections** → **New Connection**
+   - Nhập chi tiết kết nối:
      - **Connection Name**: Local Oracle XE
-     - **Username**: SYSTEM or your username
-     - **Password**: Your password
+     - **Username**: SYSTEM hoặc username của bạn
+     - **Password**: Mật khẩu của bạn
      - **Connection Type**: Basic
      - **Hostname**: localhost
      - **Port**: 1521
-     - **Service name**: XE (for Oracle XE)
+     - **Service name**: XE (cho Oracle XE)
 
-2. **Test Connection**:
-   - Click **Test** button
-   - Verify "Status: Success" message
-   - Click **Connect**
+2. **Test Kết Nối**:
+   - Nhấp nút **Test**
+   - Xác minh thông báo "Status: Success"
+   - Nhấp **Connect**
 
-#### Oracle Cloud Connection
+#### Kết Nối Oracle Cloud
 
-1. **Download Wallet** (if not done already):
-   - From Oracle Cloud Console
-   - Download and extract wallet ZIP file
+1. **Tải Wallet** (nếu chưa thực hiện):
+   - Từ Oracle Cloud Console
+   - Tải xuống và giải nén file wallet ZIP
 
-2. **Create Cloud Connection**:
+2. **Tạo Cloud Connection**:
    - **Connection Name**: Oracle Cloud Learn
    - **Username**: ADMIN
-   - **Password**: Your ADMIN password
+   - **Password**: Mật khẩu ADMIN của bạn
    - **Connection Type**: Cloud Wallet
-   - **Configuration File**: Browse to wallet ZIP file
-   - **Service**: Select appropriate service name
+   - **Configuration File**: Duyệt đến file wallet ZIP
+   - **Service**: Chọn tên service phù hợp
 
-### SQL Developer Interface Overview
+### Tổng Quan Giao Diện SQL Developer
 
-#### Main Components
+#### Các Thành Phần Chính
 
-1. **Connections Panel** (left):
-   - Database connections
+1. **Connections Panel** (bên trái):
+   - Kết nối database
    - Object browser (tables, views, procedures)
-   - Schema navigation
+   - Điều hướng schema
 
-2. **Worksheet Area** (center):
-   - SQL and PL/SQL editor
-   - Multiple tabs for different scripts
-   - Syntax highlighting and auto-completion
+2. **Worksheet Area** (giữa):
+   - SQL và PL/SQL editor
+   - Nhiều tabs cho các scripts khác nhau
+   - Syntax highlighting và auto-completion
 
-3. **Results Panel** (bottom):
-   - Query results
+3. **Results Panel** (dưới):
+   - Kết quả truy vấn
    - Script output
    - Explain plan
    - DBMS Output
 
-#### Key Features
+#### Tính Năng Chính
 
 1. **SQL Worksheet**:
    ```sql
-   -- Example query
+   -- Ví dụ truy vấn
    SELECT * FROM employees WHERE department_id = 10;
    ```
-   - **F5**: Run as Script
-   - **Ctrl+Enter**: Run Statement
+   - **F5**: Chạy như Script
+   - **Ctrl+Enter**: Chạy Statement
    - **F6**: Explain Plan
 
 2. **Schema Browser**:
-   - Expand connection to see schema objects
-   - Right-click for context menus
-   - Drag objects to worksheet
+   - Mở rộng connection để xem các schema objects
+   - Right-click cho context menus
+   - Kéo objects vào worksheet
 
 3. **Data Editor**:
-   - Double-click table to open data editor
-   - Edit data directly in grid
-   - Commit/rollback changes
+   - Double-click table để mở data editor
+   - Chỉnh sửa dữ liệu trực tiếp trong grid
+   - Commit/rollback các thay đổi
 
-## Alternative SQL Clients
+## Các SQL Client Thay Thế
 
 ### Oracle SQLcl (Command Line)
 
-#### Installation
-1. Download from [Oracle SQLcl Downloads](https://www.oracle.com/tools/downloads/sqlcl-downloads.html)
-2. Extract ZIP file
-3. Add to system PATH
+#### Cài Đặt
+1. Tải từ [Oracle SQLcl Downloads](https://www.oracle.com/tools/downloads/sqlcl-downloads.html)
+2. Giải nén file ZIP
+3. Thêm vào system PATH
 
-#### Basic Usage
+#### Sử Dụng Cơ Bản
 ```bash
-# Connect to local database
+# Kết nối đến database cục bộ
 sql system/password@localhost:1521/XE
 
-# Connect using wallet
+# Kết nối sử dụng wallet
 sql admin/password@mydb_high?TNS_ADMIN=/path/to/wallet
 
-# Run SQL commands
+# Chạy lệnh SQL
 SQL> SELECT * FROM dual;
 SQL> exit;
 ```
 
 ### DBeaver Community Edition
 
-#### Installation
-1. Download from [dbeaver.io](https://dbeaver.io/)
-2. Install using provided installer
-3. Launch and create new connection
+#### Cài Đặt
+1. Tải từ [dbeaver.io](https://dbeaver.io/)
+2. Cài đặt sử dụng trình cài đặt được cung cấp
+3. Khởi chạy và tạo kết nối mới
 
-#### Oracle Driver Setup
-1. **Create New Connection**:
-   - Select **Oracle** driver
-   - Download driver if prompted
+#### Thiết Lập Oracle Driver
+1. **Tạo Kết Nối Mới**:
+   - Chọn driver **Oracle**
+   - Tải driver nếu được nhắc
 2. **Connection Settings**:
-   - **Host**: localhost or cloud endpoint
+   - **Host**: localhost hoặc cloud endpoint
    - **Port**: 1521
-   - **Database**: XE or service name
-   - **Username/Password**: Your credentials
+   - **Database**: XE hoặc service name
+   - **Username/Password**: Thông tin đăng nhập của bạn
 
-### Visual Studio Code with Oracle Extension
+### Visual Studio Code với Oracle Extension
 
-#### Setup
-1. Install **Oracle Developer Tools for VS Code** extension
-2. Configure Oracle connections
-3. Use integrated SQL editing and execution
+#### Thiết Lập
+1. Cài đặt extension **Oracle Developer Tools for VS Code**
+2. Cấu hình Oracle connections
+3. Sử dụng SQL editing và execution tích hợp
 
-## Advanced Configuration
+## Cấu Hình Nâng Cao
 
 ### Performance Tuning
 
-#### SQL Developer Settings
+#### Cài Đặt SQL Developer
 ```sql
--- Increase fetch size for better performance
+-- Tăng fetch size để có hiệu suất tốt hơn
 -- Tools → Preferences → Database → Advanced
 -- SQL Array Fetch Size: 500
 
--- Enable query result caching
+-- Bật query result caching
 -- Tools → Preferences → Database → Worksheet
--- Enable "Cache query results"
+-- Bật "Cache query results"
 ```
 
 #### Connection Pooling
 1. **Database** → **Connections** → **Advanced**:
    - **Initial Pool Size**: 1
    - **Maximum Pool Size**: 10
-   - **Connection Timeout**: 300 seconds
+   - **Connection Timeout**: 300 giây
 
 ### Code Formatting
 
-#### SQL Formatter Settings
+#### Cài Đặt SQL Formatter
 1. **Tools** → **Preferences** → **Database** → **SQL Formatter**:
    - **Keywords Case**: UPPERCASE
    - **Identifiers Case**: lowercase
-   - **Line breaks**: Before FROM, WHERE, ORDER BY
+   - **Line breaks**: Trước FROM, WHERE, ORDER BY
    - **Indentation**: 2 spaces
 
 #### Custom Code Templates
 1. **Tools** → **Preferences** → **Database** → **User Defined Extensions**
-2. Create templates for common SQL patterns:
+2. Tạo templates cho các mẫu SQL thường dùng:
    ```sql
    -- Template: selstar
    SELECT *
@@ -217,134 +217,134 @@ SQL> exit;
    WHERE #CONDITION#;
    ```
 
-### Security Configuration
+### Cấu Hình Bảo Mật
 
 #### Connection Security
-1. **Encrypted Connections**:
-   - Use SSL/TLS when available
-   - Configure wallet for cloud connections
-   - Store passwords securely
+1. **Kết Nối Mã Hóa**:
+   - Sử dụng SSL/TLS khi có sẵn
+   - Cấu hình wallet cho cloud connections
+   - Lưu trữ mật khẩu an toàn
 
-2. **Credential Management**:
-   - Use Oracle Wallet for password management
-   - Enable connection password encryption
-   - Set up connection timeout policies
+2. **Quản Lý Thông Tin Đăng Nhập**:
+   - Sử dụng Oracle Wallet để quản lý mật khẩu
+   - Bật mã hóa mật khẩu kết nối
+   - Thiết lập chính sách connection timeout
 
-## Troubleshooting Common Issues
+## Khắc Phục Các Vấn Đề Thường Gặp
 
-### Connection Problems
+### Vấn Đề Kết Nối
 
 #### TNS Listener Issues
 ```sql
--- Check listener status (on database server)
+-- Kiểm tra trạng thái listener (trên database server)
 lsnrctl status
 
--- Check tnsnames.ora configuration
--- Verify service names and connection strings
+-- Kiểm tra cấu hình tnsnames.ora
+-- Xác minh service names và connection strings
 ```
 
 #### Network Connectivity
 ```bash
-# Test network connectivity
+# Test kết nối mạng
 telnet hostname 1521
 
 # Ping database server
 ping hostname
 ```
 
-### Performance Issues
+### Vấn Đề Hiệu Suất
 
-#### Slow Query Results
-1. **Increase Array Fetch Size**:
+#### Kết Quả Truy Vấn Chậm
+1. **Tăng Array Fetch Size**:
    - Tools → Preferences → Database → Advanced
-   - Set SQL Array Fetch Size to 500 or higher
+   - Đặt SQL Array Fetch Size thành 500 hoặc cao hơn
 
-2. **Limit Result Sets**:
+2. **Giới Hạn Result Sets**:
    ```sql
-   -- Use ROWNUM to limit results during development
+   -- Sử dụng ROWNUM để giới hạn kết quả trong quá trình phát triển
    SELECT * FROM large_table WHERE ROWNUM <= 100;
    ```
 
-#### Memory Problems
-1. **Increase JVM Memory**:
-   - Edit sqldeveloper.conf file
-   - Increase Xmx parameter: `-Xmx2048m`
+#### Vấn Đề Bộ Nhớ
+1. **Tăng JVM Memory**:
+   - Chỉnh sửa file sqldeveloper.conf
+   - Tăng tham số Xmx: `-Xmx2048m`
 
-### Common Error Messages
+### Các Thông Báo Lỗi Thường Gặp
 
 #### ORA-12541: TNS:no listener
-- **Solution**: Check if Oracle database is running
-- Verify listener is started
-- Check port number and hostname
+- **Giải pháp**: Kiểm tra xem Oracle database có đang chạy không
+- Xác minh listener đã được khởi động
+- Kiểm tra số port và hostname
 
 #### ORA-01017: invalid username/password
-- **Solution**: Verify credentials
-- Check if account is locked
-- Ensure proper case sensitivity
+- **Giải pháp**: Xác minh thông tin đăng nhập
+- Kiểm tra xem tài khoản có bị khóa không
+- Đảm bảo độ nhạy cảm về chữ hoa chữ thường
 
 #### ORA-12154: TNS:could not resolve the connect identifier
-- **Solution**: Check tnsnames.ora file
-- Verify service name spelling
-- Confirm TNS_ADMIN environment variable
+- **Giải pháp**: Kiểm tra file tnsnames.ora
+- Xác minh chính tả service name
+- Xác nhận biến môi trường TNS_ADMIN
 
 ## Best Practices
 
 ### Development Workflow
-1. **Use Version Control**:
-   - Store SQL scripts in Git repository
-   - Version control schema changes
-   - Document database modifications
+1. **Sử Dụng Version Control**:
+   - Lưu trữ SQL scripts trong Git repository
+   - Version control các thay đổi schema
+   - Tài liệu hóa các sửa đổi database
 
-2. **Code Organization**:
-   - Create separate scripts for different purposes
-   - Use meaningful file names
-   - Add comments to complex queries
+2. **Tổ Chức Code**:
+   - Tạo scripts riêng biệt cho các mục đích khác nhau
+   - Sử dụng tên file có ý nghĩa
+   - Thêm comments vào các truy vấn phức tạp
 
-3. **Testing Approach**:
-   - Test queries on small datasets first
-   - Use transactions for data modifications
-   - Always have rollback plan
+3. **Cách Tiếp Cận Testing**:
+   - Test truy vấn trên datasets nhỏ trước
+   - Sử dụng transactions cho việc sửa đổi dữ liệu
+   - Luôn có kế hoạch rollback
 
 ### Query Development
-1. **Start Simple**:
-   - Begin with basic SELECT statements
-   - Add complexity gradually
-   - Test each modification
+1. **Bắt Đầu Đơn Giản**:
+   - Bắt đầu với các câu lệnh SELECT cơ bản
+   - Thêm độ phức tạp dần dần
+   - Test mỗi sửa đổi
 
-2. **Use Explain Plan**:
-   - Check query performance before execution
-   - Identify potential bottlenecks
-   - Optimize based on execution plan
+2. **Sử Dụng Explain Plan**:
+   - Kiểm tra hiệu suất truy vấn trước khi thực thi
+   - Xác định các bottleneck tiềm ẩn
+   - Tối ưu hóa dựa trên execution plan
 
 3. **Error Handling**:
-   - Wrap complex operations in transactions
-   - Use savepoints for partial rollbacks
-   - Implement proper error checking
+   - Wrap các thao tác phức tạp trong transactions
+   - Sử dụng savepoints cho partial rollbacks
+   - Triển khai kiểm tra lỗi phù hợp
 
-## Keyboard Shortcuts
+## Phím Tắt
 
 ### SQL Developer Shortcuts
-- **Ctrl+Enter**: Execute current statement
-- **F5**: Run as script
+- **Ctrl+Enter**: Thực thi statement hiện tại
+- **F5**: Chạy như script
 - **F6**: Explain plan
 - **Ctrl+Shift+F**: Format SQL
 - **Ctrl+Space**: Auto-complete
 - **F4**: Describe object
 - **Ctrl+/**: Toggle comment
 
-### Productivity Tips
-1. **Code Snippets**: Create reusable code templates
-2. **Bookmarks**: Save frequently used queries
-3. **SQL History**: Access previously executed statements
-4. **Multiple Worksheets**: Work with multiple queries simultaneously
+### Mẹo Năng Suất
+1. **Code Snippets**: Tạo các code templates có thể tái sử dụng
+2. **Bookmarks**: Lưu các truy vấn thường dùng
+3. **SQL History**: Truy cập các câu lệnh đã thực thi trước đó
+4. **Multiple Worksheets**: Làm việc với nhiều truy vấn đồng thời
 
-## Next Steps
+## Các Bước Tiếp Theo
 
-After configuring your SQL client:
+Sau khi cấu hình SQL client của bạn:
 
-1. **Test Connection**: Verify you can connect to your database
-2. **Explore Interface**: Familiarize yourself with the tool features
-3. **Run Sample Queries**: Execute basic SQL statements
-4. **Create Sample Data**: Proceed to database setup and sample data creation
+1. **Test Kết Nối**: Xác minh bạn có thể kết nối đến database
+2. **Khám Phá Interface**: Làm quen với các tính năng của công cụ
+3. **Chạy Sample Queries**: Thực thi các câu lệnh SQL cơ bản
+4. **Tạo Sample Data**: Tiến hành thiết lập database và tạo dữ liệu mẫu
 
-Your SQL client is now ready for Oracle Database development and learning!
+SQL client của bạn giờ đã sẵn sàng cho việc phát triển và học tập Oracle Database!

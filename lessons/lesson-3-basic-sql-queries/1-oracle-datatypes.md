@@ -1,237 +1,237 @@
-# Oracle Database Data Types
+# Kiểu Dữ Liệu Oracle Database
 
-Understanding Oracle Database data types is fundamental to effective database design and development. Oracle provides a comprehensive set of built-in data types to store different kinds of information efficiently. This guide covers all the major data types available in Oracle Database.
+Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để thiết kế và phát triển cơ sở dữ liệu hiệu quả. Oracle cung cấp một bộ kiểu dữ liệu tích hợp sẵn toàn diện để lưu trữ các loại thông tin khác nhau một cách hiệu quả. Hướng dẫn này bao gồm tất cả các kiểu dữ liệu chính có sẵn trong Oracle Database.
 
-## Character Data Types
+## Kiểu Dữ Liệu Ký Tự
 
 ### VARCHAR2(size)
-- **Description**: Variable-length character data with maximum size specified
-- **Storage**: 1 to 4000 bytes (32767 in PL/SQL)
-- **Use Cases**: Names, descriptions, addresses, general text data
-- **Example**: `VARCHAR2(100)` for storing names up to 100 characters
-- **Best Practice**: Always specify size; use for variable-length text
+- **Mô tả**: Dữ liệu ký tự độ dài biến đổi với kích thước tối đa được chỉ định
+- **Lưu trữ**: 1 đến 4000 byte (32767 trong PL/SQL)
+- **Trường hợp sử dụng**: Tên, mô tả, địa chỉ, dữ liệu văn bản chung
+- **Ví dụ**: `VARCHAR2(100)` để lưu trữ tên lên đến 100 ký tự
+- **Thực hành tốt**: Luôn chỉ định kích thước; sử dụng cho văn bản độ dài biến đổi
 
 ### CHAR(size)
-- **Description**: Fixed-length character data, padded with spaces
-- **Storage**: 1 to 2000 bytes
-- **Use Cases**: Fixed-format codes, status flags, country codes
-- **Example**: `CHAR(2)` for storing state abbreviations like 'CA', 'NY'
-- **Best Practice**: Use only when all values have the same length
+- **Mô tả**: Dữ liệu ký tự độ dài cố định, được đệm bằng khoảng trắng
+- **Lưu trữ**: 1 đến 2000 byte
+- **Trường hợp sử dụng**: Mã định dạng cố định, cờ trạng thái, mã quốc gia
+- **Ví dụ**: `CHAR(2)` để lưu trữ viết tắt bang như 'CA', 'NY'
+- **Thực hành tốt**: Chỉ sử dụng khi tất cả giá trị có cùng độ dài
 
 ### NVARCHAR2(size)
-- **Description**: Variable-length Unicode character data
-- **Storage**: 1 to 4000 bytes
-- **Use Cases**: Multilingual applications, international text
-- **Example**: `NVARCHAR2(200)` for storing names in various languages
-- **Best Practice**: Use when supporting multiple character sets
+- **Mô tả**: Dữ liệu ký tự Unicode độ dài biến đổi
+- **Lưu trữ**: 1 đến 4000 byte
+- **Trường hợp sử dụng**: Ứng dụng đa ngôn ngữ, văn bản quốc tế
+- **Ví dụ**: `NVARCHAR2(200)` để lưu trữ tên bằng nhiều ngôn ngữ khác nhau
+- **Thực hành tốt**: Sử dụng khi hỗ trợ nhiều bộ ký tự
 
 ### NCHAR(size)
-- **Description**: Fixed-length Unicode character data
-- **Storage**: 1 to 2000 bytes
-- **Use Cases**: Fixed-length Unicode codes
-- **Example**: `NCHAR(10)` for Unicode product codes
-- **Best Practice**: Rarely used; prefer NVARCHAR2 for Unicode data
+- **Mô tả**: Dữ liệu ký tự Unicode độ dài cố định
+- **Lưu trữ**: 1 đến 2000 byte
+- **Trường hợp sử dụng**: Mã Unicode độ dài cố định
+- **Ví dụ**: `NCHAR(10)` cho mã sản phẩm Unicode
+- **Thực hành tốt**: Hiếm khi sử dụng; ưu tiên NVARCHAR2 cho dữ liệu Unicode
 
-## Numeric Data Types
+## Kiểu Dữ Liệu Số
 
 ### NUMBER(precision, scale)
-- **Description**: Variable-length numeric data with optional precision and scale
-- **Storage**: 1 to 22 bytes
-- **Precision**: Total number of significant digits (1-38)
-- **Scale**: Number of digits to the right of decimal point (-84 to 127)
-- **Use Cases**: Currency, calculations, measurements
-- **Examples**: 
-  - `NUMBER(10,2)` for currency (max 99,999,999.99)
-  - `NUMBER(5)` for integer values up to 99,999
-  - `NUMBER` for unlimited precision
+- **Mô tả**: Dữ liệu số độ dài biến đổi với độ chính xác và thang đo tùy chọn
+- **Lưu trữ**: 1 đến 22 byte
+- **Độ chính xác**: Tổng số chữ số có nghĩa (1-38)
+- **Thang đo**: Số chữ số bên phải dấu thập phân (-84 đến 127)
+- **Trường hợp sử dụng**: Tiền tệ, tính toán, đo lường
+- **Ví dụ**: 
+  - `NUMBER(10,2)` cho tiền tệ (tối đa 99,999,999.99)
+  - `NUMBER(5)` cho giá trị nguyên lên đến 99,999
+  - `NUMBER` cho độ chính xác không giới hạn
 
 ### INTEGER
-- **Description**: Synonym for NUMBER(38)
-- **Storage**: Variable (1 to 22 bytes)
-- **Use Cases**: Whole numbers, counters, IDs
-- **Example**: `INTEGER` for primary keys
-- **Best Practice**: Use for clarity when dealing with whole numbers
+- **Mô tả**: Đồng nghĩa với NUMBER(38)
+- **Lưu trữ**: Biến đổi (1 đến 22 byte)
+- **Trường hợp sử dụng**: Số nguyên, bộ đếm, ID
+- **Ví dụ**: `INTEGER` cho khóa chính
+- **Thực hành tốt**: Sử dụng để rõ ràng khi xử lý số nguyên
 
 ### FLOAT(binary_precision)
-- **Description**: Floating-point number with binary precision
-- **Storage**: 1 to 22 bytes
-- **Use Cases**: Scientific calculations requiring floating-point arithmetic
-- **Example**: `FLOAT(24)` for single precision, `FLOAT(53)` for double precision
-- **Best Practice**: Use NUMBER for most business applications
+- **Mô tả**: Số dấu phẩy động với độ chính xác nhị phân
+- **Lưu trữ**: 1 đến 22 byte
+- **Trường hợp sử dụng**: Tính toán khoa học cần số học dấu phẩy động
+- **Ví dụ**: `FLOAT(24)` cho độ chính xác đơn, `FLOAT(53)` cho độ chính xác kép
+- **Thực hành tốt**: Sử dụng NUMBER cho hầu hết ứng dụng kinh doanh
 
 ### BINARY_FLOAT
-- **Description**: 32-bit floating-point number (IEEE 754)
-- **Storage**: 4 bytes
-- **Use Cases**: Scientific computing, performance-critical calculations
-- **Range**: ±1.17549E-38 to ±3.40282E+38
-- **Best Practice**: Use for compatibility with other systems using IEEE standards
+- **Mô tả**: Số dấu phẩy động 32-bit (IEEE 754)
+- **Lưu trữ**: 4 byte
+- **Trường hợp sử dụng**: Điện toán khoa học, tính toán quan trọng về hiệu suất
+- **Phạm vi**: ±1.17549E-38 đến ±3.40282E+38
+- **Thực hành tốt**: Sử dụng để tương thích với các hệ thống khác sử dụng chuẩn IEEE
 
 ### BINARY_DOUBLE
-- **Description**: 64-bit floating-point number (IEEE 754)
-- **Storage**: 8 bytes
-- **Use Cases**: High-precision scientific calculations
-- **Range**: ±2.22507485850720E-308 to ±1.79769313486231E+308
-- **Best Practice**: Use for high-precision floating-point calculations
+- **Mô tả**: Số dấu phẩy động 64-bit (IEEE 754)
+- **Lưu trữ**: 8 byte
+- **Trường hợp sử dụng**: Tính toán khoa học độ chính xác cao
+- **Phạm vi**: ±2.22507485850720E-308 đến ±1.79769313486231E+308
+- **Thực hành tốt**: Sử dụng cho tính toán dấu phẩy động độ chính xác cao
 
-## Date and Time Data Types
+## Kiểu Dữ Liệu Ngày và Thời Gian
 
 ### DATE
-- **Description**: Date and time from January 1, 4712 BC to December 31, 9999 AD
-- **Storage**: 7 bytes
-- **Precision**: Seconds
-- **Use Cases**: Birthdays, order dates, appointment times
-- **Example**: `DATE` stores both date and time components
-- **Best Practice**: Default choice for most date/time needs
+- **Mô tả**: Ngày và thời gian từ 1 tháng 1, 4712 BC đến 31 tháng 12, 9999 AD
+- **Lưu trữ**: 7 byte
+- **Độ chính xác**: Giây
+- **Trường hợp sử dụng**: Ngày sinh, ngày đặt hàng, thời gian hẹn
+- **Ví dụ**: `DATE` lưu trữ cả thành phần ngày và thời gian
+- **Thực hành tốt**: Lựa chọn mặc định cho hầu hết nhu cầu ngày/thời gian
 
 ### TIMESTAMP(fractional_seconds_precision)
-- **Description**: Date and time with fractional seconds
-- **Storage**: 7 to 11 bytes
-- **Precision**: 0 to 9 digits for fractional seconds (default 6)
-- **Use Cases**: Audit trails, high-precision timing
-- **Example**: `TIMESTAMP(3)` for millisecond precision
-- **Best Practice**: Use when you need sub-second precision
+- **Mô tả**: Ngày và thời gian với giây phân số
+- **Lưu trữ**: 7 đến 11 byte
+- **Độ chính xác**: 0 đến 9 chữ số cho giây phân số (mặc định 6)
+- **Trường hợp sử dụng**: Audit trail, thời gian độ chính xác cao
+- **Ví dụ**: `TIMESTAMP(3)` cho độ chính xác mili giây
+- **Thực hành tốt**: Sử dụng khi cần độ chính xác dưới giây
 
 ### TIMESTAMP WITH TIME ZONE
-- **Description**: TIMESTAMP with time zone information
-- **Storage**: 13 bytes
-- **Use Cases**: Global applications, scheduling across time zones
-- **Example**: Stores '2023-05-15 14:30:00.000000 -07:00'
-- **Best Practice**: Use for applications spanning multiple time zones
+- **Mô tả**: TIMESTAMP với thông tin múi giờ
+- **Lưu trữ**: 13 byte
+- **Trường hợp sử dụng**: Ứng dụng toàn cầu, lập lịch qua các múi giờ
+- **Ví dụ**: Lưu trữ '2023-05-15 14:30:00.000000 -07:00'
+- **Thực hành tốt**: Sử dụng cho ứng dụng kéo dài nhiều múi giờ
 
 ### TIMESTAMP WITH LOCAL TIME ZONE
-- **Description**: TIMESTAMP normalized to database time zone
-- **Storage**: 7 to 11 bytes
-- **Use Cases**: Applications where all times should be in database time zone
-- **Best Practice**: Use when you want automatic time zone conversion
+- **Mô tả**: TIMESTAMP được chuẩn hóa theo múi giờ cơ sở dữ liệu
+- **Lưu trữ**: 7 đến 11 byte
+- **Trường hợp sử dụng**: Ứng dụng mà tất cả thời gian nên ở múi giờ cơ sở dữ liệu
+- **Thực hành tốt**: Sử dụng khi muốn chuyển đổi múi giờ tự động
 
 ### INTERVAL YEAR TO MONTH
-- **Description**: Period of time in years and months
-- **Storage**: 5 bytes
-- **Use Cases**: Age calculations, subscription periods
-- **Example**: `INTERVAL YEAR(4) TO MONTH` for up to 9999 years
-- **Best Practice**: Use for business periods (contracts, warranties)
+- **Mô tả**: Khoảng thời gian tính bằng năm và tháng
+- **Lưu trữ**: 5 byte
+- **Trường hợp sử dụng**: Tính tuổi, giai đoạn đăng ký
+- **Ví dụ**: `INTERVAL YEAR(4) TO MONTH` cho đến 9999 năm
+- **Thực hành tốt**: Sử dụng cho giai đoạn kinh doanh (hợp đồng, bảo hành)
 
 ### INTERVAL DAY TO SECOND
-- **Description**: Period of time in days, hours, minutes, seconds
-- **Storage**: 11 bytes
-- **Use Cases**: Duration calculations, elapsed time
-- **Example**: `INTERVAL DAY(2) TO SECOND(6)` for up to 99 days with microsecond precision
-- **Best Practice**: Use for precise duration measurements
+- **Mô tả**: Khoảng thời gian tính bằng ngày, giờ, phút, giây
+- **Lưu trữ**: 11 byte
+- **Trường hợp sử dụng**: Tính thời lượng, thời gian trôi qua
+- **Ví dụ**: `INTERVAL DAY(2) TO SECOND(6)` cho đến 99 ngày với độ chính xác micro giây
+- **Thực hành tốt**: Sử dụng cho đo lường thời lượng chính xác
 
-## Binary Data Types
+## Kiểu Dữ Liệu Nhị Phân
 
 ### RAW(size)
-- **Description**: Variable-length binary data
-- **Storage**: 1 to 2000 bytes
-- **Use Cases**: Small binary objects, checksums, encrypted data
-- **Example**: `RAW(16)` for storing MD5 hashes
-- **Best Practice**: Use for small binary data; prefer BLOB for larger data
+- **Mô tả**: Dữ liệu nhị phân độ dài biến đổi
+- **Lưu trữ**: 1 đến 2000 byte
+- **Trường hợp sử dụng**: Đối tượng nhị phân nhỏ, checksum, dữ liệu mã hóa
+- **Ví dụ**: `RAW(16)` để lưu trữ hash MD5
+- **Thực hành tốt**: Sử dụng cho dữ liệu nhị phân nhỏ; ưu tiên BLOB cho dữ liệu lớn hơn
 
 ### LONG RAW
-- **Description**: Variable-length binary data up to 2GB
-- **Storage**: Up to 2GB
-- **Use Cases**: Legacy binary data storage
-- **Best Practice**: **Deprecated** - use BLOB instead for new applications
+- **Mô tả**: Dữ liệu nhị phân độ dài biến đổi lên đến 2GB
+- **Lưu trữ**: Lên đến 2GB
+- **Trường hợp sử dụng**: Lưu trữ dữ liệu nhị phân legacy
+- **Thực hành tốt**: **Đã lỗi thời** - sử dụng BLOB thay thế cho ứng dụng mới
 
-## Large Object (LOB) Data Types
+## Kiểu Dữ Liệu Đối Tượng Lớn (LOB)
 
 ### CLOB
-- **Description**: Character Large Object for large text data
-- **Storage**: Up to 128TB
-- **Use Cases**: Documents, articles, large text fields
-- **Example**: Storing full article content, user comments
-- **Best Practice**: Use for text data larger than VARCHAR2 limits
+- **Mô tả**: Character Large Object cho dữ liệu văn bản lớn
+- **Lưu trữ**: Lên đến 128TB
+- **Trường hợp sử dụng**: Tài liệu, bài viết, trường văn bản lớn
+- **Ví dụ**: Lưu trữ nội dung bài viết đầy đủ, bình luận người dùng
+- **Thực hành tốt**: Sử dụng cho dữ liệu văn bản lớn hơn giới hạn VARCHAR2
 
 ### NCLOB
-- **Description**: National Character Large Object for Unicode text
-- **Storage**: Up to 128TB
-- **Use Cases**: Large multilingual text documents
-- **Best Practice**: Use for large Unicode text data
+- **Mô tả**: National Character Large Object cho văn bản Unicode
+- **Lưu trữ**: Lên đến 128TB
+- **Trường hợp sử dụng**: Tài liệu văn bản đa ngôn ngữ lớn
+- **Thực hành tốt**: Sử dụng cho dữ liệu văn bản Unicode lớn
 
 ### BLOB
-- **Description**: Binary Large Object for binary data
-- **Storage**: Up to 128TB
-- **Use Cases**: Images, videos, documents, audio files
-- **Example**: Storing PDF files, images, multimedia content
-- **Best Practice**: Primary choice for binary file storage
+- **Mô tả**: Binary Large Object cho dữ liệu nhị phân
+- **Lưu trữ**: Lên đến 128TB
+- **Trường hợp sử dụng**: Hình ảnh, video, tài liệu, tệp âm thanh
+- **Ví dụ**: Lưu trữ tệp PDF, hình ảnh, nội dung đa phương tiện
+- **Thực hành tốt**: Lựa chọn chính cho lưu trữ tệp nhị phân
 
 ### BFILE
-- **Description**: Binary file locator pointing to external files
-- **Storage**: Directory name and filename
-- **Use Cases**: Large files stored in operating system
-- **Best Practice**: Use when files are managed outside the database
+- **Mô tả**: Locator tệp nhị phân trỏ đến tệp bên ngoài
+- **Lưu trữ**: Tên thư mục và tên tệp
+- **Trường hợp sử dụng**: Tệp lớn được lưu trữ trong hệ điều hành
+- **Thực hành tốt**: Sử dụng khi tệp được quản lý bên ngoài cơ sở dữ liệu
 
-## Specialized Data Types
+## Kiểu Dữ Liệu Chuyên Biệt
 
 ### ROWID
-- **Description**: Unique identifier for table rows
-- **Storage**: 10 bytes
-- **Use Cases**: Fast row access, debugging
-- **Example**: System-generated unique row identifier
-- **Best Practice**: Rarely used directly; automatically managed by Oracle
+- **Mô tả**: Định danh duy nhất cho các hàng trong bảng
+- **Lưu trữ**: 10 byte
+- **Trường hợp sử dụng**: Truy cập hàng nhanh, gỡ lỗi
+- **Ví dụ**: Định danh hàng duy nhất do hệ thống tạo
+- **Thực hành tốt**: Hiếm khi sử dụng trực tiếp; tự động được Oracle quản lý
 
 ### UROWID
-- **Description**: Universal ROWID for various table types
-- **Storage**: Variable
-- **Use Cases**: Index-organized tables, foreign tables
-- **Best Practice**: Use ROWID unless working with special table types
+- **Mô tả**: Universal ROWID cho các loại bảng khác nhau
+- **Lưu trữ**: Biến đổi
+- **Trường hợp sử dụng**: Bảng tổ chức chỉ mục, bảng ngoại
+- **Thực hành tốt**: Sử dụng ROWID trừ khi làm việc với các loại bảng đặc biệt
 
-## JSON Data Type (Oracle 21c+)
+## Kiểu Dữ Liệu JSON (Oracle 21c+)
 
 ### JSON
-- **Description**: Native JSON data type with validation and optimization
-- **Storage**: Variable
-- **Use Cases**: JSON documents, REST APIs, modern web applications
-- **Example**: Storing user preferences, configuration data
-- **Best Practice**: Use for structured JSON data requiring validation
+- **Mô tả**: Kiểu dữ liệu JSON gốc với xác thực và tối ưu hóa
+- **Lưu trữ**: Biến đổi
+- **Trường hợp sử dụng**: Tài liệu JSON, REST API, ứng dụng web hiện đại
+- **Ví dụ**: Lưu trữ tùy chọn người dùng, dữ liệu cấu hình
+- **Thực hành tốt**: Sử dụng cho dữ liệu JSON có cấu trúc cần xác thực
 
-## Data Type Selection Guidelines
+## Hướng Dẫn Lựa Chọn Kiểu Dữ Liệu
 
-### For Text Data:
-- **Short, variable text**: VARCHAR2
-- **Fixed-length codes**: CHAR
-- **Large text documents**: CLOB
-- **Multilingual content**: NVARCHAR2 or NCLOB
+### Cho Dữ Liệu Văn Bản:
+- **Văn bản ngắn, biến đổi**: VARCHAR2
+- **Mã độ dài cố định**: CHAR
+- **Tài liệu văn bản lớn**: CLOB
+- **Nội dung đa ngôn ngữ**: NVARCHAR2 hoặc NCLOB
 
-### For Numbers:
-- **Currency/Business**: NUMBER with appropriate precision
-- **Counters/IDs**: INTEGER or NUMBER
-- **Scientific calculations**: BINARY_FLOAT or BINARY_DOUBLE
+### Cho Số:
+- **Tiền tệ/Kinh doanh**: NUMBER với độ chính xác phù hợp
+- **Bộ đếm/ID**: INTEGER hoặc NUMBER
+- **Tính toán khoa học**: BINARY_FLOAT hoặc BINARY_DOUBLE
 
-### For Dates:
-- **General date/time**: DATE
-- **High precision timing**: TIMESTAMP
-- **Global applications**: TIMESTAMP WITH TIME ZONE
-- **Duration calculations**: INTERVAL types
+### Cho Ngày:
+- **Ngày/thời gian chung**: DATE
+- **Thời gian độ chính xác cao**: TIMESTAMP
+- **Ứng dụng toàn cầu**: TIMESTAMP WITH TIME ZONE
+- **Tính toán thời lượng**: Kiểu INTERVAL
 
-### For Binary Data:
-- **Small binary**: RAW
-- **Large files**: BLOB
-- **External files**: BFILE
+### Cho Dữ Liệu Nhị Phân:
+- **Nhị phân nhỏ**: RAW
+- **Tệp lớn**: BLOB
+- **Tệp bên ngoài**: BFILE
 
-## Common Data Type Conversions
+## Chuyển Đổi Kiểu Dữ Liệu Phổ Biến
 
-Oracle provides implicit and explicit conversion between compatible data types:
+Oracle cung cấp chuyển đổi ngầm và tường minh giữa các kiểu dữ liệu tương thích:
 
 ```sql
--- Implicit conversions (automatic)
-NUMBER ↔ VARCHAR2 (when numeric)
-DATE ↔ VARCHAR2 (using default format)
+-- Chuyển đổi ngầm (tự động)
+NUMBER ↔ VARCHAR2 (khi là số)
+DATE ↔ VARCHAR2 (sử dụng định dạng mặc định)
 
--- Explicit conversions (using functions)
+-- Chuyển đổi tường minh (sử dụng hàm)
 TO_NUMBER('123.45')
 TO_DATE('2023-05-15', 'YYYY-MM-DD')
 TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')
 ```
 
-## Best Practices Summary
+## Tóm Tắt Thực Hành Tốt
 
-1. **Choose the right size**: Don't over-allocate (e.g., VARCHAR2(4000) for a 10-character field)
-2. **Use appropriate precision**: NUMBER(10,2) for currency, not NUMBER
-3. **Consider Unicode needs**: Use NVARCHAR2 for international applications
-4. **Prefer standard types**: Use DATE over VARCHAR2 for dates
-5. **Plan for growth**: Consider future data volume when choosing LOB types
-6. **Validate constraints**: Use CHECK constraints to enforce data rules
-7. **Document choices**: Comment on why specific data types were chosen
+1. **Chọn kích thước phù hợp**: Không phân bổ quá mức (ví dụ: VARCHAR2(4000) cho trường 10 ký tự)
+2. **Sử dụng độ chính xác phù hợp**: NUMBER(10,2) cho tiền tệ, không phải NUMBER
+3. **Cân nhắc nhu cầu Unicode**: Sử dụng NVARCHAR2 cho ứng dụng quốc tế
+4. **Ưu tiên kiểu chuẩn**: Sử dụng DATE thay vì VARCHAR2 cho ngày
+5. **Lập kế hoạch cho tăng trưởng**: Cân nhắc khối lượng dữ liệu tương lai khi chọn kiểu LOB
+6. **Xác thực ràng buộc**: Sử dụng ràng buộc CHECK để thực thi quy tắc dữ liệu
+7. **Tài liệu hóa lựa chọn**: Bình luận về lý do chọn kiểu dữ liệu cụ thể
 
-Understanding these data types and their appropriate usage is crucial for designing efficient, scalable Oracle databases that accurately represent your business data.
+Hiểu về các kiểu dữ liệu này và cách sử dụng phù hợp là rất quan trọng để thiết kế các cơ sở dữ liệu Oracle hiệu quả, có thể mở rộng và biểu diễn chính xác dữ liệu kinh doanh của bạn.

@@ -1,16 +1,16 @@
-# SELECT Statements - The Foundation of SQL
+# Câu Lệnh SELECT - Nền Tảng của SQL
 
-The SELECT statement is the most fundamental and frequently used SQL command. It allows you to retrieve data from one or more tables in your database.
+Câu lệnh SELECT là lệnh SQL cơ bản và được sử dụng thường xuyên nhất. Nó cho phép bạn truy xuất dữ liệu từ một hoặc nhiều bảng trong cơ sở dữ liệu của bạn.
 
-## Basic SELECT Syntax
+## Cú Pháp SELECT Cơ Bản
 
-### Simple SELECT Structure
+### Cấu Trúc SELECT Đơn Giản
 ```sql
 SELECT column1, column2, ...
 FROM table_name;
 ```
 
-### Universal Query Pattern
+### Mẫu Truy Vấn Chung
 ```sql
 SELECT [DISTINCT] column_list
 FROM table_name
@@ -20,55 +20,55 @@ FROM table_name
 [HAVING condition];
 ```
 
-## Basic SELECT Operations
+## Các Thao Tác SELECT Cơ Bản
 
-### 1. Select All Columns
-Use the asterisk (*) to select all columns from a table:
+### 1. Chọn Tất Cả Cột
+Sử dụng dấu sao (*) để chọn tất cả cột từ một bảng:
 
 ```sql
--- Select all columns from employees table
+-- Chọn tất cả cột từ bảng employees
 SELECT * FROM hr.employees;
 
--- Select all columns from departments table  
+-- Chọn tất cả cột từ bảng departments  
 SELECT * FROM hr.departments;
 ```
 
-**Best Practice**: Avoid using `SELECT *` in production code. Always specify the columns you need.
+**Thực Hành Tốt**: Tránh sử dụng `SELECT *` trong mã sản xuất. Luôn chỉ định các cột bạn cần.
 
-### 2. Select Specific Columns
-Specify only the columns you need:
+### 2. Chọn Cột Cụ Thể
+Chỉ định những cột bạn cần:
 
 ```sql
--- Select specific employee information
+-- Chọn thông tin nhân viên cụ thể
 SELECT employee_id, first_name, last_name, email
 FROM hr.employees;
 
--- Select department basic info
+-- Chọn thông tin cơ bản phòng ban
 SELECT department_id, department_name
 FROM hr.departments;
 ```
 
-### 3. Column Aliases
-Use aliases to provide meaningful names for columns:
+### 3. Bí Danh Cột
+Sử dụng bí danh để cung cấp tên có ý nghĩa cho các cột:
 
 ```sql
--- Using AS keyword (recommended)
+-- Sử dụng từ khóa AS (được khuyến nghị)
 SELECT 
-    employee_id AS "Employee ID",
-    first_name AS "First Name",
-    last_name AS "Last Name",
-    salary AS "Monthly Salary"
+    employee_id AS "Mã Nhân Viên",
+    first_name AS "Tên",
+    last_name AS "Họ",
+    salary AS "Lương Tháng"
 FROM hr.employees;
 
--- Without AS keyword (also valid)
+-- Không có từ khóa AS (cũng hợp lệ)
 SELECT 
-    employee_id "Employee ID",
-    first_name "First Name",
-    last_name "Last Name", 
-    salary "Monthly Salary"
+    employee_id "Mã Nhân Viên",
+    first_name "Tên",
+    last_name "Họ", 
+    salary "Lương Tháng"
 FROM hr.employees;
 
--- Simple aliases without quotes
+-- Bí danh đơn giản không có dấu ngoặc kép
 SELECT 
     employee_id emp_id,
     first_name fname,
@@ -77,28 +77,28 @@ SELECT
 FROM hr.employees;
 ```
 
-## String Operations and Concatenation
+## Thao Tác Chuỗi và Nối Chuỗi
 
-### 1. String Concatenation
-Oracle provides multiple ways to concatenate strings:
+### 1. Nối Chuỗi
+Oracle cung cấp nhiều cách để nối chuỗi:
 
 ```sql
--- Using || operator (Oracle standard)
+-- Sử dụng toán tử || (chuẩn Oracle)
 SELECT 
     first_name || ' ' || last_name AS full_name,
-    'Employee: ' || first_name || ' ' || last_name AS employee_label
+    'Nhân viên: ' || first_name || ' ' || last_name AS employee_label
 FROM hr.employees;
 
--- Using CONCAT function (limited to 2 arguments)
+-- Sử dụng hàm CONCAT (giới hạn 2 đối số)
 SELECT 
     CONCAT(first_name, last_name) AS name_no_space,
     CONCAT(CONCAT(first_name, ' '), last_name) AS full_name
 FROM hr.employees;
 ```
 
-### 2. String Functions
+### 2. Hàm Chuỗi
 ```sql
--- Common string functions
+-- Các hàm chuỗi phổ biến
 SELECT 
     employee_id,
     UPPER(first_name) AS first_name_upper,
@@ -109,11 +109,11 @@ SELECT
 FROM hr.employees;
 ```
 
-## Arithmetic Operations
+## Phép Toán Số Học
 
-### 1. Basic Arithmetic
+### 1. Số Học Cơ Bản
 ```sql
--- Calculate annual salary and bonus
+-- Tính lương năm và thưởng
 SELECT 
     employee_id,
     first_name,
@@ -125,36 +125,36 @@ SELECT
 FROM hr.employees;
 ```
 
-### 2. Handling NULL Values
+### 2. Xử Lý Giá Trị NULL
 ```sql
--- Using NVL to handle NULL values
+-- Sử dụng NVL để xử lý giá trị NULL
 SELECT 
     employee_id,
     first_name,
     last_name,
     salary,
     commission_pct,
-    -- Handle NULL commission
+    -- Xử lý commission NULL
     NVL(commission_pct, 0) AS commission_safe,
-    -- Calculate total compensation
+    -- Tính tổng thu nhập
     salary + (salary * NVL(commission_pct, 0)) AS total_compensation
 FROM hr.employees;
 
--- Using NVL2 for more complex NULL handling
+-- Sử dụng NVL2 cho xử lý NULL phức tạp hơn
 SELECT 
     employee_id,
     first_name,
     last_name,
     commission_pct,
-    NVL2(commission_pct, 'Has Commission', 'No Commission') AS commission_status
+    NVL2(commission_pct, 'Có Hoa Hồng', 'Không Hoa Hồng') AS commission_status
 FROM hr.employees;
 ```
 
-## Working with Dates
+## Làm Việc với Ngày Tháng
 
-### 1. Date Functions
+### 1. Hàm Ngày Tháng
 ```sql
--- Common date operations
+-- Các thao tác ngày tháng phổ biến
 SELECT 
     employee_id,
     first_name,
@@ -167,9 +167,9 @@ SELECT
 FROM hr.employees;
 ```
 
-### 2. Date Formatting
+### 2. Định Dạng Ngày Tháng
 ```sql
--- Format dates for display
+-- Định dạng ngày để hiển thị
 SELECT 
     employee_id,
     first_name,
@@ -182,11 +182,11 @@ SELECT
 FROM hr.employees;
 ```
 
-## Data Type Conversions
+## Chuyển Đổi Kiểu Dữ Liệu
 
-### 1. Number to String Conversion
+### 1. Chuyển Đổi Số sang Chuỗi
 ```sql
--- Converting numbers to formatted strings
+-- Chuyển đổi số sang chuỗi định dạng
 SELECT 
     employee_id,
     first_name,
@@ -197,9 +197,9 @@ SELECT
 FROM hr.employees;
 ```
 
-### 2. String to Number/Date Conversion
+### 2. Chuyển Đổi Chuỗi sang Số/Ngày
 ```sql
--- Converting strings to numbers and dates
+-- Chuyển đổi chuỗi sang số và ngày
 SELECT 
     TO_NUMBER('12345') AS string_to_number,
     TO_NUMBER('$1,234.56', '$9,999.99') AS formatted_string_to_number,
@@ -208,29 +208,29 @@ SELECT
 FROM dual;
 ```
 
-## DISTINCT Keyword
+## Từ Khóa DISTINCT
 
-### 1. Remove Duplicates
+### 1. Loại Bỏ Trùng Lặp
 ```sql
--- Get unique department IDs
+-- Lấy ID phòng ban duy nhất
 SELECT DISTINCT department_id
 FROM hr.employees
 ORDER BY department_id;
 
--- Get unique job titles
+-- Lấy chức danh công việc duy nhất
 SELECT DISTINCT job_id
 FROM hr.employees
 ORDER BY job_id;
 
--- Multiple column DISTINCT
+-- DISTINCT nhiều cột
 SELECT DISTINCT department_id, job_id
 FROM hr.employees
 ORDER BY department_id, job_id;
 ```
 
-### 2. Count Distinct Values
+### 2. Đếm Giá Trị Riêng Biệt
 ```sql
--- Count unique values
+-- Đếm giá trị duy nhất
 SELECT 
     COUNT(*) AS total_employees,
     COUNT(DISTINCT department_id) AS unique_departments,
@@ -239,28 +239,28 @@ SELECT
 FROM hr.employees;
 ```
 
-## Conditional Logic with CASE
+## Logic Điều Kiện với CASE
 
-### 1. Simple CASE Expressions
+### 1. Biểu Thức CASE Đơn Giản
 ```sql
--- Categorize employees by salary
+-- Phân loại nhân viên theo lương
 SELECT 
     employee_id,
     first_name,
     last_name,
     salary,
     CASE 
-        WHEN salary >= 15000 THEN 'High'
-        WHEN salary >= 8000 THEN 'Medium'
-        WHEN salary >= 4000 THEN 'Low'
-        ELSE 'Entry Level'
+        WHEN salary >= 15000 THEN 'Cao'
+        WHEN salary >= 8000 THEN 'Trung Bình'
+        WHEN salary >= 4000 THEN 'Thấp'
+        ELSE 'Mới Vào'
     END AS salary_category
 FROM hr.employees;
 ```
 
-### 2. Complex CASE Logic
+### 2. Logic CASE Phức Tạp
 ```sql
--- Employee status based on multiple factors
+-- Trạng thái nhân viên dựa trên nhiều yếu tố
 SELECT 
     employee_id,
     first_name,
@@ -268,27 +268,27 @@ SELECT
     hire_date,
     salary,
     CASE 
-        WHEN ROUND((SYSDATE - hire_date) / 365.25) >= 10 AND salary >= 10000 THEN 'Senior High Earner'
-        WHEN ROUND((SYSDATE - hire_date) / 365.25) >= 10 THEN 'Senior Employee'
-        WHEN salary >= 10000 THEN 'High Earner'
-        WHEN ROUND((SYSDATE - hire_date) / 365.25) >= 5 THEN 'Mid-Level'
-        ELSE 'Junior Employee'
+        WHEN ROUND((SYSDATE - hire_date) / 365.25) >= 10 AND salary >= 10000 THEN 'Cao Cấp Thu Nhập Cao'
+        WHEN ROUND((SYSDATE - hire_date) / 365.25) >= 10 THEN 'Nhân Viên Cao Cấp'
+        WHEN salary >= 10000 THEN 'Thu Nhập Cao'
+        WHEN ROUND((SYSDATE - hire_date) / 365.25) >= 5 THEN 'Trung Cấp'
+        ELSE 'Nhân Viên Mới'
     END AS employee_category
 FROM hr.employees;
 ```
 
-## Working with Multiple Tables (Preview)
+## Làm Việc với Nhiều Bảng (Xem Trước)
 
-### 1. Cartesian Product (Not Recommended)
+### 1. Tích Descartes (Không Khuyến Nghị)
 ```sql
--- This creates a cartesian product - generally not what you want
+-- Điều này tạo ra tích descartes - thường không phải là điều bạn muốn
 SELECT e.first_name, e.last_name, d.department_name
 FROM hr.employees e, hr.departments d;
 ```
 
-### 2. Proper JOIN Preview
+### 2. Xem Trước JOIN Đúng Cách
 ```sql
--- Preview of JOIN (covered in detail in Lesson 4)
+-- Xem trước JOIN (được đề cập chi tiết trong Bài 4)
 SELECT 
     e.employee_id,
     e.first_name,
@@ -298,9 +298,9 @@ FROM hr.employees e
 JOIN hr.departments d ON e.department_id = d.department_id;
 ```
 
-## Common Functions Reference
+## Tham Khảo Hàm Phổ Biến
 
-### 1. String Functions
+### 1. Hàm Chuỗi
 ```sql
 SELECT 
     'Oracle Database' AS original,
@@ -316,7 +316,7 @@ SELECT
 FROM dual;
 ```
 
-### 2. Numeric Functions
+### 2. Hàm Số
 ```sql
 SELECT 
     ABS(-15) AS absolute_value,
@@ -330,7 +330,7 @@ SELECT
 FROM dual;
 ```
 
-### 3. Date Functions
+### 3. Hàm Ngày Tháng
 ```sql
 SELECT 
     SYSDATE AS current_date,
@@ -343,122 +343,122 @@ SELECT
 FROM dual;
 ```
 
-## Performance Considerations
+## Cân Nhắc Hiệu Suất
 
-### 1. Column Selection
+### 1. Lựa Chọn Cột
 ```sql
--- Good: Select only needed columns
+-- Tốt: Chỉ chọn các cột cần thiết
 SELECT employee_id, first_name, last_name
 FROM hr.employees;
 
--- Avoid: Using SELECT * unnecessarily
+-- Tránh: Sử dụng SELECT * không cần thiết
 -- SELECT * FROM hr.employees;
 ```
 
-### 2. Function Usage
+### 2. Sử Dụng Hàm
 ```sql
--- Efficient: Use functions on constants when possible
+-- Hiệu quả: Sử dụng hàm trên hằng số khi có thể
 SELECT employee_id, first_name, salary
 FROM hr.employees
 WHERE salary > 10000;
 
--- Less efficient: Using functions on columns in WHERE clause
+-- Kém hiệu quả: Sử dụng hàm trên cột trong mệnh đề WHERE
 -- SELECT employee_id, first_name, salary
 -- FROM hr.employees
 -- WHERE UPPER(first_name) = 'JOHN';
 ```
 
-## Practical Examples
+## Ví Dụ Thực Hành
 
-### 1. Employee Information Report
+### 1. Báo Cáo Thông Tin Nhân Viên
 ```sql
--- Comprehensive employee report
+-- Báo cáo nhân viên toàn diện
 SELECT 
     employee_id AS "ID",
-    first_name || ' ' || last_name AS "Full Name",
+    first_name || ' ' || last_name AS "Họ Tên Đầy Đủ",
     UPPER(email) AS "Email",
-    TO_CHAR(hire_date, 'Month DD, YYYY') AS "Hire Date",
-    ROUND((SYSDATE - hire_date) / 365.25, 1) AS "Years of Service",
-    TO_CHAR(salary, '$999,999') AS "Monthly Salary",
-    TO_CHAR(salary * 12, '$9,999,999') AS "Annual Salary",
+    TO_CHAR(hire_date, 'Month DD, YYYY') AS "Ngày Tuyển Dụng",
+    ROUND((SYSDATE - hire_date) / 365.25, 1) AS "Năm Làm Việc",
+    TO_CHAR(salary, '$999,999') AS "Lương Tháng",
+    TO_CHAR(salary * 12, '$9,999,999') AS "Lương Năm",
     CASE 
-        WHEN commission_pct IS NOT NULL THEN 'Yes'
-        ELSE 'No'
-    END AS "Has Commission"
+        WHEN commission_pct IS NOT NULL THEN 'Có'
+        ELSE 'Không'
+    END AS "Có Hoa Hồng"
 FROM hr.employees
 ORDER BY employee_id;
 ```
 
-### 2. Product Catalog Display
+### 2. Hiển Thị Danh Mục Sản Phẩm
 ```sql
--- Product information for catalog
+-- Thông tin sản phẩm cho danh mục
 SELECT 
-    product_id AS "Product ID",
-    INITCAP(product_name) AS "Product Name",
-    TO_CHAR(unit_price, '$999.99') AS "Unit Price",
-    units_in_stock AS "In Stock",
+    product_id AS "Mã Sản Phẩm",
+    INITCAP(product_name) AS "Tên Sản Phẩm",
+    TO_CHAR(unit_price, '$999.99') AS "Giá Đơn Vị",
+    units_in_stock AS "Tồn Kho",
     CASE 
-        WHEN units_in_stock = 0 THEN 'Out of Stock'
-        WHEN units_in_stock <= reorder_level THEN 'Low Stock'
-        ELSE 'In Stock'
-    END AS "Stock Status",
+        WHEN units_in_stock = 0 THEN 'Hết Hàng'
+        WHEN units_in_stock <= reorder_level THEN 'Hàng Sắp Hết'
+        ELSE 'Còn Hàng'
+    END AS "Trạng Thái Kho",
     CASE 
-        WHEN discontinued = 1 THEN 'Discontinued'
-        ELSE 'Active'
-    END AS "Product Status"
+        WHEN discontinued = 1 THEN 'Ngừng Sản Xuất'
+        ELSE 'Đang Hoạt Động'
+    END AS "Trạng Thái Sản Phẩm"
 FROM sales.products
 ORDER BY category_id, product_name;
 ```
 
-## Exercises
+## Bài Tập
 
-### Exercise 1: Basic Employee Information
+### Bài Tập 1: Thông Tin Nhân Viên Cơ Bản
 ```sql
--- Write a query to display employee ID, full name (first + last),
--- email in lowercase, and hire date formatted as 'DD-MON-YYYY'
--- Your query here:
+-- Viết truy vấn hiển thị mã nhân viên, họ tên đầy đủ (tên + họ),
+-- email viết thường, và ngày tuyển dụng định dạng 'DD-MON-YYYY'
+-- Truy vấn của bạn ở đây:
 ```
 
-### Exercise 2: Salary Analysis
+### Bài Tập 2: Phân Tích Lương
 ```sql
--- Create a query showing employee ID, full name, monthly salary,
--- annual salary, and salary category (High/Medium/Low based on your criteria)
--- Your query here:
+-- Tạo truy vấn hiển thị mã nhân viên, họ tên đầy đủ, lương tháng,
+-- lương năm, và phân loại lương (Cao/Trung Bình/Thấp theo tiêu chí của bạn)
+-- Truy vấn của bạn ở đây:
 ```
 
-### Exercise 3: Product Information
+### Bài Tập 3: Thông Tin Sản Phẩm
 ```sql
--- Display product name in proper case, formatted unit price,
--- stock status, and whether the product is active or discontinued
--- Your query here:
+-- Hiển thị tên sản phẩm viết hoa chữ cái đầu, giá đơn vị định dạng,
+-- trạng thái kho, và liệu sản phẩm đang hoạt động hay ngừng sản xuất
+-- Truy vấn của bạn ở đây:
 ```
 
-## Best Practices Summary
+## Tóm Tắt Thực Hành Tốt
 
-1. **Always specify column names** instead of using SELECT *
-2. **Use meaningful aliases** for better readability
-3. **Handle NULL values** appropriately with NVL/NVL2
-4. **Format output** for better presentation using TO_CHAR
-5. **Use CASE statements** for conditional logic
-6. **Comment your queries** for documentation
-7. **Test with small datasets** first
-8. **Consider performance** when using functions
+1. **Luôn chỉ định tên cột** thay vì sử dụng SELECT *
+2. **Sử dụng bí danh có ý nghĩa** để dễ đọc hơn
+3. **Xử lý giá trị NULL** phù hợp với NVL/NVL2
+4. **Định dạng đầu ra** để trình bày tốt hơn bằng TO_CHAR
+5. **Sử dụng câu lệnh CASE** cho logic điều kiện
+6. **Ghi chú truy vấn** để tài liệu hóa
+7. **Kiểm tra với tập dữ liệu nhỏ** trước
+8. **Cân nhắc hiệu suất** khi sử dụng hàm
 
-## Common Mistakes to Avoid
+## Lỗi Phổ Biến Cần Tránh
 
-1. **Forgetting semicolons** at the end of statements
-2. **Incorrect quotation marks** for aliases (use double quotes for spaces)
-3. **Not handling NULL values** in calculations
-4. **Using functions unnecessarily** in WHERE clauses
-5. **Mixing single and double quotes** incorrectly
-6. **Forgetting table aliases** when column names are ambiguous
+1. **Quên dấu chấm phẩy** ở cuối câu lệnh
+2. **Dấu ngoặc kép sai** cho bí danh (sử dụng dấu ngoặc kép cho khoảng trắng)
+3. **Không xử lý giá trị NULL** trong tính toán
+4. **Sử dụng hàm không cần thiết** trong mệnh đề WHERE
+5. **Trộn lẫn dấu ngoặc đơn và kép** không đúng cách
+6. **Quên bí danh bảng** khi tên cột không rõ ràng
 
-## Next Steps
+## Bước Tiếp Theo
 
-Now that you understand SELECT statements, proceed to:
-1. **WHERE Clause and Filtering** - Learn to filter your data
-2. **ORDER BY** - Sort your results effectively
-3. **Aggregate Functions** - Summarize your data
-4. Practice with the provided exercises
+Bây giờ bạn đã hiểu về câu lệnh SELECT, tiến tới:
+1. **Mệnh Đề WHERE và Lọc Dữ Liệu** - Học cách lọc dữ liệu
+2. **ORDER BY** - Sắp xếp kết quả hiệu quả
+3. **Hàm Tổng Hợp** - Tóm tắt dữ liệu
+4. Thực hành với các bài tập được cung cấp
 
-Master these fundamentals before moving to joins and subqueries in Lesson 4!
+Thành thạo những kiến thức cơ bản này trước khi chuyển sang join và subquery trong Bài 4!

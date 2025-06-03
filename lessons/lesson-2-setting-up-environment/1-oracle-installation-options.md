@@ -1,82 +1,82 @@
-# Oracle Database Installation Options
+# Các Tùy Chọn Cài Đặt Oracle Database
 
-Oracle Database can be installed and accessed through several different methods. This guide will help you choose the best option for your learning needs and technical setup.
+Oracle Database có thể được cài đặt và truy cập thông qua nhiều phương pháp khác nhau. Hướng dẫn này sẽ giúp bạn chọn tùy chọn tốt nhất cho nhu cầu học tập và thiết lập kỹ thuật của bạn.
 
-## 1. Oracle Database Express Edition (XE) - Recommended for Beginners
+## 1. Oracle Database Express Edition (XE) - Được Khuyến Nghị Cho Người Mới Bắt Đầu
 
-### What is Oracle XE?
-Oracle Database Express Edition is a free, lightweight version of Oracle Database that's perfect for learning, development, and small applications.
+### Oracle XE là gì?
+Oracle Database Express Edition là phiên bản miễn phí, nhẹ của Oracle Database, hoàn hảo cho việc học tập, phát triển và các ứng dụng nhỏ.
 
-### Features and Limitations
-- **Free to use** - No licensing costs
-- **Easy installation** - Simplified setup process
-- **Resource limits**: 
-  - Maximum 2 CPU threads
-  - Maximum 2GB RAM usage
-  - Maximum 12GB database storage
-- **Full SQL and PL/SQL support**
-- **Same core features** as Enterprise Edition
+### Tính Năng và Giới Hạn
+- **Miễn phí sử dụng** - Không có chi phí cấp phép
+- **Cài đặt dễ dàng** - Quy trình thiết lập đơn giản
+- **Giới hạn tài nguyên**: 
+  - Tối đa 2 luồng CPU
+  - Tối đa 2GB sử dụng RAM
+  - Tối đa 12GB lưu trữ cơ sở dữ liệu
+- **Hỗ trợ đầy đủ SQL và PL/SQL**
+- **Cùng tính năng cốt lõi** như phiên bản Enterprise
 
-### System Requirements
-- **Windows**: Windows 10 or later (64-bit)
+### Yêu Cầu Hệ Thống
+- **Windows**: Windows 10 hoặc mới hơn (64-bit)
 - **Linux**: Oracle Linux, Red Hat, SUSE (64-bit)
-- **Memory**: Minimum 1GB RAM (2GB recommended)
-- **Disk Space**: 1.5GB for installation
+- **Bộ nhớ**: Tối thiểu 1GB RAM (khuyến nghị 2GB)
+- **Không gian đĩa**: 1.5GB cho cài đặt
 
-### Installation Steps (Windows)
-1. Download Oracle XE from [Oracle's official website](https://www.oracle.com/database/technologies/xe-downloads.html)
-2. Run the installer as Administrator
-3. Follow the installation wizard
-4. Set a password for the SYS and SYSTEM accounts
-5. Complete installation and verify connection
+### Các Bước Cài Đặt (Windows)
+1. Tải Oracle XE từ [trang web chính thức của Oracle](https://www.oracle.com/database/technologies/xe-downloads.html)
+2. Chạy trình cài đặt với quyền Administrator
+3. Làm theo hướng dẫn cài đặt
+4. Đặt mật khẩu cho các tài khoản SYS và SYSTEM
+5. Hoàn tất cài đặt và xác minh kết nối
 
-### Installation Steps (Linux)
+### Các Bước Cài Đặt (Linux)
 ```bash
-# Download the RPM package
+# Tải gói RPM
 wget https://download.oracle.com/otn-pub/otn_software/db-express/oracle-database-xe-21c-1.0-1.ol7.x86_64.rpm
 
-# Install the package
+# Cài đặt gói
 sudo yum localinstall oracle-database-xe-21c-1.0-1.ol7.x86_64.rpm
 
-# Configure the database
+# Cấu hình cơ sở dữ liệu
 sudo /etc/init.d/oracle-xe-21c configure
 ```
 
-## 2. Oracle Cloud Free Tier - Cloud-Based Option
+## 2. Oracle Cloud Free Tier - Tùy Chọn Dựa Trên Cloud
 
-### What is Oracle Cloud Free Tier?
-Oracle offers a free tier that includes Oracle Autonomous Database, which is perfect for learning without local installation.
+### Oracle Cloud Free Tier là gì?
+Oracle cung cấp gói miễn phí bao gồm Oracle Autonomous Database, hoàn hảo cho việc học tập mà không cần cài đặt cục bộ.
 
-### Benefits
-- **No local installation** required
-- **Always up-to-date** with latest features
-- **Automatic backups** and maintenance
-- **20GB storage** included in free tier
-- **Access from anywhere** with internet connection
+### Lợi Ích
+- **Không cần cài đặt cục bộ**
+- **Luôn cập nhật** với các tính năng mới nhất
+- **Sao lưu tự động** và bảo trì
+- **20GB lưu trữ** bao gồm trong gói miễn phí
+- **Truy cập từ bất kỳ đâu** với kết nối internet
 
-### Getting Started
-1. Create Oracle Cloud account at [cloud.oracle.com](https://cloud.oracle.com)
-2. Navigate to Autonomous Database
-3. Create a new Autonomous Transaction Processing database
-4. Download wallet file for secure connections
-5. Use SQL Developer Web or desktop client
+### Bắt Đầu
+1. Tạo tài khoản Oracle Cloud tại [cloud.oracle.com](https://cloud.oracle.com)
+2. Điều hướng đến Autonomous Database
+3. Tạo cơ sở dữ liệu Autonomous Transaction Processing mới
+4. Tải file wallet để kết nối bảo mật
+5. Sử dụng SQL Developer Web hoặc client desktop
 
 ## 3. Oracle Database Docker Images
 
-### What is Docker Installation?
-Run Oracle Database in a Docker container for easy setup and cleanup.
+### Cài Đặt Docker là gì?
+Chạy Oracle Database trong container Docker để thiết lập và dọn dẹp dễ dàng.
 
-### Prerequisites
-- Docker Desktop installed
-- At least 8GB RAM available
-- Basic Docker knowledge helpful
+### Điều Kiện Tiên Quyết
+- Docker Desktop đã cài đặt
+- Ít nhất 8GB RAM có sẵn
+- Kiến thức cơ bản về Docker hữu ích
 
-### Quick Setup
+### Thiết Lập Nhanh
 ```bash
 # Pull Oracle XE image
 docker pull container-registry.oracle.com/database/express:latest
 
-# Run Oracle XE container
+# Chạy Oracle XE container
 docker run --name oracle-xe \
   -p 1521:1521 -p 5500:5500 \
   -e ORACLE_PWD=YourPassword123 \
@@ -86,85 +86,85 @@ docker run --name oracle-xe \
 
 ## 4. Oracle VirtualBox Appliance
 
-### Pre-Built Virtual Machine
-Oracle provides pre-configured virtual machines with Oracle Database already installed.
+### Máy Ảo Được Xây Dựng Sẵn
+Oracle cung cấp các máy ảo được cấu hình sẵn với Oracle Database đã được cài đặt.
 
-### Benefits
-- **Complete development environment**
-- **No installation hassles**
-- **Includes sample schemas**
-- **Easy to reset and restart**
+### Lợi Ích
+- **Môi trường phát triển hoàn chỉnh**
+- **Không rắc rối cài đặt**
+- **Bao gồm schemas mẫu**
+- **Dễ dàng reset và khởi động lại**
 
-### Requirements
-- VirtualBox or VMware
-- 8GB+ RAM recommended
-- 50GB+ free disk space
+### Yêu Cầu
+- VirtualBox hoặc VMware
+- Khuyến nghị 8GB+ RAM
+- 50GB+ không gian đĩa trống
 
-## 5. Oracle Live SQL - Browser-Based
+## 5. Oracle Live SQL - Dựa Trên Trình Duyệt
 
-### Online Learning Platform
-Oracle Live SQL is a web-based tool for running SQL statements without any installation.
+### Nền Tảng Học Tập Trực Tuyến
+Oracle Live SQL là công cụ dựa trên web để chạy các câu lệnh SQL mà không cần cài đặt.
 
-### Features
-- **No installation** required
-- **Pre-loaded sample data**
-- **Share scripts** with others
-- **Limited to SQL queries** (no PL/SQL procedures)
+### Tính Năng
+- **Không cần cài đặt**
+- **Dữ liệu mẫu được tải sẵn**
+- **Chia sẻ scripts** với người khác
+- **Giới hạn ở truy vấn SQL** (không có thủ tục PL/SQL)
 
-### Access
-Visit [livesql.oracle.com](https://livesql.oracle.com) and create a free Oracle account.
+### Truy Cập
+Truy cập [livesql.oracle.com](https://livesql.oracle.com) và tạo tài khoản Oracle miễn phí.
 
-## Recommendation for This Course
+## Khuyến Nghị Cho Khóa Học Này
 
-For beginners following this learning path, we recommend:
+Đối với người mới bắt đầu theo con đường học tập này, chúng tôi khuyến nghị:
 
-1. **First Choice**: Oracle Database XE (local installation)
-   - Complete control over environment
-   - Works offline
-   - Best for learning administration
+1. **Lựa chọn đầu tiên**: Oracle Database XE (cài đặt cục bộ)
+   - Kiểm soát hoàn toàn môi trường
+   - Hoạt động offline
+   - Tốt nhất cho việc học quản trị
 
-2. **Second Choice**: Oracle Cloud Free Tier
-   - No local setup required
-   - Always available
-   - Good for SQL learning
+2. **Lựa chọn thứ hai**: Oracle Cloud Free Tier
+   - Không cần thiết lập cục bộ
+   - Luôn có sẵn
+   - Tốt cho việc học SQL
 
-3. **Quick Start**: Oracle Live SQL
-   - Immediate access
-   - No setup time
-   - Limited to basic SQL
+3. **Khởi đầu nhanh**: Oracle Live SQL
+   - Truy cập ngay lập tức
+   - Không mất thời gian thiết lập
+   - Giới hạn ở SQL cơ bản
 
-## Troubleshooting Common Issues
+## Khắc Phục Các Vấn Đề Thường Gặp
 
-### Port Conflicts
-If port 1521 is already in use:
+### Xung Đột Cổng
+Nếu cổng 1521 đã được sử dụng:
 ```sql
--- Check current port
+-- Kiểm tra cổng hiện tại
 SELECT name, value FROM v$parameter WHERE name = 'local_listener';
 
--- Change port during installation or reconfigure
+-- Thay đổi cổng trong quá trình cài đặt hoặc cấu hình lại
 ```
 
-### Memory Issues
-- Ensure sufficient RAM is available
-- Close unnecessary applications during installation
-- Consider using Oracle Cloud if local resources are limited
+### Vấn Đề Bộ Nhớ
+- Đảm bảo có đủ RAM khả dụng
+- Đóng các ứng dụng không cần thiết trong quá trình cài đặt
+- Cân nhắc sử dụng Oracle Cloud nếu tài nguyên cục bộ hạn chế
 
-### Connection Problems
-- Verify Oracle services are running
-- Check firewall settings
-- Confirm correct connection parameters
+### Vấn Đề Kết Nối
+- Xác minh các dịch vụ Oracle đang chạy
+- Kiểm tra cài đặt firewall
+- Xác nhận các tham số kết nối chính xác
 
-## Performance Tips
-- Allocate sufficient memory to Oracle processes
-- Use SSD storage for better performance
-- Configure appropriate buffer sizes
-- Monitor system resources during operation
+## Mẹo Hiệu Suất
+- Phân bổ đủ bộ nhớ cho các tiến trình Oracle
+- Sử dụng lưu trữ SSD để có hiệu suất tốt hơn
+- Cấu hình kích thước buffer phù hợp
+- Giám sát tài nguyên hệ thống trong quá trình vận hành
 
-## Security Considerations
-- Use strong passwords for database accounts
-- Enable only necessary network ports
-- Keep Oracle Database updated with latest patches
-- Use encrypted connections when possible
+## Cân Nhắc Bảo Mật
+- Sử dụng mật khẩu mạnh cho các tài khoản cơ sở dữ liệu
+- Chỉ bật các cổng mạng cần thiết
+- Giữ Oracle Database cập nhật với các bản vá mới nhất
+- Sử dụng kết nối mã hóa khi có thể
 
-## Next Steps
-Once you've chosen and completed your Oracle Database installation, proceed to the SQL Client Configuration guide to set up your development tools.
+## Các Bước Tiếp Theo
+Sau khi bạn đã chọn và hoàn tất cài đặt Oracle Database, hãy tiến hành hướng dẫn Cấu hình SQL Client để thiết lập các công cụ phát triển của bạn.

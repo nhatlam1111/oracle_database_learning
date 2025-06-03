@@ -1,8 +1,8 @@
-# Sorting with ORDER BY
+# Sắp Xếp Với ORDER BY
 
-The ORDER BY clause allows you to sort query results in ascending or descending order based on one or more columns. Proper sorting makes data analysis and presentation much more effective.
+Mệnh đề ORDER BY cho phép bạn sắp xếp kết quả truy vấn theo thứ tự tăng dần hoặc giảm dần dựa trên một hoặc nhiều cột. Sắp xếp phù hợp làm cho việc phân tích và trình bày dữ liệu hiệu quả hơn nhiều.
 
-## Basic ORDER BY Syntax
+## Cú Pháp ORDER BY Cơ Bản
 
 ```sql
 SELECT column1, column2, ...
@@ -11,52 +11,52 @@ FROM table_name
 ORDER BY column1 [ASC|DESC], column2 [ASC|DESC], ...;
 ```
 
-## Single Column Sorting
+## Sắp Xếp Một Cột
 
-### 1. Ascending Order (Default)
+### 1. Thứ Tự Tăng Dần (Mặc Định)
 ```sql
--- Sort employees by last name (A to Z)
+-- Sắp xếp nhân viên theo họ (A đến Z)
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 ORDER BY last_name;
 
--- Explicitly specify ASC (same result as above)
+-- Chỉ định rõ ràng ASC (kết quả giống như trên)
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 ORDER BY last_name ASC;
 ```
 
-### 2. Descending Order
+### 2. Thứ Tự Giảm Dần
 ```sql
--- Sort employees by salary (highest to lowest)
+-- Sắp xếp nhân viên theo lương (cao nhất đến thấp nhất)
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 ORDER BY salary DESC;
 
--- Sort by hire date (most recent first)
+-- Sắp xếp theo ngày tuyển dụng (gần đây nhất trước)
 SELECT employee_id, first_name, last_name, hire_date
 FROM hr.employees
 ORDER BY hire_date DESC;
 ```
 
-## Multiple Column Sorting
+## Sắp Xếp Nhiều Cột
 
-### 1. Primary and Secondary Sort
+### 1. Sắp Xếp Chính và Phụ
 ```sql
--- Sort by department first, then by salary within each department
+-- Sắp xếp theo phòng ban trước, sau đó theo lương trong mỗi phòng ban
 SELECT employee_id, first_name, last_name, department_id, salary
 FROM hr.employees
 ORDER BY department_id ASC, salary DESC;
 
--- Sort by job_id, then by last name, then by first name
+-- Sắp xếp theo job_id, sau đó theo họ, rồi theo tên
 SELECT employee_id, first_name, last_name, job_id, salary
 FROM hr.employees
 ORDER BY job_id, last_name, first_name;
 ```
 
-### 2. Mixed Sort Orders
+### 2. Thứ Tự Sắp Xếp Hỗn Hợp
 ```sql
--- Department ascending, salary descending, hire date ascending
+-- Phòng ban tăng dần, lương giảm dần, ngày tuyển dụng tăng dần
 SELECT 
     employee_id, 
     first_name, 
@@ -71,63 +71,63 @@ ORDER BY
     hire_date ASC;
 ```
 
-## Sorting by Different Data Types
+## Sắp Xếp Theo Các Loại Dữ Liệu Khác Nhau
 
-### 1. Numeric Sorting
+### 1. Sắp Xếp Số
 ```sql
--- Sort by salary (numeric)
+-- Sắp xếp theo lương (số)
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 WHERE salary IS NOT NULL
 ORDER BY salary DESC;
 
--- Sort by employee ID
+-- Sắp xếp theo ID nhân viên
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 ORDER BY employee_id;
 ```
 
-### 2. String Sorting
+### 2. Sắp Xếp Chuỗi
 ```sql
--- Alphabetical sorting (case-sensitive in Oracle)
+-- Sắp xếp theo bảng chữ cái (phân biệt hoa thường trong Oracle)
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 ORDER BY last_name, first_name;
 
--- Case-insensitive sorting
+-- Sắp xếp không phân biệt hoa thường
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 ORDER BY UPPER(last_name), UPPER(first_name);
 
--- Sort by string length
+-- Sắp xếp theo độ dài chuỗi
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 ORDER BY LENGTH(last_name) DESC, last_name;
 ```
 
-### 3. Date Sorting
+### 3. Sắp Xếp Ngày Tháng
 ```sql
--- Sort by hire date (oldest first)
+-- Sắp xếp theo ngày tuyển dụng (cũ nhất trước)
 SELECT employee_id, first_name, last_name, hire_date
 FROM hr.employees
 ORDER BY hire_date ASC;
 
--- Sort by hire date (newest first)
+-- Sắp xếp theo ngày tuyển dụng (mới nhất trước)
 SELECT employee_id, first_name, last_name, hire_date
 FROM hr.employees
 ORDER BY hire_date DESC;
 
--- Sort by month of hire date
+-- Sắp xếp theo tháng của ngày tuyển dụng
 SELECT employee_id, first_name, last_name, hire_date
 FROM hr.employees
 ORDER BY EXTRACT(MONTH FROM hire_date), hire_date;
 ```
 
-## Sorting with Expressions and Functions
+## Sắp Xếp Với Biểu Thức và Hàm
 
-### 1. Calculated Columns
+### 1. Cột Tính Toán
 ```sql
--- Sort by calculated annual salary
+-- Sắp xếp theo lương hàng năm được tính toán
 SELECT 
     employee_id, 
     first_name, 
@@ -137,7 +137,7 @@ SELECT
 FROM hr.employees
 ORDER BY salary * 12 DESC;
 
--- Sort by total compensation (salary + commission)
+-- Sắp xếp theo tổng thu nhập (lương + hoa hồng)
 SELECT 
     employee_id, 
     first_name, 
@@ -149,9 +149,9 @@ FROM hr.employees
 ORDER BY salary + (salary * NVL(commission_pct, 0)) DESC;
 ```
 
-### 2. Function-Based Sorting
+### 2. Sắp Xếp Dựa Trên Hàm
 ```sql
--- Sort by years of service
+-- Sắp xếp theo số năm làm việc
 SELECT 
     employee_id, 
     first_name, 
@@ -161,12 +161,12 @@ SELECT
 FROM hr.employees
 ORDER BY (SYSDATE - hire_date) DESC;
 
--- Sort by full name
+-- Sắp xếp theo họ tên đầy đủ
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 ORDER BY first_name || ' ' || last_name;
 
--- Sort by absolute difference from average salary
+-- Sắp xếp theo chênh lệch tuyệt đối so với lương trung bình
 SELECT 
     employee_id, 
     first_name, 
@@ -177,11 +177,11 @@ FROM hr.employees
 ORDER BY ABS(salary - (SELECT AVG(salary) FROM hr.employees));
 ```
 
-## Sorting with Aliases
+## Sắp Xếp Với Bí Danh
 
-### 1. Using Column Aliases
+### 1. Sử Dụng Bí Danh Cột
 ```sql
--- Sort by alias name
+-- Sắp xếp theo tên bí danh
 SELECT 
     employee_id AS emp_id,
     first_name || ' ' || last_name AS full_name,
@@ -189,49 +189,49 @@ SELECT
 FROM hr.employees
 ORDER BY annual_salary DESC, full_name;
 
--- Note: You can use aliases in ORDER BY that are defined in SELECT
+-- Lưu ý: Bạn có thể sử dụng bí danh trong ORDER BY được định nghĩa trong SELECT
 ```
 
-### 2. Column Position Numbers
+### 2. Số Thứ Tự Cột
 ```sql
--- Sort by column position (not recommended for production)
+-- Sắp xếp theo vị trí cột (không khuyến nghị cho sản xuất)
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 ORDER BY 4 DESC, 3, 2;  -- 4=salary, 3=last_name, 2=first_name
 
--- Better to use column names for clarity
+-- Tốt hơn là sử dụng tên cột cho rõ ràng
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 ORDER BY salary DESC, last_name, first_name;
 ```
 
-## Handling NULL Values in Sorting
+## Xử Lý Giá Trị NULL Trong Sắp Xếp
 
-### 1. Default NULL Behavior
+### 1. Hành Vi NULL Mặc Định
 ```sql
--- In Oracle, NULLs sort last in ASC, first in DESC by default
+-- Trong Oracle, NULL được sắp xếp cuối cùng trong ASC, đầu tiên trong DESC theo mặc định
 SELECT employee_id, first_name, last_name, commission_pct
 FROM hr.employees
-ORDER BY commission_pct ASC;  -- NULLs appear last
+ORDER BY commission_pct ASC;  -- NULL xuất hiện cuối
 
 SELECT employee_id, first_name, last_name, commission_pct
 FROM hr.employees
-ORDER BY commission_pct DESC; -- NULLs appear first
+ORDER BY commission_pct DESC; -- NULL xuất hiện đầu
 ```
 
-### 2. Controlling NULL Position
+### 2. Kiểm Soát Vị Trí NULL
 ```sql
--- Force NULLs to appear first in ascending sort
+-- Buộc NULL xuất hiện đầu tiên trong sắp xếp tăng dần
 SELECT employee_id, first_name, last_name, commission_pct
 FROM hr.employees
 ORDER BY commission_pct NULLS FIRST;
 
--- Force NULLs to appear last in descending sort
+-- Buộc NULL xuất hiện cuối cùng trong sắp xếp giảm dần
 SELECT employee_id, first_name, last_name, commission_pct
 FROM hr.employees
 ORDER BY commission_pct DESC NULLS LAST;
 
--- Complex example with multiple columns
+-- Ví dụ phức tạp với nhiều cột
 SELECT employee_id, first_name, last_name, manager_id, commission_pct
 FROM hr.employees
 ORDER BY 
@@ -240,48 +240,48 @@ ORDER BY
     last_name;
 ```
 
-### 3. Alternative NULL Handling
+### 3. Xử Lý NULL Thay Thế
 ```sql
--- Replace NULL with a value for sorting
+-- Thay thế NULL bằng một giá trị để sắp xếp
 SELECT employee_id, first_name, last_name, commission_pct
 FROM hr.employees
 ORDER BY NVL(commission_pct, -1) DESC;
 
--- Sort NULLs as if they were zero
+-- Sắp xếp NULL như thể chúng bằng không
 SELECT employee_id, first_name, last_name, commission_pct
 FROM hr.employees
 ORDER BY NVL(commission_pct, 0), last_name;
 ```
 
-## CASE-Based Sorting
+## Sắp Xếp Dựa Trên CASE
 
-### 1. Custom Sort Orders
+### 1. Thứ Tự Sắp Xếp Tùy Chỉnh
 ```sql
--- Sort departments in custom order
+-- Sắp xếp phòng ban theo thứ tự tùy chỉnh
 SELECT employee_id, first_name, last_name, department_id
 FROM hr.employees
 ORDER BY 
     CASE department_id
-        WHEN 90 THEN 1  -- Executive first
-        WHEN 60 THEN 2  -- IT second
-        WHEN 80 THEN 3  -- Sales third
-        ELSE 4          -- All others last
+        WHEN 90 THEN 1  -- Điều hành trước
+        WHEN 60 THEN 2  -- IT thứ hai
+        WHEN 80 THEN 3  -- Bán hàng thứ ba
+        ELSE 4          -- Tất cả khác cuối cùng
     END,
     last_name;
 ```
 
-### 2. Priority-Based Sorting
+### 2. Sắp Xếp Dựa Trên Ưu Tiên
 ```sql
--- Sort by salary category priority
+-- Sắp xếp theo ưu tiên danh mục lương
 SELECT 
     employee_id, 
     first_name, 
     last_name, 
     salary,
     CASE 
-        WHEN salary >= 15000 THEN 'High'
-        WHEN salary >= 8000 THEN 'Medium'
-        ELSE 'Low'
+        WHEN salary >= 15000 THEN 'Cao'
+        WHEN salary >= 8000 THEN 'Trung Bình'
+        ELSE 'Thấp'
     END AS salary_category
 FROM hr.employees
 ORDER BY 
@@ -293,9 +293,9 @@ ORDER BY
     salary DESC;
 ```
 
-### 3. Boolean-Style Sorting
+### 3. Sắp Xếp Kiểu Boolean
 ```sql
--- Sort by commission status (has commission first)
+-- Sắp xếp theo trạng thái hoa hồng (có hoa hồng trước)
 SELECT employee_id, first_name, last_name, commission_pct
 FROM hr.employees
 ORDER BY 
@@ -304,12 +304,12 @@ ORDER BY
     last_name;
 ```
 
-## Advanced Sorting Techniques
+## Kỹ Thuật Sắp Xếp Nâng Cao
 
-### 1. Natural Sorting for Alphanumeric Data
+### 1. Sắp Xếp Tự Nhiên Cho Dữ Liệu Chữ-Số
 ```sql
--- For data like 'Item1', 'Item2', 'Item10' to sort naturally
--- This is a simplified example - real natural sorting is more complex
+-- Cho dữ liệu như 'Item1', 'Item2', 'Item10' để sắp xếp tự nhiên
+-- Đây là ví dụ đơn giản - sắp xếp tự nhiên thực tế phức tạp hơn
 SELECT product_id, product_name
 FROM sales.products
 ORDER BY 
@@ -317,60 +317,60 @@ ORDER BY
     product_name;
 ```
 
-### 2. Sorting by Multiple Criteria with Weights
+### 2. Sắp Xếp Theo Nhiều Tiêu Chí Với Trọng Số
 ```sql
--- Weighted scoring for employee ranking
+-- Tính điểm có trọng số để xếp hạng nhân viên
 SELECT 
     employee_id,
     first_name,
     last_name,
     salary,
     ROUND((SYSDATE - hire_date) / 365.25, 1) AS years_service,
-    -- Weighted score: 70% salary, 30% experience
+    -- Điểm có trọng số: 70% lương, 30% kinh nghiệm
     (salary * 0.7) + (ROUND((SYSDATE - hire_date) / 365.25, 1) * 1000 * 0.3) AS weighted_score
 FROM hr.employees
 ORDER BY (salary * 0.7) + (ROUND((SYSDATE - hire_date) / 365.25, 1) * 1000 * 0.3) DESC;
 ```
 
-### 3. Random Sorting
+### 3. Sắp Xếp Ngẫu Nhiên
 ```sql
--- Random order (useful for sampling)
+-- Thứ tự ngẫu nhiên (hữu ích cho lấy mẫu)
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 ORDER BY DBMS_RANDOM.VALUE;
 
--- Random sample of 5 employees
+-- Mẫu ngẫu nhiên 5 nhân viên
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 WHERE ROWNUM <= 5
 ORDER BY DBMS_RANDOM.VALUE;
 ```
 
-## Performance Considerations
+## Cân Nhắc Về Hiệu Suất
 
-### 1. Index-Friendly Sorting
+### 1. Sắp Xếp Thân Thiện Với Index
 ```sql
--- Good: Sorting by indexed columns
+-- Tốt: Sắp xếp theo cột có index
 SELECT employee_id, first_name, last_name
 FROM hr.employees
-ORDER BY employee_id;  -- Primary key, automatically indexed
+ORDER BY employee_id;  -- Khóa chính, tự động có index
 
--- Consider creating indexes for frequently sorted columns
+-- Xem xét tạo index cho các cột thường xuyên được sắp xếp
 -- CREATE INDEX emp_lastname_idx ON hr.employees(last_name);
 SELECT employee_id, first_name, last_name
 FROM hr.employees
 ORDER BY last_name;
 ```
 
-### 2. Limiting Results with Sorting
+### 2. Giới Hạn Kết Quả Với Sắp Xếp
 ```sql
--- Top N queries - more efficient than sorting all rows
+-- Truy vấn Top N - hiệu quả hơn việc sắp xếp tất cả các hàng
 SELECT employee_id, first_name, last_name, salary
 FROM hr.employees
 WHERE ROWNUM <= 10
 ORDER BY salary DESC;
 
--- Better approach using analytic functions (Oracle 12c+)
+-- Cách tiếp cận tốt hơn sử dụng analytic functions (Oracle 12c+)
 SELECT employee_id, first_name, last_name, salary
 FROM (
     SELECT employee_id, first_name, last_name, salary
@@ -380,23 +380,23 @@ FROM (
 WHERE ROWNUM <= 10;
 ```
 
-### 3. Avoiding Expensive Operations
+### 3. Tránh Các Thao Tác Tốn Kém
 ```sql
--- Expensive: Function on every row
+-- Tốn kém: Hàm trên mỗi hàng
 SELECT employee_id, first_name, last_name, hire_date
 FROM hr.employees
 ORDER BY EXTRACT(YEAR FROM hire_date);
 
--- Better: Consider adding computed column or function-based index
--- If this query is frequent, create function-based index:
+-- Tốt hơn: Xem xét thêm cột tính toán hoặc function-based index
+-- Nếu truy vấn này thường xuyên, tạo function-based index:
 -- CREATE INDEX emp_hire_year_idx ON hr.employees(EXTRACT(YEAR FROM hire_date));
 ```
 
-## Real-World Examples
+## Ví Dụ Thực Tế
 
-### 1. Employee Directory
+### 1. Danh Bạ Nhân Viên
 ```sql
--- Employee directory sorted by department and name
+-- Danh bạ nhân viên được sắp xếp theo phòng ban và tên
 SELECT 
     d.department_name,
     e.employee_id,
@@ -413,9 +413,9 @@ ORDER BY
     e.first_name;
 ```
 
-### 2. Sales Report
+### 2. Báo Cáo Bán Hàng
 ```sql
--- Top selling products by revenue
+-- Sản phẩm bán chạy nhất theo doanh thu
 SELECT 
     p.product_name,
     SUM(od.quantity) AS total_quantity,
@@ -429,9 +429,9 @@ ORDER BY
     p.product_name;
 ```
 
-### 3. Payroll Report
+### 3. Báo Cáo Lương
 ```sql
--- Payroll report sorted by department and salary
+-- Báo cáo lương được sắp xếp theo phòng ban và lương
 SELECT 
     d.department_name,
     e.employee_id,
@@ -449,24 +449,24 @@ ORDER BY
     e.last_name;
 ```
 
-## Common ORDER BY Patterns
+## Mẫu ORDER BY Phổ Biến
 
-### 1. Chronological Reports
+### 1. Báo Cáo Theo Thời Gian
 ```sql
--- Recent activity first
+-- Hoạt động gần đây trước
 SELECT order_id, customer_id, order_date, freight
 FROM sales.orders
 ORDER BY order_date DESC, order_id DESC;
 
--- Historical analysis (oldest first)
+-- Phân tích lịch sử (cũ nhất trước)
 SELECT employee_id, first_name, last_name, hire_date
 FROM hr.employees
 ORDER BY hire_date ASC, employee_id ASC;
 ```
 
-### 2. Hierarchical Data
+### 2. Dữ Liệu Phân Cấp
 ```sql
--- Manager-employee hierarchy
+-- Cấu trúc phân cấp quản lý-nhân viên
 SELECT 
     LEVEL,
     employee_id,
@@ -479,9 +479,9 @@ CONNECT BY PRIOR employee_id = manager_id
 ORDER SIBLINGS BY last_name, first_name;
 ```
 
-### 3. Statistical Ordering
+### 3. Sắp Xếp Thống Kê
 ```sql
--- Quartile-based ordering
+-- Sắp xếp dựa trên tứ phân vị
 SELECT 
     employee_id,
     first_name,
@@ -492,79 +492,79 @@ FROM hr.employees
 ORDER BY salary_quartile, salary DESC;
 ```
 
-## Exercises
+## Bài Tập
 
-### Exercise 1: Basic Sorting
+### Bài Tập 1: Sắp Xếp Cơ Bản
 ```sql
--- Sort all employees by hire date (newest first), 
--- then by last name alphabetically
--- Your query here:
+-- Sắp xếp tất cả nhân viên theo ngày tuyển dụng (mới nhất trước), 
+-- sau đó theo họ theo thứ tự bảng chữ cái
+-- Truy vấn của bạn ở đây:
 ```
 
-### Exercise 2: Complex Sorting
+### Bài Tập 2: Sắp Xếp Phức Tạp
 ```sql
--- Create a report showing products sorted by:
--- 1. Stock status (out of stock first, then low stock, then normal)
--- 2. Category ID
--- 3. Unit price (highest first)
--- 4. Product name alphabetically
--- Your query here:
+-- Tạo báo cáo hiển thị sản phẩm được sắp xếp theo:
+-- 1. Trạng thái tồn kho (hết hàng trước, sau đó tồn kho thấp, rồi bình thường)
+-- 2. ID danh mục
+-- 3. Đơn giá (cao nhất trước)
+-- 4. Tên sản phẩm theo thứ tự bảng chữ cái
+-- Truy vấn của bạn ở đây:
 ```
 
-### Exercise 3: Custom Sort Order
+### Bài Tập 3: Thứ Tự Sắp Xếp Tùy Chỉnh
 ```sql
--- Sort employees with this priority:
--- 1. Executives (job_id starting with 'AD_') first
--- 2. Managers (job_id ending with '_MGR' or '_MAN') second  
--- 3. All others third
--- Within each group, sort by salary descending
--- Your query here:
+-- Sắp xếp nhân viên với ưu tiên này:
+-- 1. Điều hành (job_id bắt đầu bằng 'AD_') trước
+-- 2. Quản lý (job_id kết thúc bằng '_MGR' hoặc '_MAN') thứ hai  
+-- 3. Tất cả khác thứ ba
+-- Trong mỗi nhóm, sắp xếp theo lương giảm dần
+-- Truy vấn của bạn ở đây:
 ```
 
-### Exercise 4: NULL Handling
+### Bài Tập 4: Xử Lý NULL
 ```sql
--- Show all employees sorted by commission_pct descending,
--- but put employees without commission at the end,
--- then sort by salary descending
--- Your query here:
+-- Hiển thị tất cả nhân viên được sắp xếp theo commission_pct giảm dần,
+-- nhưng đặt nhân viên không có hoa hồng ở cuối,
+-- sau đó sắp xếp theo lương giảm dần
+-- Truy vấn của bạn ở đây:
 ```
 
-## Best Practices Summary
+## Tóm Tắt Thực Hành Tốt Nhất
 
-1. **Always specify sort direction** explicitly (ASC/DESC) for clarity
-2. **Use meaningful column names** rather than position numbers
-3. **Consider NULL handling** explicitly when needed
-4. **Sort by indexed columns** when possible for performance
-5. **Use aliases** for complex expressions in ORDER BY
-6. **Limit results** when possible to improve performance
-7. **Test with real data** to ensure sort order meets requirements
-8. **Document complex sorting logic** with comments
+1. **Luôn chỉ định hướng sắp xếp** một cách rõ ràng (ASC/DESC) cho rõ ràng
+2. **Sử dụng tên cột có ý nghĩa** thay vì số thứ tự
+3. **Xem xét xử lý NULL** một cách rõ ràng khi cần thiết
+4. **Sắp xếp theo cột có index** khi có thể để tối ưu hiệu suất
+5. **Sử dụng bí danh** cho các biểu thức phức tạp trong ORDER BY
+6. **Giới hạn kết quả** khi có thể để cải thiện hiệu suất
+7. **Kiểm tra với dữ liệu thực** để đảm bảo thứ tự sắp xếp đáp ứng yêu cầu
+8. **Ghi chú logic sắp xếp phức tạp** bằng comment
 
-## Common Mistakes to Avoid
+## Lỗi Phổ Biến Cần Tránh
 
-1. **Relying on default sort order** without ORDER BY
-2. **Using column positions** instead of names (reduces readability)
-3. **Ignoring NULL behavior** when it matters
-4. **Sorting by functions** without considering performance impact
-5. **Not considering case sensitivity** in string sorting
-6. **Forgetting that ORDER BY comes last** in SQL statement structure
-7. **Mixing data types** in sort expressions
+1. **Dựa vào thứ tự sắp xếp mặc định** mà không có ORDER BY
+2. **Sử dụng vị trí cột** thay vì tên (giảm khả năng đọc)
+3. **Bỏ qua hành vi NULL** khi nó quan trọng
+4. **Sắp xếp bằng hàm** mà không xem xét tác động hiệu suất
+5. **Không xem xét tính phân biệt hoa thường** trong sắp xếp chuỗi
+6. **Quên rằng ORDER BY đến cuối cùng** trong cấu trúc câu lệnh SQL
+7. **Trộn lẫn kiểu dữ liệu** trong biểu thức sắp xếp
 
-## Performance Tips
+## Mẹo Hiệu Suất
 
-1. **Create indexes** on frequently sorted columns
-2. **Use ROWNUM or FETCH FIRST** to limit results
-3. **Avoid functions** in ORDER BY when possible
-4. **Consider composite indexes** for multi-column sorts
-5. **Use analytic functions** for ranking queries
-6. **Test performance** with realistic data volumes
+1. **Tạo index** trên các cột thường xuyên được sắp xếp
+2. **Sử dụng ROWNUM hoặc FETCH FIRST** để giới hạn kết quả
+3. **Tránh hàm** trong ORDER BY khi có thể
+4. **Xem xét composite index** cho sắp xếp nhiều cột
+5. **Sử dụng analytic functions** cho truy vấn xếp hạng
+6. **Kiểm tra hiệu suất** với khối lượng dữ liệu thực tế
 
-## Next Steps
+## Bước Tiếp Theo
 
-Master ORDER BY sorting before moving to:
-1. **Aggregate Functions** - Summarize your sorted data
-2. **GROUP BY** - Group data before sorting
-3. **Analytic Functions** - Advanced sorting and ranking
-4. **Performance Tuning** - Optimize sort operations
+Thành thạo sắp xếp ORDER BY trước khi chuyển sang:
+1. **Hàm Tổng Hợp** - Tóm tắt dữ liệu đã sắp xếp
+2. **GROUP BY** - Nhóm dữ liệu trước khi sắp xếp
+3. **Analytic Functions** - Sắp xếp và xếp hạng nâng cao
+4. **Tối Ưu Hiệu Suất** - Tối ưu hóa các thao tác sắp xếp
 
-Sorting is essential for data presentation and analysis, so practice with various scenarios and data types!
+Sắp xếp rất quan trọng cho việc trình bày và phân tích dữ liệu, vì vậy hãy thực hành với các tình huống và loại dữ liệu khác nhau!

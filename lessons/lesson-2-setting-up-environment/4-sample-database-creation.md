@@ -1,47 +1,47 @@
-# Sample Database Creation
+# Tạo Sample Database
 
-This guide will help you create comprehensive sample databases and populate them with realistic data for learning Oracle Database concepts. You'll create multiple schemas representing real-world scenarios.
+Hướng dẫn này sẽ giúp bạn tạo các sample databases toàn diện và điền vào chúng dữ liệu thực tế để học các khái niệm Oracle Database. Bạn sẽ tạo nhiều schemas kết nối với nhau đại diện cho các tình huống thực tế trong doanh nghiệp.
 
-## Overview of Sample Schemas
+## Tổng Quan Về Sample Schemas
 
-We'll create several interconnected schemas that represent common business scenarios:
+Chúng ta sẽ tạo một số schemas kết nối với nhau đại diện cho các tình huống kinh doanh thường gặp:
 
-1. **HR Schema** - Human Resources (employees, departments, jobs)
-2. **SALES Schema** - Sales and inventory management
-3. **FINANCE Schema** - Financial transactions and accounting
-4. **CUSTOMER Schema** - Customer relationship management
+1. **HR Schema** - Nhân sự (employees, departments, jobs)
+2. **SALES Schema** - Quản lý bán hàng và tồn kho
+3. **FINANCE Schema** - Giao dịch tài chính và kế toán
+4. **CUSTOMER Schema** - Quản lý quan hệ khách hàng
 
-## Prerequisites
+## Điều Kiện Tiên Quyết
 
-- Oracle Database installed and running
-- SQL client configured and connected
-- Administrative privileges (SYSTEM or SYSDBA access)
+- Oracle Database đã được cài đặt và đang chạy
+- SQL client đã được cấu hình và kết nối
+- Quyền quản trị (truy cập SYSTEM hoặc SYSDBA)
 
-## Schema 1: HR (Human Resources)
+## Schema 1: HR (Nhân Sự)
 
-### Tables Overview
-- **DEPARTMENTS** - Company departments
-- **JOBS** - Job positions and salary ranges
-- **EMPLOYEES** - Employee information
-- **JOB_HISTORY** - Employee job change history
-- **LOCATIONS** - Office locations
-- **COUNTRIES** - Country information
-- **REGIONS** - Geographic regions
+### Tổng Quan Tables
+- **DEPARTMENTS** - Các phòng ban công ty
+- **JOBS** - Vị trí công việc và khoảng lương
+- **EMPLOYEES** - Thông tin nhân viên
+- **JOB_HISTORY** - Lịch sử thay đổi công việc của nhân viên
+- **LOCATIONS** - Vị trí văn phòng
+- **COUNTRIES** - Thông tin quốc gia
+- **REGIONS** - Các khu vực địa lý
 
-### Create HR Schema
+### Tạo HR Schema
 
 ```sql
--- Create HR user/schema
+-- Tạo HR user/schema
 CREATE USER hr IDENTIFIED BY hr123;
 GRANT CONNECT, RESOURCE TO hr;
 GRANT CREATE VIEW TO hr;
 ALTER USER hr QUOTA UNLIMITED ON USERS;
 
--- Connect as HR user for table creation
+-- Kết nối với HR user để tạo table
 CONNECT hr/hr123;
 ```
 
-### Create Tables
+### Tạo Tables
 
 #### 1. REGIONS Table
 ```sql
@@ -50,7 +50,7 @@ CREATE TABLE regions (
     region_name  VARCHAR2(25) NOT NULL
 );
 
--- Insert sample data
+-- Chèn dữ liệu mẫu
 INSERT INTO regions VALUES (1, 'North America');
 INSERT INTO regions VALUES (2, 'Europe');
 INSERT INTO regions VALUES (3, 'Asia Pacific');
@@ -68,7 +68,7 @@ CREATE TABLE countries (
         FOREIGN KEY (region_id) REFERENCES regions(region_id)
 );
 
--- Insert sample data
+-- Chèn dữ liệu mẫu
 INSERT INTO countries VALUES ('US', 'United States', 1);
 INSERT INTO countries VALUES ('CA', 'Canada', 1);
 INSERT INTO countries VALUES ('UK', 'United Kingdom', 2);
@@ -91,7 +91,7 @@ CREATE TABLE locations (
         FOREIGN KEY (country_id) REFERENCES countries(country_id)
 );
 
--- Insert sample data
+-- Chèn dữ liệu mẫu
 INSERT INTO locations VALUES (1000, '1297 Via Cola di Rie', '00989', 'Roma', NULL, 'US');
 INSERT INTO locations VALUES (1100, '93091 Calle della Testa', '10934', 'Venice', NULL, 'US');
 INSERT INTO locations VALUES (1200, '2017 Shinjuku-ku', '1689', 'Tokyo', 'Tokyo Prefecture', 'JP');
@@ -111,7 +111,7 @@ CREATE TABLE departments (
         FOREIGN KEY (location_id) REFERENCES locations(location_id)
 );
 
--- Insert sample data
+-- Chèn dữ liệu mẫu
 INSERT INTO departments VALUES (10, 'Administration', 200, 1000);
 INSERT INTO departments VALUES (20, 'Marketing', 201, 1100);
 INSERT INTO departments VALUES (30, 'Purchasing', 114, 1200);
@@ -133,7 +133,7 @@ CREATE TABLE jobs (
     max_salary NUMBER(6)
 );
 
--- Insert sample data
+-- Chèn dữ liệu mẫu
 INSERT INTO jobs VALUES ('AD_PRES', 'President', 20080, 40000);
 INSERT INTO jobs VALUES ('AD_VP', 'Vice President', 15000, 30000);
 INSERT INTO jobs VALUES ('AD_ASST', 'Administrative Assistant', 3000, 6000);
@@ -178,7 +178,7 @@ CREATE TABLE employees (
         FOREIGN KEY (manager_id) REFERENCES employees(employee_id)
 );
 
--- Insert sample data
+-- Chèn dữ liệu mẫu
 INSERT INTO employees VALUES (100, 'Steven', 'King', 'SKING', '515.123.4567', DATE '1987-06-17', 'AD_PRES', 24000, NULL, NULL, 90);
 INSERT INTO employees VALUES (101, 'Neena', 'Kochhar', 'NKOCHHAR', '515.123.4568', DATE '1989-09-21', 'AD_VP', 17000, NULL, 100, 90);
 INSERT INTO employees VALUES (102, 'Lex', 'De Haan', 'LDEHAAN', '515.123.4569', DATE '1993-01-13', 'AD_VP', 17000, NULL, 100, 90);
@@ -198,7 +198,7 @@ COMMIT;
 CREATE TABLE job_history (
     employee_id   NUMBER(6) NOT NULL,
     start_date    DATE NOT NULL,
-    end_date      DATE NOT NULL,
+        end_date      DATE NOT NULL,
     job_id        VARCHAR2(10) NOT NULL,
     department_id NUMBER(4),
     CONSTRAINT job_history_pk 
@@ -213,7 +213,7 @@ CREATE TABLE job_history (
         CHECK (end_date > start_date)
 );
 
--- Insert sample data
+-- Chèn dữ liệu mẫu
 INSERT INTO job_history VALUES (102, DATE '1993-01-13', DATE '1998-07-24', 'IT_PROG', 60);
 INSERT INTO job_history VALUES (101, DATE '1989-09-21', DATE '1993-10-27', 'AC_ACCOUNT', 110);
 INSERT INTO job_history VALUES (101, DATE '1993-10-28', DATE '1997-03-15', 'AC_MGR', 110);
@@ -222,11 +222,11 @@ INSERT INTO job_history VALUES (103, DATE '1990-01-03', DATE '1992-12-31', 'AC_A
 COMMIT;
 ```
 
-## Schema 2: SALES (Sales and Inventory)
+## Schema 2: SALES (Bán Hàng và Tồn Kho)
 
-### Create SALES Schema
+### Tạo SALES Schema
 ```sql
--- Connect as SYSTEM to create user
+-- Kết nối với SYSTEM để tạo user
 CONNECT system/password;
 
 CREATE USER sales IDENTIFIED BY sales123;
@@ -234,11 +234,11 @@ GRANT CONNECT, RESOURCE TO sales;
 GRANT CREATE VIEW TO sales;
 ALTER USER sales QUOTA UNLIMITED ON USERS;
 
--- Connect as SALES user
+-- Kết nối với SALES user
 CONNECT sales/sales123;
 ```
 
-### Create Sales Tables
+### Tạo Sales Tables
 
 #### 1. CUSTOMERS Table
 ```sql
@@ -256,7 +256,7 @@ CREATE TABLE customers (
     email         VARCHAR2(50)
 );
 
--- Insert sample data
+-- Chèn dữ liệu mẫu
 INSERT INTO customers VALUES (1, 'Alfreds Futterkiste', 'Maria Anders', 'Sales Representative', 
     'Obere Str. 57', 'Berlin', NULL, '12209', 'Germany', '030-0074321', 'maria@alfreds.com');
 INSERT INTO customers VALUES (2, 'Ana Trujillo Emparedados', 'Ana Trujillo', 'Owner', 
@@ -274,7 +274,7 @@ CREATE TABLE categories (
     description   VARCHAR2(200)
 );
 
--- Insert sample data
+-- Chèn dữ liệu mẫu
 INSERT INTO categories VALUES (1, 'Beverages', 'Soft drinks, coffees, teas, beers, and ales');
 INSERT INTO categories VALUES (2, 'Condiments', 'Sweet and savory sauces, relishes, spreads, and seasonings');
 INSERT INTO categories VALUES (3, 'Dairy Products', 'Cheeses');
@@ -300,7 +300,7 @@ CREATE TABLE products (
         FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
 
--- Insert sample data
+-- Chèn dữ liệu mẫu
 INSERT INTO products VALUES (1, 'Chai', 1, 18.00, 39, 0, 10, 0);
 INSERT INTO products VALUES (2, 'Chang', 1, 19.00, 17, 40, 25, 0);
 INSERT INTO products VALUES (3, 'Aniseed Syrup', 2, 10.00, 13, 70, 25, 0);
@@ -328,7 +328,7 @@ CREATE TABLE orders (
         FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
 );
 
--- Insert sample data
+-- Chèn dữ liệu mẫu
 INSERT INTO orders VALUES (10248, 1, DATE '2023-07-04', DATE '2023-08-01', DATE '2023-07-16', 32.38,
     'Vins et alcools Chevalier', '59 rue de lAbbaye', 'Reims', NULL, '51100', 'France');
 INSERT INTO orders VALUES (10249, 2, DATE '2023-07-05', DATE '2023-08-16', DATE '2023-07-10', 11.61,
@@ -352,18 +352,18 @@ CREATE TABLE order_details (
         FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
--- Insert sample data
+-- Chèn dữ liệu mẫu
 INSERT INTO order_details VALUES (10248, 1, 18.00, 12, 0);
 INSERT INTO order_details VALUES (10248, 2, 19.00, 10, 0);
 INSERT INTO order_details VALUES (10249, 3, 10.00, 5, 0);
 COMMIT;
 ```
 
-## Create Views and Indexes
+## Tạo Views và Indexes
 
-### Useful Views
+### Views Hữu Ích
 ```sql
--- Employee details with department and job information
+-- Chi tiết nhân viên với thông tin phòng ban và công việc
 CREATE OR REPLACE VIEW emp_details_view AS
 SELECT 
     e.employee_id,
@@ -382,7 +382,7 @@ JOIN hr.departments d ON e.department_id = d.department_id
 JOIN hr.locations l ON d.location_id = l.location_id
 JOIN hr.countries c ON l.country_id = c.country_id;
 
--- Sales summary view
+-- View tóm tắt bán hàng
 CREATE OR REPLACE VIEW sales_summary_view AS
 SELECT 
     o.order_id,
@@ -409,23 +409,23 @@ CREATE INDEX orders_customer_idx ON sales.orders(customer_id);
 CREATE INDEX products_category_idx ON sales.products(category_id);
 ```
 
-## Sample Queries for Testing
+## Sample Queries Để Testing
 
 ### HR Schema Queries
 ```sql
--- Basic employee information
+-- Thông tin nhân viên cơ bản
 SELECT employee_id, first_name, last_name, email, salary
 FROM hr.employees
 WHERE department_id = 60;
 
--- Department employee count
+-- Số lượng nhân viên theo phòng ban
 SELECT d.department_name, COUNT(e.employee_id) AS employee_count
 FROM hr.departments d
 LEFT JOIN hr.employees e ON d.department_id = e.department_id
 GROUP BY d.department_name
 ORDER BY employee_count DESC;
 
--- Salary analysis by job
+-- Phân tích lương theo công việc
 SELECT j.job_title, 
        COUNT(e.employee_id) AS employee_count,
        AVG(e.salary) AS avg_salary,
@@ -439,7 +439,7 @@ ORDER BY avg_salary DESC;
 
 ### Sales Schema Queries
 ```sql
--- Product sales analysis
+-- Phân tích bán hàng sản phẩm
 SELECT p.product_name,
        SUM(od.quantity) AS total_quantity_sold,
        SUM(od.unit_price * od.quantity) AS total_revenue
@@ -448,7 +448,7 @@ JOIN sales.order_details od ON p.product_id = od.product_id
 GROUP BY p.product_name
 ORDER BY total_revenue DESC;
 
--- Customer order summary
+-- Tóm tắt đơn hàng khách hàng
 SELECT c.company_name,
        COUNT(o.order_id) AS total_orders,
        SUM(od.unit_price * od.quantity * (1 - od.discount)) AS total_spent
@@ -459,11 +459,11 @@ GROUP BY c.company_name
 ORDER BY total_spent DESC;
 ```
 
-## Data Generation Scripts
+## Scripts Tạo Dữ Liệu
 
-### Generate Additional Sample Data
+### Tạo Thêm Sample Data
 ```sql
--- Generate more employees (run as HR user)
+-- Tạo thêm nhân viên (chạy với HR user)
 INSERT INTO hr.employees 
 SELECT 
     employee_id + 1000,
@@ -480,7 +480,7 @@ SELECT
 FROM hr.employees
 WHERE employee_id BETWEEN 100 AND 110;
 
--- Generate more orders (run as SALES user)
+-- Tạo thêm đơn hàng (chạy với SALES user)
 INSERT INTO sales.orders
 SELECT 
     order_id + 1000,
@@ -501,20 +501,20 @@ WHERE order_id BETWEEN 10248 AND 10249;
 COMMIT;
 ```
 
-## Database Maintenance Scripts
+## Scripts Bảo Trì Database
 
-### Cleanup Scripts
+### Scripts Dọn Dẹp
 ```sql
--- Remove test data
+-- Xóa dữ liệu test
 DELETE FROM hr.employees WHERE employee_id > 1000;
 DELETE FROM sales.orders WHERE order_id > 1000;
 COMMIT;
 
--- Reset sequences (if using sequences)
+-- Reset sequences (nếu sử dụng sequences)
 -- ALTER SEQUENCE employee_seq RESTART START WITH 200;
 ```
 
-### Backup Commands
+### Lệnh Backup
 ```sql
 -- Export schema data
 -- expdp system/password schemas=HR,SALES directory=DATA_PUMP_DIR dumpfile=sample_schemas.dmp
@@ -523,11 +523,11 @@ COMMIT;
 -- impdp system/password schemas=HR,SALES directory=DATA_PUMP_DIR dumpfile=sample_schemas.dmp
 ```
 
-## Verification and Testing
+## Xác Minh và Testing
 
-### Data Integrity Checks
+### Kiểm Tra Tính Toàn Vẹn Dữ Liệu
 ```sql
--- Check referential integrity
+-- Kiểm tra referential integrity
 SELECT 'Orphaned employees' AS check_type, COUNT(*) AS count
 FROM hr.employees e
 WHERE e.department_id IS NOT NULL 
@@ -537,7 +537,7 @@ SELECT 'Orphaned orders', COUNT(*)
 FROM sales.orders o
 WHERE NOT EXISTS (SELECT 1 FROM sales.customers c WHERE c.customer_id = o.customer_id);
 
--- Check data consistency
+-- Kiểm tra tính nhất quán dữ liệu
 SELECT 'Employees without managers' AS check_type, COUNT(*) AS count
 FROM hr.employees 
 WHERE manager_id IS NOT NULL 
@@ -550,21 +550,21 @@ WHERE units_in_stock < 0;
 
 ### Performance Testing
 ```sql
--- Test query performance
+-- Test hiệu suất truy vấn
 SET TIMING ON;
 SELECT * FROM emp_details_view WHERE salary > 10000;
 SELECT * FROM sales_summary_view WHERE total_amount > 1000;
 SET TIMING OFF;
 ```
 
-## Next Steps
+## Các Bước Tiếp Theo
 
-Your sample database environment is now ready! You can:
+Môi trường sample database của bạn giờ đã sẵn sàng! Bạn có thể:
 
-1. **Explore the Data**: Use SELECT statements to browse the tables
-2. **Practice Queries**: Try the sample queries provided
-3. **Learn Relationships**: Study the foreign key relationships
-4. **Experiment**: Modify and extend the sample data
-5. **Start Learning**: Proceed to Lesson 3 for basic SQL queries
+1. **Khám Phá Dữ Liệu**: Sử dụng câu lệnh SELECT để duyệt các tables
+2. **Thực Hành Truy Vấn**: Thử các sample queries được cung cấp
+3. **Học Relationships**: Nghiên cứu các foreign key relationships
+4. **Thử Nghiệm**: Sửa đổi và mở rộng sample data
+5. **Bắt Đầu Học**: Tiến hành Bài 3 cho các truy vấn SQL cơ bản
 
-The sample database provides realistic scenarios for learning Oracle Database concepts and SQL programming techniques.
+Sample database cung cấp các tình huống thực tế để học các khái niệm Oracle Database và kỹ thuật lập trình SQL.

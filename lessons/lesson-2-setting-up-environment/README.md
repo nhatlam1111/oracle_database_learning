@@ -1,34 +1,34 @@
-# Lesson 2: Setting Up Your Environment
+# Bài Học 2: Thiết Lập Môi Trường
 
-This lesson covers everything you need to set up a complete Oracle Database development environment. You'll learn about different installation options, configure your development tools, and prepare sample data for learning.
+Bài học này bao gồm mọi thứ bạn cần để thiết lập một môi trường phát triển Oracle Database hoàn chỉnh. Bạn sẽ học về các tùy chọn cài đặt khác nhau, cấu hình công cụ phát triển và chuẩn bị dữ liệu mẫu để học tập.
 
-## Learning Objectives
-By the end of this lesson, you will be able to:
-- Choose the appropriate Oracle Database installation option for your needs
-- Install and configure Oracle Database or access Oracle Cloud
-- Set up and configure SQL Developer or alternative SQL clients
-- Create and populate sample databases for practice
-- Understand basic Oracle Database administration concepts
+## Mục Tiêu Học Tập
+Sau khi hoàn thành bài học này, bạn sẽ có thể:
+- Chọn tùy chọn cài đặt Oracle Database phù hợp với nhu cầu của bạn
+- Cài đặt và cấu hình Oracle Database hoặc truy cập Oracle Cloud
+- Thiết lập và cấu hình SQL Developer hoặc các SQL client thay thế
+- Tạo và điền dữ liệu vào cơ sở dữ liệu mẫu để thực hành
+- Hiểu các khái niệm quản trị Oracle Database cơ bản
 
-## Lesson Structure
-1. **Oracle Database Installation Options** - Compare different ways to get Oracle Database running
-2. **Oracle Cloud Setup** - Learn how to use Oracle's cloud-based database services
-3. **SQL Client Configuration** - Set up tools to interact with your database
-4. **Sample Database Creation** - Create practice databases and tables
+## Cấu Trúc Bài Học
+1. **Các Tùy Chọn Cài Đặt Oracle Database** - So sánh các cách khác nhau để chạy Oracle Database
+2. **Thiết Lập Oracle Cloud** - Học cách sử dụng dịch vụ cơ sở dữ liệu trên cloud của Oracle
+3. **Cấu Hình SQL Client** - Thiết lập công cụ để tương tác với cơ sở dữ liệu
+4. **Tạo Cơ Sở Dữ Liệu Mẫu** - Tạo cơ sở dữ liệu và bảng thực hành
 
-## Prerequisites
-- Basic understanding of databases (completed Lesson 1)
-- Administrator privileges on your computer (for local installation)
-- Internet connection for cloud setup or downloads
+## Điều Kiện Tiên Quyết
+- Hiểu biết cơ bản về cơ sở dữ liệu (đã hoàn thành Bài học 1)
+- Quyền quản trị trên máy tính của bạn (cho cài đặt cục bộ)
+- Kết nối Internet để thiết lập cloud hoặc tải xuống
 
-## Estimated Time
-2-3 hours (depending on installation method chosen)
+## Thời Gian Ước Tính
+2-3 giờ (tùy thuộc vào phương pháp cài đặt được chọn)
 
-## Files in This Lesson
-- `1-oracle-installation-options.md` - Compare different Oracle Database installation methods
-- `2-oracle-cloud-setup.md` - Step-by-step guide for Oracle Cloud Free Tier
-- `3-sql-client-configuration.md` - Setup SQL Developer and other database tools
-- `4-sample-database-creation.md` - Create practice databases and populate with sample data
+## Các Tệp Trong Bài Học Này
+- `1-oracle-installation-options.md` - So sánh các phương pháp cài đặt Oracle Database khác nhau
+- `2-oracle-cloud-setup.md` - Hướng dẫn từng bước cho Oracle Cloud Free Tier
+- `3-sql-client-configuration.md` - Thiết lập SQL Developer và các công cụ cơ sở dữ liệu khác
+- `4-sample-database-creation.md` - Tạo cơ sở dữ liệu thực hành và điền dữ liệu mẫu
 
-## Next Steps
-After completing this lesson, you'll have a fully functional Oracle Database environment ready for learning SQL and database concepts in Lesson 3.
+## Bước Tiếp Theo
+Sau khi hoàn thành bài học này, bạn sẽ có một môi trường Oracle Database hoàn chỉnh sẵn sàng để học SQL và các khái niệm cơ sở dữ liệu trong Bài học 3.

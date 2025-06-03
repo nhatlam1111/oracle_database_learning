@@ -1,125 +1,125 @@
-# Lesson 1: Introduction to Databases
+# Bài Học 1: Giới Thiệu Về Cơ Sở Dữ Liệu
 
-Welcome to the first lesson of the Oracle Database Learning Roadmap! This lesson provides a comprehensive introduction to databases, with a special focus on Oracle Database fundamentals and data types.
+Chào mừng bạn đến với bài học đầu tiên của Lộ Trình Học Oracle Database! Bài học này cung cấp một giới thiệu toàn diện về cơ sở dữ liệu, với trọng tâm đặc biệt là các nguyên tắc cơ bản và kiểu dữ liệu của Oracle Database.
 
-## Learning Objectives
+## Mục Tiêu Học Tập
 
-By the end of this lesson, you will:
-- Understand what databases are and why they're important
-- Know the differences between relational and non-relational databases
-- Be familiar with Oracle Database's key features and capabilities
-- Understand the role of databases in modern applications
+Sau khi hoàn thành bài học này, bạn sẽ:
+- Hiểu cơ sở dữ liệu là gì và tại sao chúng quan trọng
+- Biết sự khác biệt giữa cơ sở dữ liệu quan hệ và phi quan hệ
+- Quen thuộc với các tính năng và khả năng chính của Oracle Database
+- Hiểu vai trò của cơ sở dữ liệu trong các ứng dụng hiện đại
 
-## Lesson Structure
+## Cấu Trúc Bài Học
 
-### 1. What is a Database?
-**File:** `1-what-is-database.md`
-- Definition and importance of databases
-- Role of databases in modern applications
-- Database vs. file systems
-- Key database concepts and terminology
+### 1. Cơ Sở Dữ Liệu Là Gì?
+**Tệp:** `1-what-is-database.md`
+- Định nghĩa và tầm quan trọng của cơ sở dữ liệu
+- Vai trò của cơ sở dữ liệu trong các ứng dụng hiện đại
+- Cơ sở dữ liệu so với hệ thống tệp
+- Các khái niệm và thuật ngữ cơ bản về cơ sở dữ liệu
 
-### 2. Database Types
-**File:** `2-database-types.md`
-- Relational databases (RDBMS)
-- Non-relational databases (NoSQL)
-- Comparison and use cases
-- When to choose each type
+### 2. Các Loại Cơ Sở Dữ Liệu
+**Tệp:** `2-database-types.md`
+- Cơ sở dữ liệu quan hệ (RDBMS)
+- Cơ sở dữ liệu phi quan hệ (NoSQL)
+- So sánh và trường hợp sử dụng
+- Khi nào nên chọn từng loại
 
-### 3. Oracle Database Features
-**File:** `3-oracle-database-features.md`
-- **Oracle Database Architecture Overview** - Complete tree structure showing:
-  - Database Instance (Memory + Background Processes)
-  - Physical and Logical Storage Structure
-  - Schema Objects and Organization
-  - Client Connections and Network Services
-- Scalability and performance capabilities
-- High availability and security features
-- Multi-model capabilities and advanced analytics
-- Cloud integration and enterprise features
+### 3. Các Tính Năng Của Oracle Database
+**Tệp:** `3-oracle-database-features.md`
+- **Tổng Quan Kiến Trúc Oracle Database** - Cấu trúc cây hoàn chình hiển thị:
+  - Database Instance (Bộ nhớ + Các tiến trình nền)
+  - Cấu trúc lưu trữ vật lý và logic
+  - Các đối tượng Schema và tổ chức
+  - Kết nối client và dịch vụ mạng
+- Khả năng mở rộng và hiệu suất
+- Tính năng khả dụng cao và bảo mật
+- Khả năng đa mô hình và phân tích nâng cao
+- Tích hợp cloud và các tính năng doanh nghiệp
 
-## Practical Examples
+## Ví Dụ Thực Hành
 
-### Database Concepts Practice
-While this lesson focuses on theory, you can explore the sample database scripts in `../../src/` to see real-world examples of how databases are structured and used.
+### Thực Hành Khái Niệm Cơ Sở Dữ Liệu
+Mặc dù bài học này tập trung vào lý thuyết, bạn có thể khám phá các script cơ sở dữ liệu mẫu trong `../../src/` để xem các ví dụ thực tế về cách cấu trúc và sử dụng cơ sở dữ liệu.
 
-## Key Takeaways
+## Điểm Chính Cần Ghi Nhớ
 
-### Database Fundamentals
-1. **Databases** provide structured, reliable, and efficient data storage
-2. **Relational databases** use tables with relationships between them
-3. **Oracle Database** is an enterprise-grade RDBMS with advanced features
+### Nguyên Tắc Cơ Bản Về Cơ Sở Dữ Liệu
+1. **Cơ sở dữ liệu** cung cấp lưu trữ dữ liệu có cấu trúc, đáng tin cậy và hiệu quả
+2. **Cơ sở dữ liệu quan hệ** sử dụng các bảng với mối quan hệ giữa chúng
+3. **Oracle Database** là một RDBMS cấp doanh nghiệp với các tính năng nâng cao
 
-### Data Type Mastery
-*Note: Data types will be covered in detail in Lesson 3 when you start creating tables and working with SQL.*
+### Thành Thạo Kiểu Dữ Liệu
+*Lưu ý: Các kiểu dữ liệu sẽ được đề cập chi tiết trong Bài học 3 khi bạn bắt đầu tạo bảng và làm việc với SQL.*
 
-### Best Practices
-1. **Right-size your data types** - don't over-allocate
-2. **Use constraints** to maintain data integrity
-3. **Consider Unicode** for international applications
-4. **Document your choices** for future reference
-5. **Test performance** with realistic data volumes
+### Thực Hành Tốt Nhất
+1. **Chọn đúng kích thước kiểu dữ liệu** - đừng phân bổ quá mức
+2. **Sử dụng ràng buộc** để duy trì tính toàn vẹn dữ liệu
+3. **Xem xét Unicode** cho các ứng dụng quốc tế
+4. **Ghi chép lựa chọn của bạn** để tham khảo sau này
+5. **Kiểm tra hiệu suất** với khối lượng dữ liệu thực tế
 
-## Exercises and Practice
+## Bài Tập và Thực Hành
 
-### Exercise 1: Database Concepts
-Research and explain the differences between:
-- RDBMS vs NoSQL databases
-- Tables vs Collections
-- SQL vs NoSQL query languages
-- ACID properties vs BASE principles
+### Bài Tập 1: Khái Niệm Cơ Sở Dữ Liệu
+Nghiên cứu và giải thích sự khác biệt giữa:
+- Cơ sở dữ liệu RDBMS vs NoSQL
+- Bảng vs Bộ sưu tập
+- Ngôn ngữ truy vấn SQL vs NoSQL
+- Tính chất ACID vs nguyên tắc BASE
 
-### Exercise 2: Oracle Database Features
-List three Oracle Database features that would be important for:
-- A banking application
-- An e-commerce website
-- A data analytics platform
+### Bài Tập 2: Các Tính Năng Oracle Database
+Liệt kê ba tính năng Oracle Database quan trọng cho:
+- Một ứng dụng ngân hàng
+- Một website thương mại điện tử
+- Một nền tảng phân tích dữ liệu
 
-### Exercise 3: Database Design Thinking
-For a library management system, identify what types of data would need to be stored and how they might be organized (don't worry about specific data types yet - that comes in Lesson 3!).
+### Bài Tập 3: Tư Duy Thiết Kế Cơ Sở Dữ Liệu
+Đối với hệ thống quản lý thư viện, xác định các loại dữ liệu cần được lưu trữ và cách chúng có thể được tổ chức (chưa cần lo lắng về các kiểu dữ liệu cụ thể - điều đó sẽ được đề cập trong Bài học 3!).
 
-## Prerequisites
-- Basic understanding of what data is
-- Familiarity with the concept of structured information
-- No prior database experience required
+## Điều Kiện Tiên Quyết
+- Hiểu biết cơ bản về dữ liệu là gì
+- Quen thuộc với khái niệm thông tin có cấu trúc
+- Không cần kinh nghiệm cơ sở dữ liệu trước đó
 
-## Next Steps
-After completing this lesson, you'll be ready for:
-- **Lesson 2**: Setting Up Your Oracle Environment
-- Installing Oracle Database or using Oracle Cloud
-- Configuring SQL clients and development tools
-- Creating your first database schemas
+## Bước Tiếp Theo
+Sau khi hoàn thành bài học này, bạn sẽ sẵn sàng cho:
+- **Bài học 2**: Thiết Lập Môi Trường Oracle
+- Cài đặt Oracle Database hoặc sử dụng Oracle Cloud
+- Cấu hình SQL client và công cụ phát triển
+- Tạo schema cơ sở dữ liệu đầu tiên
 
-## Additional Resources
+## Tài Nguyên Bổ Sung
 
-### Documentation
+### Tài Liệu
 - Oracle Database Concepts Guide
 - Oracle Database SQL Language Reference
 - Oracle Database Administrator's Guide
 
-### Online Resources
+### Tài Nguyên Trực Tuyến
 - Oracle Learning Library
 - Oracle Database Documentation
 - Oracle Community Forums
 
-### Tools
+### Công Cụ
 - Oracle SQL Developer
 - Oracle Cloud Free Tier
-- VS Code with Oracle extensions
+- VS Code với tiện ích mở rộng Oracle
 
-## Assessment
+## Đánh Giá
 
-Before moving to the next lesson, ensure you can:
-- [ ] Explain the difference between relational and non-relational databases
-- [ ] List key features of Oracle Database
-- [ ] Understand the role of databases in modern applications
-- [ ] Identify appropriate use cases for different database types
+Trước khi chuyển sang bài học tiếp theo, hãy đảm bảo bạn có thể:
+- [ ] Giải thích sự khác biệt giữa cơ sở dữ liệu quan hệ và phi quan hệ
+- [ ] Liệt kê các tính năng chính của Oracle Database
+- [ ] Hiểu vai trò của cơ sở dữ liệu trong các ứng dụng hiện đại
+- [ ] Xác định các trường hợp sử dụng phù hợp cho các loại cơ sở dữ liệu khác nhau
 
-## Estimated Time
-- **Reading**: 30-45 minutes
-- **Exercises**: 30-45 minutes
-- **Total**: 1-1.5 hours
+## Thời Gian Ước Tính
+- **Đọc**: 30-45 phút
+- **Bài tập**: 30-45 phút
+- **Tổng cộng**: 1-1.5 giờ
 
 ---
 
-**Ready to proceed?** Move on to [Lesson 2: Setting Up Your Environment](../lesson-2-setting-up-environment/) to start working with Oracle Database hands-on!
+**Sẵn sàng tiếp tục?** Chuyển sang [Bài học 2: Thiết Lập Môi Trường](../lesson-2-setting-up-environment/) để bắt đầu làm việc thực tế với Oracle Database!
