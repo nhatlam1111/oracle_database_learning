@@ -1,189 +1,189 @@
-# Lesson 4: Intermediate SQL Concepts
+# Bài 4: Các Khái Niệm SQL Trung Cấp
 
-Welcome to Lesson 4! This lesson covers intermediate SQL concepts that will significantly expand your ability to work with relational databases. You'll learn how to combine data from multiple tables using joins and how to write sophisticated queries using subqueries.
+Chào mừng đến với Bài 4! Bài học này bao gồm các khái niệm SQL trung cấp sẽ mở rộng đáng kể khả năng làm việc của bạn với cơ sở dữ liệu quan hệ. Bạn sẽ học cách kết hợp dữ liệu từ nhiều bảng bằng cách sử dụng joins và cách viết các truy vấn phức tạp sử dụng subqueries.
 
-## Learning Objectives
+## Mục Tiêu Học Tập
 
-By the end of this lesson, you will be able to:
-- Understand relational database principles and table relationships
-- Write INNER JOINs to combine related data from multiple tables
-- Use OUTER JOINs (LEFT, RIGHT, FULL) to include unmatched records
-- Apply CROSS JOINs and SELF JOINs for special scenarios
-- Write and optimize subqueries in SELECT, WHERE, and FROM clauses
-- Use correlated subqueries for row-by-row processing
-- Apply EXISTS and NOT EXISTS for existence checking
-- Combine joins and subqueries in complex queries
+Khi kết thúc bài học này, bạn sẽ có thể:
+- Hiểu các nguyên tắc cơ sở dữ liệu quan hệ và mối quan hệ giữa các bảng
+- Viết INNER JOINs để kết hợp dữ liệu liên quan từ nhiều bảng
+- Sử dụng OUTER JOINs (LEFT, RIGHT, FULL) để bao gồm các bản ghi không khớp
+- Áp dụng CROSS JOINs và SELF JOINs cho các tình huống đặc biệt
+- Viết và tối ưu hóa subqueries trong các mệnh đề SELECT, WHERE, và FROM
+- Sử dụng correlated subqueries cho xử lý từng hàng
+- Áp dụng EXISTS và NOT EXISTS để kiểm tra sự tồn tại
+- Kết hợp joins và subqueries trong các truy vấn phức tạp
 
-## Prerequisites
+## Điều Kiện Tiên Quyết
 
-Before starting this lesson, ensure you have:
-- Completed Lessons 1-3 (Database fundamentals and basic SQL)
-- Strong understanding of SELECT, WHERE, ORDER BY, and aggregate functions
-- Access to Oracle Database with HR and SALES sample schemas
-- Familiarity with primary keys and foreign key relationships
+Trước khi bắt đầu bài học này, hãy đảm bảo bạn đã:
+- Hoàn thành Bài 1-3 (Kiến thức cơ bản về cơ sở dữ liệu và SQL cơ bản)
+- Hiểu vững về SELECT, WHERE, ORDER BY, và các hàm tổng hợp
+- Có quyền truy cập Oracle Database với các schema mẫu HR và SALES
+- Quen thuộc với khóa chính và mối quan hệ khóa ngoại
 
-## Lesson Structure
+## Cấu Trúc Bài Học
 
-### 1. Table Relationships and Join Fundamentals (`1-table-relationships.md`)
-- Understanding primary and foreign keys
-- One-to-many, many-to-many, and one-to-one relationships
-- Referential integrity concepts
-- Introduction to JOIN syntax
+### 1. Mối Quan Hệ Bảng và Kiến Thức Cơ Bản về Join (`1-table-relationships.md`)
+- Hiểu về khóa chính và khóa ngoại
+- Mối quan hệ một-nhiều, nhiều-nhiều, và một-một
+- Các khái niệm về tính toàn vẹn tham chiếu
+- Giới thiệu cú pháp JOIN
 
-**Practice File**: `src/intermediate/table-relationships.sql`
+**Tệp Thực Hành**: `src/intermediate/table-relationships.sql`
 
 ### 2. INNER JOINs (`2-inner-joins.md`)
-- Basic INNER JOIN syntax and mechanics
-- Joining two and multiple tables
-- Using table aliases for readability
-- Common join conditions and patterns
-- Performance considerations
+- Cú pháp và cơ chế INNER JOIN cơ bản
+- Nối hai bảng và nhiều bảng
+- Sử dụng bí danh bảng để dễ đọc
+- Các điều kiện nối và mẫu phổ biến
+- Cân nhắc về hiệu suất
 
-**Practice File**: `src/intermediate/inner-joins.sql`
+**Tệp Thực Hành**: `src/intermediate/inner-joins.sql`
 
 ### 3. OUTER JOINs (`3-outer-joins.md`)
-- LEFT OUTER JOIN for including unmatched left table records
-- RIGHT OUTER JOIN for including unmatched right table records
-- FULL OUTER JOIN for including all unmatched records
-- Handling NULL values in outer joins
-- Business scenarios for each join type
+- LEFT OUTER JOIN để bao gồm các bản ghi không khớp từ bảng bên trái
+- RIGHT OUTER JOIN để bao gồm các bản ghi không khớp từ bảng bên phải
+- FULL OUTER JOIN để bao gồm tất cả các bản ghi không khớp
+- Xử lý giá trị NULL trong outer joins
+- Các tình huống nghiệp vụ cho từng loại join
 
-**Practice File**: `src/intermediate/outer-joins.sql`
+**Tệp Thực Hành**: `src/intermediate/outer-joins.sql`
 
-### 4. Advanced Join Types (`4-advanced-joins.md`)
-- CROSS JOIN for Cartesian products
-- SELF JOIN for hierarchical data
-- Non-equi joins with different operators
-- Multiple join conditions
-- Join optimization techniques
+### 4. Các Loại Join Nâng Cao (`4-advanced-joins.md`)
+- CROSS JOIN cho tích Cartesian
+- SELF JOIN cho dữ liệu phân cấp
+- Non-equi joins với các toán tử khác nhau
+- Nhiều điều kiện join
+- Kỹ thuật tối ưu hóa join
 
-**Practice File**: `src/intermediate/advanced-joins.sql`
+**Tệp Thực Hành**: `src/intermediate/advanced-joins.sql`
 
-### 5. Subquery Fundamentals (`5-subqueries.md`)
-- Single-row and multi-row subqueries
-- Subqueries in SELECT, WHERE, and FROM clauses
-- Scalar subqueries for calculations
-- Using subqueries with comparison operators
-- Common subquery patterns
+### 5. Kiến Thức Cơ Bản về Subquery (`5-subqueries.md`)
+- Subqueries đơn hàng và đa hàng
+- Subqueries trong các mệnh đề SELECT, WHERE, và FROM
+- Scalar subqueries cho tính toán
+- Sử dụng subqueries với các toán tử so sánh
+- Các mẫu subquery phổ biến
 
-**Practice File**: `src/intermediate/subqueries.sql`
+**Tệp Thực Hành**: `src/intermediate/subqueries.sql`
 
-### 6. Correlated Subqueries and EXISTS (`6-correlated-subqueries.md`)
-- Understanding correlated vs non-correlated subqueries
-- EXISTS and NOT EXISTS operators
-- Performance implications of correlated subqueries
-- Converting EXISTS to joins and vice versa
-- Advanced correlation techniques
+### 6. Correlated Subqueries và EXISTS (`6-correlated-subqueries.md`)
+- Hiểu về correlated vs non-correlated subqueries
+- Các toán tử EXISTS và NOT EXISTS
+- Tác động hiệu suất của correlated subqueries
+- Chuyển đổi EXISTS thành joins và ngược lại
+- Kỹ thuật correlation nâng cao
 
-**Practice File**: `src/intermediate/correlated-subqueries.sql`
+**Tệp Thực Hành**: `src/intermediate/correlated-subqueries.sql`
 
-## Sample Data Reference
+## Tham Khảo Dữ Liệu Mẫu
 
-This lesson extensively uses relationships between tables in the HR and SALES schemas:
+Bài học này sử dụng rộng rãi các mối quan hệ giữa các bảng trong schemas HR và SALES:
 
-### HR Schema Relationships:
-- **EMPLOYEES** ↔ **DEPARTMENTS** (via department_id)
-- **EMPLOYEES** ↔ **JOBS** (via job_id)
-- **EMPLOYEES** ↔ **EMPLOYEES** (manager_id self-reference)
-- **DEPARTMENTS** ↔ **LOCATIONS** (via location_id)
-- **LOCATIONS** ↔ **COUNTRIES** (via country_id)
+### Mối Quan Hệ HR Schema:
+- **EMPLOYEES** ↔ **DEPARTMENTS** (thông qua department_id)
+- **EMPLOYEES** ↔ **JOBS** (thông qua job_id)
+- **EMPLOYEES** ↔ **EMPLOYEES** (tự tham chiếu manager_id)
+- **DEPARTMENTS** ↔ **LOCATIONS** (thông qua location_id)
+- **LOCATIONS** ↔ **COUNTRIES** (thông qua country_id)
 
-### SALES Schema Relationships:
-- **ORDERS** ↔ **CUSTOMERS** (via customer_id)
-- **ORDER_ITEMS** ↔ **ORDERS** (via order_id)
-- **ORDER_ITEMS** ↔ **PRODUCTS** (via product_id)
+### Mối Quan Hệ SALES Schema:
+- **ORDERS** ↔ **CUSTOMERS** (thông qua customer_id)
+- **ORDER_ITEMS** ↔ **ORDERS** (thông qua order_id)
+- **ORDER_ITEMS** ↔ **PRODUCTS** (thông qua product_id)
 
-## Learning Path
+## Lộ Trình Học Tập
 
-1. **Start with Theory**: Read each markdown file to understand concepts
-2. **Practice Step by Step**: Work through practice files in order
-3. **Build Complexity**: Start with simple 2-table joins, progress to complex multi-table queries
-4. **Real-world Application**: Apply concepts to business scenarios
-5. **Performance Awareness**: Learn to write efficient queries
+1. **Bắt đầu với Lý thuyết**: Đọc từng tệp markdown để hiểu các khái niệm
+2. **Thực hành Từng bước**: Làm việc với các tệp thực hành theo thứ tự
+3. **Xây dựng Độ phức tạp**: Bắt đầu với joins 2 bảng đơn giản, tiến tới các truy vấn nhiều bảng phức tạp
+4. **Ứng dụng Thực tế**: Áp dụng các khái niệm vào các tình huống nghiệp vụ
+5. **Nhận thức về Hiệu suất**: Học cách viết các truy vấn hiệu quả
 
-## Key Concepts to Master
+## Các Khái Niệm Chính Cần Thành Thạo
 
-### Join Types:
-- **INNER JOIN**: Returns only matching records
-- **LEFT JOIN**: Returns all left table records + matches
-- **RIGHT JOIN**: Returns all right table records + matches
-- **FULL JOIN**: Returns all records from both tables
-- **CROSS JOIN**: Cartesian product of both tables
-- **SELF JOIN**: Table joined with itself
+### Các Loại Join:
+- **INNER JOIN**: Chỉ trả về các bản ghi khớp
+- **LEFT JOIN**: Trả về tất cả bản ghi bảng trái + các bản ghi khớp
+- **RIGHT JOIN**: Trả về tất cả bản ghi bảng phải + các bản ghi khớp
+- **FULL JOIN**: Trả về tất cả bản ghi từ cả hai bảng
+- **CROSS JOIN**: Tích Cartesian của cả hai bảng
+- **SELF JOIN**: Bảng được nối với chính nó
 
-### Subquery Types:
-- **Scalar Subqueries**: Return single value
-- **Row Subqueries**: Return single row with multiple columns
-- **Table Subqueries**: Return multiple rows and columns
-- **Correlated Subqueries**: Reference outer query columns
-- **EXISTS Subqueries**: Test for existence of rows
+### Các Loại Subquery:
+- **Scalar Subqueries**: Trả về một giá trị duy nhất
+- **Row Subqueries**: Trả về một hàng với nhiều cột
+- **Table Subqueries**: Trả về nhiều hàng và cột
+- **Correlated Subqueries**: Tham chiếu các cột truy vấn ngoài
+- **EXISTS Subqueries**: Kiểm tra sự tồn tại của các hàng
 
-## Common Use Cases
+## Các Trường Hợp Sử Dụng Phổ Biến
 
-### Business Scenarios for Joins:
-- Employee and department information reports
-- Customer order history analysis
-- Product sales performance tracking
-- Organizational hierarchy reporting
-- Geographic sales analysis
+### Tình Huống Nghiệp Vụ cho Joins:
+- Báo cáo thông tin nhân viên và phòng ban
+- Phân tích lịch sử đặt hàng khách hàng
+- Theo dõi hiệu suất bán hàng sản phẩm
+- Báo cáo cấu trúc tổ chức
+- Phân tích bán hàng theo địa lý
 
-### Business Scenarios for Subqueries:
-- Finding above-average performers
-- Identifying customers with no recent orders
-- Product categories with highest sales
-- Employees in departments with specific criteria
-- Complex filtering based on aggregated data
+### Tình Huống Nghiệp Vụ cho Subqueries:
+- Tìm những người có hiệu suất trên mức trung bình
+- Xác định khách hàng không có đơn hàng gần đây
+- Danh mục sản phẩm có doanh số cao nhất
+- Nhân viên trong các phòng ban có tiêu chí cụ thể
+- Lọc phức tạp dựa trên dữ liệu tổng hợp
 
-## Performance Tips
+## Mẹo Về Hiệu Suất
 
-1. **Use appropriate indexes** on join columns
-2. **Filter early** with WHERE clauses before joins
-3. **Choose the right join type** for your business logic
-4. **Consider query execution plans** for optimization
-5. **Use EXISTS instead of IN** for better performance with NULLs
-6. **Avoid unnecessary subqueries** that can be converted to joins
+1. **Sử dụng các index phù hợp** trên các cột join
+2. **Lọc sớm** với các mệnh đề WHERE trước khi join
+3. **Chọn loại join phù hợp** cho logic nghiệp vụ của bạn
+4. **Xem xét kế hoạch thực thi truy vấn** để tối ưu hóa
+5. **Sử dụng EXISTS thay vì IN** để có hiệu suất tốt hơn với NULL
+6. **Tránh các subquery không cần thiết** có thể chuyển đổi thành joins
 
-## Common Mistakes to Avoid
+## Lỗi Phổ Biến Cần Tránh
 
-- Forgetting join conditions (resulting in Cartesian products)
-- Using wrong join types for business requirements
-- Not handling NULL values in outer joins
-- Writing inefficient correlated subqueries
-- Mixing join syntax styles (ANSI vs Oracle traditional)
-- Not considering performance implications of complex queries
+- Quên điều kiện join (dẫn đến tích Cartesian)
+- Sử dụng sai loại join cho yêu cầu nghiệp vụ
+- Không xử lý giá trị NULL trong outer joins
+- Viết correlated subqueries không hiệu quả
+- Trộn lẫn các kiểu cú pháp join (ANSI vs Oracle truyền thống)
+- Không xem xét tác động hiệu suất của các truy vấn phức tạp
 
-## Tools and Techniques
+## Công Cụ và Kỹ Thuật
 
-- **EXPLAIN PLAN** for analyzing query performance
-- **Table aliases** for readability and avoiding ambiguity
-- **Proper indentation** for complex query readability
-- **Comments** to document complex business logic
-- **Incremental building** of complex queries
+- **EXPLAIN PLAN** để phân tích hiệu suất truy vấn
+- **Bí danh bảng** để dễ đọc và tránh nhầm lẫn
+- **Thụt lề phù hợp** cho khả năng đọc truy vấn phức tạp
+- **Chú thích** để ghi chép logic nghiệp vụ phức tạp
+- **Xây dựng từng bước** các truy vấn phức tạp
 
-## Estimated Time
+## Thời Gian Ước Tính
 
-4-6 hours total:
-- Theory reading: 1.5 hours
-- Practice exercises: 2.5 hours
-- Complex scenarios: 1-2 hours
+Tổng cộng 4-6 giờ:
+- Đọc lý thuyết: 1.5 giờ
+- Bài tập thực hành: 2.5 giờ
+- Tình huống phức tạp: 1-2 giờ
 
-## Assessment
+## Đánh Giá
 
-After completing this lesson, you should be able to:
-- Write joins to combine data from 3+ tables
-- Choose appropriate join types for business scenarios
-- Use subqueries to solve complex filtering problems
-- Optimize queries for better performance
-- Handle hierarchical data with self-joins
-- Combine joins and subqueries in sophisticated queries
+Sau khi hoàn thành bài học này, bạn nên có thể:
+- Viết joins để kết hợp dữ liệu từ 3+ bảng
+- Chọn loại join phù hợp cho các tình huống nghiệp vụ
+- Sử dụng subqueries để giải quyết các vấn đề lọc phức tạp
+- Tối ưu hóa truy vấn để có hiệu suất tốt hơn
+- Xử lý dữ liệu phân cấp với self-joins
+- Kết hợp joins và subqueries trong các truy vấn phức tạp
 
-## Next Steps
+## Bước Tiếp Theo
 
-After mastering this lesson, you'll be ready for:
-- **Lesson 5**: Advanced SQL Techniques (Stored Procedures, Functions, Triggers)
-- **Lesson 6**: Database Design and Optimization
-- **Real-world Projects**: Building complete database applications
+Sau khi thành thạo bài học này, bạn sẽ sẵn sàng cho:
+- **Bài 5**: Kỹ Thuật SQL Nâng Cao (Stored Procedures, Functions, Triggers)
+- **Bài 6**: Thiết Kế và Tối Ưu Hóa Cơ Sở Dữ Liệu
+- **Dự Án Thực Tế**: Xây dựng các ứng dụng cơ sở dữ liệu hoàn chỉnh
 
 ---
 
-**Important Note**: This lesson significantly increases in complexity. Take your time with each concept and practice extensively before moving to the next topic. The concepts learned here form the foundation for advanced database development.
+**Lưu Ý Quan Trọng**: Bài học này tăng đáng kể về độ phức tạp. Hãy dành thời gian với từng khái niệm và thực hành nhiều trước khi chuyển sang chủ đề tiếp theo. Các khái niệm học được ở đây tạo nền tảng cho phát triển cơ sở dữ liệu nâng cao.

@@ -1,102 +1,102 @@
 # Stored Procedures
 
-Stored procedures are the foundation of database programming, allowing you to encapsulate complex business logic directly in the database. They provide performance benefits, security advantages, and code reusability that makes them essential for enterprise applications.
+Stored procedures là nền tảng của lập trình cơ sở dữ liệu, cho phép bạn đóng gói logic business phức tạp trực tiếp trong cơ sở dữ liệu. Chúng cung cấp lợi ích hiệu suất, ưu thế bảo mật và khả năng tái sử dụng code, làm cho chúng thiết yếu cho các ứng dụng doanh nghiệp.
 
-## 🎯 Learning Objectives
+## 🎯 Mục Tiêu Học Tập
 
-By the end of this section, you will understand:
+Sau khi hoàn thành phần này, bạn sẽ hiểu được:
 
-1. **Procedure Fundamentals**: What procedures are and their benefits
-2. **PL/SQL Basics**: Understanding Oracle's procedural language
-3. **Parameter Handling**: IN, OUT, and IN OUT parameters
-4. **Control Structures**: Conditional logic and loops in procedures
-5. **Exception Handling**: Professional error management
-6. **Performance Optimization**: Writing efficient procedural code
-7. **Debugging Techniques**: Testing and troubleshooting procedures
+1. **Cơ bản về Procedure**: Procedure là gì và lợi ích của chúng
+2. **Cơ bản PL/SQL**: Hiểu ngôn ngữ thủ tục của Oracle
+3. **Xử lý Tham số**: Tham số IN, OUT và IN OUT
+4. **Cấu trúc Điều khiển**: Logic điều kiện và vòng lặp trong procedures
+5. **Xử lý Exception**: Quản lý lỗi chuyên nghiệp
+6. **Tối ưu hóa Hiệu suất**: Viết code thủ tục hiệu quả
+7. **Kỹ thuật Debug**: Testing và troubleshooting procedures
 
-## 📖 Table of Contents
+## 📖 Mục Lục
 
-1. [Understanding Stored Procedures](#understanding-stored-procedures)
-2. [PL/SQL Basics](#plsql-basics)
-3. [Creating Simple Procedures](#creating-simple-procedures)
-4. [Parameters and Variables](#parameters-and-variables)
-5. [Control Structures](#control-structures)
-6. [Exception Handling](#exception-handling)
-7. [Advanced Procedure Techniques](#advanced-procedure-techniques)
-8. [Performance and Optimization](#performance-and-optimization)
-9. [Best Practices](#best-practices)
+1. [Hiểu về Stored Procedures](#understanding-stored-procedures)
+2. [Cơ bản PL/SQL](#plsql-basics)
+3. [Tạo Simple Procedures](#creating-simple-procedures)
+4. [Tham số và Biến](#parameters-and-variables)
+5. [Cấu trúc Điều khiển](#control-structures)
+6. [Xử lý Exception](#exception-handling)
+7. [Kỹ thuật Procedure Nâng cao](#advanced-procedure-techniques)
+8. [Hiệu suất và Tối ưu hóa](#performance-and-optimization)
+9. [Thực hành Tốt](#best-practices)
 
 ---
 
-## Understanding Stored Procedures
+## Hiểu về Stored Procedures
 
-### What is a Stored Procedure?
+### Stored Procedure là gì?
 
-A **stored procedure** is a named collection of SQL and PL/SQL statements stored in the database. Procedures encapsulate business logic and can be executed by applications or other database programs.
+**Stored procedure** là một tập hợp có tên các câu lệnh SQL và PL/SQL được lưu trữ trong cơ sở dữ liệu. Procedures đóng gói logic business và có thể được thực thi bởi các ứng dụng hoặc các chương trình cơ sở dữ liệu khác.
 
-### Benefits of Stored Procedures
+### Lợi ích của Stored Procedures
 
-#### **Performance Benefits**
-- **Pre-compiled Code**: Procedures are compiled and stored in parsed form
-- **Reduced Network Traffic**: One procedure call vs multiple SQL statements
-- **Execution Plan Reuse**: Oracle caches execution plans
-- **Memory Efficiency**: Shared among multiple sessions
+#### **Lợi ích Hiệu suất**
+- **Code Được Biên dịch Trước**: Procedures được biên dịch và lưu trữ ở dạng đã phân tích
+- **Giảm Network Traffic**: Một lần gọi procedure thay vì nhiều câu lệnh SQL
+- **Tái sử dụng Execution Plan**: Oracle cache các execution plans
+- **Hiệu quả Bộ nhớ**: Chia sẻ giữa nhiều sessions
 
-#### **Security Benefits**
-- **Access Control**: Grant execute permissions instead of table access
-- **SQL Injection Prevention**: Parameters are properly handled
-- **Business Logic Protection**: Code resides securely in database
-- **Audit Trail**: Procedure execution can be logged
+#### **Lợi ích Bảo mật**
+- **Kiểm soát Truy cập**: Cấp quyền execute thay vì quyền truy cập table
+- **Ngăn chặn SQL Injection**: Tham số được xử lý đúng cách
+- **Bảo vệ Business Logic**: Code nằm an toàn trong database
+- **Audit Trail**: Việc thực thi procedure có thể được ghi log
 
-#### **Maintainability Benefits**
-- **Centralized Logic**: Business rules in one location
-- **Code Reusability**: Called from multiple applications
-- **Consistent Implementation**: Same logic across all apps
-- **Version Control**: Changes managed in database
+#### **Lợi ích Khả năng Bảo trì**
+- **Logic Tập trung**: Quy tắc business ở một vị trí
+- **Khả năng Tái sử dụng Code**: Được gọi từ nhiều ứng dụng
+- **Triển khai Nhất quán**: Cùng logic trên tất cả ứng dụng
+- **Kiểm soát Phiên bản**: Thay đổi được quản lý trong database
 
 ### Procedure vs Function vs Package
 
-| Feature | Procedure | Function | Package |
+| Tính năng | Procedure | Function | Package |
 |---------|-----------|----------|---------|
-| **Returns Value** | No (uses OUT parameters) | Yes (single value) | Contains both |
-| **Usage** | EXECUTE statement | In SELECT statements | Organizes related code |
-| **Purpose** | Perform actions | Calculate values | Group related objects |
-| **Parameters** | IN, OUT, IN OUT | IN, RETURN | Multiple procedures/functions |
+| **Trả về Giá trị** | Không (sử dụng OUT parameters) | Có (giá trị đơn) | Chứa cả hai |
+| **Cách sử dụng** | Câu lệnh EXECUTE | Trong câu lệnh SELECT | Tổ chức code liên quan |
+| **Mục đích** | Thực hiện hành động | Tính toán giá trị | Nhóm các objects liên quan |
+| **Tham số** | IN, OUT, IN OUT | IN, RETURN | Nhiều procedures/functions |
 
 ---
 
-## PL/SQL Basics
+## Cơ bản PL/SQL
 
-### PL/SQL Block Structure
+### Cấu trúc PL/SQL Block
 
 ```sql
--- Basic PL/SQL block structure
+-- Cấu trúc PL/SQL block cơ bản
 DECLARE
-    -- Variable declarations (optional)
+    -- Khai báo biến (tùy chọn)
     v_variable_name datatype;
 BEGIN
-    -- Executable statements (required)
-    NULL; -- At least one statement required
+    -- Câu lệnh thực thi (bắt buộc)
+    NULL; -- Ít nhất một câu lệnh được yêu cầu
 EXCEPTION
-    -- Exception handling (optional)
+    -- Xử lý exception (tùy chọn)
     WHEN exception_name THEN
-        -- Handle exception
+        -- Xử lý exception
 END;
 /
 ```
 
-### Variable Declarations
+### Khai báo Biến
 
 ```sql
 DECLARE
-    -- Basic variable types
+    -- Các loại biến cơ bản
     v_employee_id     NUMBER(6);
     v_employee_name   VARCHAR2(100);
     v_hire_date       DATE;
     v_salary          NUMBER(8,2);
     v_is_manager      BOOLEAN := FALSE;
     
-    -- Using %TYPE for column-based types
+    -- Sử dụng %TYPE cho các loại dựa trên cột
     v_dept_id         employees.department_id%TYPE;
     v_job_title       employees.job_id%TYPE;
     
@@ -108,7 +108,7 @@ DECLARE
     v_employee_rec    employees%ROWTYPE;
     
 BEGIN
-    -- Variable usage
+    -- Sử dụng biến
     v_employee_id := 100;
     v_employee_name := 'John Doe';
     v_hire_date := SYSDATE;
@@ -118,10 +118,10 @@ END;
 /
 ```
 
-### Basic PL/SQL Statements
+### Câu lệnh PL/SQL Cơ bản
 
 ```sql
--- Assignment statements
+-- Câu lệnh gán
 v_total := v_price * v_quantity;
 v_discount := CASE 
     WHEN v_total > 1000 THEN 0.10
@@ -129,13 +129,13 @@ v_discount := CASE
     ELSE 0
 END;
 
--- SQL statements in PL/SQL
+-- Câu lệnh SQL trong PL/SQL
 SELECT first_name, last_name, salary
 INTO v_first_name, v_last_name, v_salary
 FROM employees
 WHERE employee_id = v_emp_id;
 
--- DML statements
+-- Câu lệnh DML
 INSERT INTO audit_log (user_name, action_date, action)
 VALUES (USER, SYSDATE, 'Procedure executed');
 
@@ -148,9 +148,9 @@ DELETE FROM temp_data WHERE session_id = v_session_id;
 
 ---
 
-## Creating Simple Procedures
+## Tạo Simple Procedures
 
-### Basic Procedure Syntax
+### Cú pháp Procedure Cơ bản
 
 ```sql
 CREATE [OR REPLACE] PROCEDURE procedure_name
@@ -160,32 +160,32 @@ CREATE [OR REPLACE] PROCEDURE procedure_name
     ...
 ]
 IS | AS
-    -- Declaration section
+    -- Phần khai báo
     variable_name datatype;
 BEGIN
-    -- Executable section
+    -- Phần thực thi
     statement1;
     statement2;
     ...
 EXCEPTION
-    -- Exception handling section
+    -- Phần xử lý exception
     WHEN exception_name THEN
         statement;
 END [procedure_name];
 /
 ```
 
-### Example 1: Simple Procedure Without Parameters
+### Ví dụ 1: Simple Procedure Không có Tham số
 
 ```sql
--- Create a simple procedure to display company information
+-- Tạo procedure đơn giản để hiển thị thông tin công ty
 CREATE OR REPLACE PROCEDURE show_company_info
 IS
     v_total_employees NUMBER;
     v_total_departments NUMBER;
     v_avg_salary NUMBER(10,2);
 BEGIN
-    -- Get company statistics
+    -- Lấy thống kê công ty
     SELECT COUNT(*)
     INTO v_total_employees
     FROM employees;
@@ -198,13 +198,13 @@ BEGIN
     INTO v_avg_salary
     FROM employees;
     
-    -- Display information
-    DBMS_OUTPUT.PUT_LINE('=== COMPANY INFORMATION ===');
-    DBMS_OUTPUT.PUT_LINE('Total Employees: ' || v_total_employees);
-    DBMS_OUTPUT.PUT_LINE('Total Departments: ' || v_total_departments);
-    DBMS_OUTPUT.PUT_LINE('Average Salary: $' || v_avg_salary);
+    -- Hiển thị thông tin
+    DBMS_OUTPUT.PUT_LINE('=== THÔNG TIN CÔNG TY ===');
+    DBMS_OUTPUT.PUT_LINE('Tổng số Nhân viên: ' || v_total_employees);
+    DBMS_OUTPUT.PUT_LINE('Tổng số Phòng ban: ' || v_total_departments);
+    DBMS_OUTPUT.PUT_LINE('Lương Trung bình: $' || v_avg_salary);
     
-    -- Log the procedure execution
+    -- Ghi log việc thực thi procedure
     INSERT INTO audit_log (procedure_name, execution_date, executed_by)
     VALUES ('show_company_info', SYSDATE, USER);
     
@@ -212,19 +212,19 @@ BEGIN
 END show_company_info;
 /
 
--- Execute the procedure
+-- Thực thi procedure
 EXECUTE show_company_info;
--- Or
+-- Hoặc
 BEGIN
     show_company_info;
 END;
 /
 ```
 
-### Example 2: Procedure with IN Parameters
+### Ví dụ 2: Procedure với Tham số IN
 
 ```sql
--- Create procedure to give salary raise to department
+-- Tạo procedure để tăng lương cho phòng ban
 CREATE OR REPLACE PROCEDURE give_department_raise(
     p_department_id IN NUMBER,
     p_raise_percent IN NUMBER
@@ -234,16 +234,16 @@ IS
     v_total_old_salary NUMBER;
     v_total_new_salary NUMBER;
 BEGIN
-    -- Validate parameters
+    -- Xác thực tham số
     IF p_department_id IS NULL THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Department ID cannot be null');
+        RAISE_APPLICATION_ERROR(-20001, 'Department ID không thể null');
     END IF;
     
     IF p_raise_percent <= 0 OR p_raise_percent > 50 THEN
-        RAISE_APPLICATION_ERROR(-20002, 'Raise percent must be between 0 and 50');
+        RAISE_APPLICATION_ERROR(-20002, 'Phần trăm tăng lương phải từ 0 đến 50');
     END IF;
     
-    -- Check if department exists
+    -- Kiểm tra xem phòng ban có tồn tại không
     SELECT COUNT(*)
     INTO v_employee_count
     FROM employees
@@ -996,8 +996,7 @@ EXCEPTION
         ROLLBACK TO before_processing;
         v_error_message := 'Duplicate value error in procedure: ' || v_procedure_name;
         
-        -- Log and re-raise
-        INSERT INTO error_log (
+        -- Log and re-raise        INSERT INTO error_log (
             procedure_name, error_code, error_message, 
             input_parameters, error_date, user_name
         ) VALUES (
@@ -1013,7 +1012,7 @@ EXCEPTION
         v_error_code := SQLCODE;
         v_error_message := SQLERRM;
         
-        -- Log unexpected errors
+        -- Ghi log các lỗi không mong muốn
         INSERT INTO error_log (
             procedure_name, error_code, error_message,
             input_parameters, error_date, user_name
@@ -1023,12 +1022,12 @@ EXCEPTION
         );
         COMMIT;
         
-        -- Log to application log as well
-        DBMS_OUTPUT.PUT_LINE('FATAL ERROR in ' || v_procedure_name);
-        DBMS_OUTPUT.PUT_LINE('Error Code: ' || v_error_code);
-        DBMS_OUTPUT.PUT_LINE('Error Message: ' || v_error_message);
+        -- Ghi log vào application log
+        DBMS_OUTPUT.PUT_LINE('LỖI NGHIÊM TRỌNG trong ' || v_procedure_name);
+        DBMS_OUTPUT.PUT_LINE('Mã lỗi: ' || v_error_code);
+        DBMS_OUTPUT.PUT_LINE('Thông điệp lỗi: ' || v_error_message);
         
-        -- Re-raise the original exception
+        -- Ném lại exception gốc
         RAISE;
 END comprehensive_error_handling;
 /
@@ -1036,39 +1035,39 @@ END comprehensive_error_handling;
 
 ---
 
-## Summary
+## Tóm Tắt
 
-Stored procedures are powerful tools for:
+Stored procedures là công cụ mạnh mẽ cho:
 
-### **Business Logic Encapsulation**
-- Centralized business rules in the database
-- Consistent implementation across applications
-- Protection of business logic
+### **Đóng gói Logic Business**
+- Tập trung quy tắc business trong database
+- Triển khai nhất quán trên các ứng dụng
+- Bảo vệ logic business
 
-### **Performance Benefits**
-- Pre-compiled execution plans
-- Reduced network traffic
-- Efficient memory usage
+### **Lợi ích Hiệu suất**
+- Execution plans được biên dịch trước
+- Giảm network traffic
+- Sử dụng bộ nhớ hiệu quả
 
-### **Security Advantages**
-- Controlled data access through procedures
-- Prevention of SQL injection attacks
-- Audit trail capabilities
+### **Ưu thế Bảo mật**
+- Kiểm soát truy cập dữ liệu thông qua procedures
+- Ngăn chặn các cuộc tấn công SQL injection
+- Khả năng audit trail
 
-### Key Takeaways:
+### Điểm Chính:
 
-1. **Structure**: Follow consistent DECLARE-BEGIN-EXCEPTION-END structure
-2. **Parameters**: Use appropriate IN, OUT, IN OUT parameter types
-3. **Control Flow**: Master IF-THEN-ELSE, CASE, and LOOP constructs
-4. **Exception Handling**: Always include proper error handling
-5. **Performance**: Consider cursor usage and commit strategies
-6. **Security**: Validate all input parameters thoroughly
+1. **Cấu trúc**: Tuân theo cấu trúc DECLARE-BEGIN-EXCEPTION-END nhất quán
+2. **Tham số**: Sử dụng các loại tham số IN, OUT, IN OUT phù hợp
+3. **Control Flow**: Thành thạo các cấu trúc IF-THEN-ELSE, CASE và LOOP
+4. **Exception Handling**: Luôn bao gồm xử lý lỗi phù hợp
+5. **Hiệu suất**: Cân nhắc việc sử dụng cursor và chiến lược commit
+6. **Bảo mật**: Xác thực kỹ lưỡng tất cả tham số đầu vào
 
-### Next Steps:
+### Bước Tiếp Theo:
 
-- Practice creating procedures for your business requirements
-- Learn advanced PL/SQL features like collections and dynamic SQL
-- Study package creation for organizing related procedures
-- Master debugging techniques for complex procedures
+- Thực hành tạo procedures cho yêu cầu business của bạn
+- Học các tính năng PL/SQL nâng cao như collections và dynamic SQL
+- Nghiên cứu việc tạo package để tổ chức các procedures liên quan
+- Thành thạo kỹ thuật debugging cho các procedures phức tạp
 
-**Practice File**: Work through `src/advanced/stored-procedures.sql` for hands-on examples and exercises.
+**Tệp Thực hành**: Làm việc thông qua `src/advanced/stored-procedures.sql` để có ví dụ và bài tập thực hành.

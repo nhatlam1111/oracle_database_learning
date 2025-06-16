@@ -1,75 +1,75 @@
-# Views and Materialized Views
+# Views và Materialized Views
 
-Views are one of the most important concepts in database design, providing data abstraction, security, and simplified access to complex queries. Materialized views take this concept further by physically storing query results for improved performance.
+Views là một trong những khái niệm quan trọng nhất trong thiết kế cơ sở dữ liệu, cung cấp trừu tượng hóa dữ liệu, bảo mật và truy cập đơn giản đến các truy vấn phức tạp. Materialized views đưa khái niệm này đi xa hơn bằng cách lưu trữ vật lý kết quả truy vấn để cải thiện hiệu suất.
 
-## 🎯 Learning Objectives
+## 🎯 Mục Tiêu Học Tập
 
-By the end of this section, you will understand:
+Sau khi hoàn thành phần này, bạn sẽ hiểu được:
 
-1. **View Fundamentals**: What views are and why they're essential
-2. **View Creation and Management**: Creating, modifying, and dropping views
-3. **View Types**: Simple views vs complex views
-4. **Materialized Views**: Performance benefits and use cases
-5. **View Security**: Using views for data access control
-6. **Performance Considerations**: When and how to use views effectively
+1. **Cơ bản về View**: View là gì và tại sao chúng quan trọng
+2. **Tạo và Quản lý View**: Tạo, sửa đổi và xóa views
+3. **Các loại View**: Simple views vs complex views
+4. **Materialized Views**: Lợi ích hiệu suất và trường hợp sử dụng
+5. **Bảo mật View**: Sử dụng views để kiểm soát truy cập dữ liệu
+6. **Cân nhắc Hiệu suất**: Khi nào và cách sử dụng views hiệu quả
 
-## 📖 Table of Contents
+## 📖 Mục Lục
 
-1. [Understanding Views](#understanding-views)
-2. [Creating Simple Views](#creating-simple-views)
+1. [Hiểu về Views](#understanding-views)
+2. [Tạo Simple Views](#creating-simple-views)
 3. [Complex Views](#complex-views)
 4. [Updatable Views](#updatable-views)
 5. [Materialized Views](#materialized-views)
-6. [View Security](#view-security)
-7. [Performance Considerations](#performance-considerations)
-8. [Best Practices](#best-practices)
+6. [Bảo mật View](#view-security)
+7. [Cân nhắc Hiệu suất](#performance-considerations)
+8. [Thực hành Tốt](#best-practices)
 
 ---
 
-## Understanding Views
+## Hiểu về Views
 
-### What is a View?
+### View là gì?
 
-A **view** is a virtual table that is based on the result set of a SELECT statement. Views don't store data themselves; they dynamically retrieve data from underlying tables when queried.
+**View** là một bảng ảo dựa trên tập kết quả của câu lệnh SELECT. Views không lưu trữ dữ liệu; chúng truy xuất dữ liệu động từ các bảng cơ sở khi được truy vấn.
 
-**Key Characteristics:**
-- **Virtual Table**: No physical storage of data
-- **Dynamic**: Always shows current data from base tables
-- **Simplified Access**: Hide complex queries behind simple interfaces
-- **Security Layer**: Control access to sensitive data
-- **Data Abstraction**: Present data in different formats
+**Đặc điểm Chính:**
+- **Bảng Ảo**: Không lưu trữ vật lý dữ liệu
+- **Động**: Luôn hiển thị dữ liệu hiện tại từ bảng cơ sở
+- **Truy cập Đơn giản**: Ẩn các truy vấn phức tạp đằng sau giao diện đơn giản
+- **Lớp Bảo mật**: Kiểm soát truy cập đến dữ liệu nhạy cảm
+- **Trừu tượng hóa Dữ liệu**: Trình bày dữ liệu ở các định dạng khác nhau
 
-### Types of Views
+### Các loại Views
 
 #### 1. Simple Views
-- Based on a single table
-- No functions or calculations
-- Usually updatable
+- Dựa trên một bảng đơn
+- Không có functions hoặc tính toán
+- Thường có thể update
 
 #### 2. Complex Views
-- Based on multiple tables
-- May include JOINs, functions, GROUP BY
-- Usually read-only
+- Dựa trên nhiều bảng
+- Có thể bao gồm JOINs, functions, GROUP BY
+- Thường chỉ đọc
 
 #### 3. Materialized Views
-- Physical storage of query results
-- Refreshed periodically or on-demand
-- Significant performance benefits
+- Lưu trữ vật lý kết quả truy vấn
+- Refresh định kỳ hoặc theo yêu cầu
+- Lợi ích hiệu suất đáng kể
 
-### Benefits of Using Views
+### Lợi ích của việc Sử dụng Views
 
-#### **Data Security**
+#### **Bảo mật Dữ liệu**
 ```sql
--- Hide sensitive salary information
+-- Ẩn thông tin lương nhạy cảm
 CREATE VIEW employee_public_info AS
 SELECT employee_id, first_name, last_name, email, hire_date, department_id
 FROM employees;
--- Salary column is not exposed
+-- Cột salary không được hiển thị
 ```
 
-#### **Query Simplification**
+#### **Đơn giản hóa Truy vấn**
 ```sql
--- Complex query simplified into a view
+-- Truy vấn phức tạp được đơn giản hóa thành view
 CREATE VIEW employee_department_summary AS
 SELECT 
     d.department_name,
@@ -80,13 +80,13 @@ FROM employees e
 JOIN departments d ON e.department_id = d.department_id
 GROUP BY d.department_id, d.department_name;
 
--- Now users can simply query:
+-- Bây giờ người dùng có thể truy vấn đơn giản:
 SELECT * FROM employee_department_summary;
 ```
 
-#### **Data Abstraction**
+#### **Trừu tượng hóa Dữ liệu**
 ```sql
--- Present data in business-friendly format
+-- Trình bày dữ liệu ở định dạng thân thiện với business
 CREATE VIEW sales_summary AS
 SELECT 
     TO_CHAR(o.order_date, 'YYYY-MM') as sales_month,
@@ -101,9 +101,9 @@ ORDER BY sales_month;
 
 ---
 
-## Creating Simple Views
+## Tạo Simple Views
 
-### Basic Syntax
+### Cú pháp Cơ bản
 
 ```sql
 CREATE [OR REPLACE] VIEW view_name AS
@@ -152,16 +152,16 @@ FROM sales.customers
 ORDER BY customer_name;
 ```
 
-### View Metadata
+### Siêu dữ liệu View
 
 ```sql
--- Check view definition
+-- Kiểm tra định nghĩa view
 SELECT text FROM user_views WHERE view_name = 'ACTIVE_EMPLOYEES';
 
--- List all views owned by current user
+-- Liệt kê tất cả views thuộc sở hữu của user hiện tại
 SELECT view_name, text FROM user_views ORDER BY view_name;
 
--- Check view columns
+-- Kiểm tra các cột của view
 SELECT column_name, data_type, nullable 
 FROM user_tab_columns 
 WHERE table_name = 'ACTIVE_EMPLOYEES';
@@ -171,11 +171,11 @@ WHERE table_name = 'ACTIVE_EMPLOYEES';
 
 ## Complex Views
 
-Complex views involve multiple tables, functions, and advanced SQL features.
+Complex views bao gồm nhiều bảng, functions và các tính năng SQL nâng cao.
 
-### Multi-Table Views
+### Views Nhiều Bảng
 
-#### Example 1: Employee Department View
+#### Ví dụ 1: View Chi tiết Nhân viên
 ```sql
 CREATE OR REPLACE VIEW employee_details AS
 SELECT 
@@ -195,7 +195,7 @@ LEFT JOIN jobs j ON e.job_id = j.job_id
 LEFT JOIN employees m ON e.manager_id = m.employee_id;
 ```
 
-#### Example 2: Sales Analysis View
+#### Ví dụ 2: View Phân tích Bán hàng
 ```sql
 CREATE OR REPLACE VIEW sales_analysis AS
 SELECT 
@@ -214,9 +214,9 @@ LEFT JOIN sales.order_items oi ON o.order_id = oi.order_id
 GROUP BY c.customer_id, c.customer_name, c.city, c.country;
 ```
 
-### Views with Calculations
+### Views với Tính toán
 
-#### Example 3: Employee Performance Metrics
+#### Ví dụ 3: Chỉ số Hiệu suất Nhân viên
 ```sql
 CREATE OR REPLACE VIEW employee_performance AS
 SELECT 
@@ -243,9 +243,11 @@ JOIN (
 ) dept_avg ON e.department_id = dept_avg.department_id;
 ```
 
-### Hierarchical Views
+### Views Phân cấp
 
-#### Example 4: Organizational Hierarchy
+#### Ví dụ 4: Cơ cấu Tổ chức
+```sql
+CREATE OR REPLACE VIEW org_hierarchy AS
 ```sql
 CREATE OR REPLACE VIEW org_hierarchy AS
 SELECT 
@@ -265,49 +267,49 @@ ORDER SIBLINGS BY last_name, first_name;
 
 ## Updatable Views
 
-Not all views can be updated. Oracle has specific rules for when a view is updatable.
+Không phải tất cả views đều có thể cập nhật. Oracle có các quy tắc cụ thể về khi nào một view có thể cập nhật được.
 
-### Rules for Updatable Views
+### Quy tắc cho Updatable Views
 
-A view is updatable if:
-1. **Single Table**: Based on a single table
-2. **No Aggregate Functions**: No GROUP BY, HAVING, DISTINCT
-3. **No Set Operations**: No UNION, INTERSECT, MINUS
-4. **No Subqueries**: In SELECT or WHERE clauses
-5. **All Required Columns**: All NOT NULL columns are included
+Một view có thể cập nhật được nếu:
+1. **Bảng Đơn**: Dựa trên một bảng duy nhất
+2. **Không có Hàm Tổng hợp**: Không có GROUP BY, HAVING, DISTINCT
+3. **Không có Phép Toán Tập hợp**: Không có UNION, INTERSECT, MINUS
+4. **Không có Subqueries**: Trong mệnh đề SELECT hoặc WHERE
+5. **Tất cả Cột Bắt buộc**: Tất cả cột NOT NULL đều được bao gồm
 
-### Example: Updatable Employee View
+### Ví dụ: View Nhân viên có thể Cập nhật
 
 ```sql
--- Create an updatable view
+-- Tạo một view có thể cập nhật
 CREATE OR REPLACE VIEW dept_20_employees AS
 SELECT employee_id, first_name, last_name, email, salary, department_id
 FROM employees
 WHERE department_id = 20
 WITH CHECK OPTION;
 
--- This will work - INSERT
+-- Điều này sẽ hoạt động - INSERT
 INSERT INTO dept_20_employees 
 VALUES (999, 'John', 'Doe', 'jdoe@company.com', 5000, 20);
 
--- This will work - UPDATE
+-- Điều này sẽ hoạt động - UPDATE
 UPDATE dept_20_employees 
 SET salary = 5500 
 WHERE employee_id = 999;
 
--- This will fail due to CHECK OPTION
+-- Điều này sẽ thất bại do CHECK OPTION
 UPDATE dept_20_employees 
 SET department_id = 30 
 WHERE employee_id = 999;
--- Error: view WITH CHECK OPTION where-clause violation
+-- Lỗi: view WITH CHECK OPTION where-clause violation
 
--- This will work - DELETE
+-- Điều này sẽ hoạt động - DELETE
 DELETE FROM dept_20_employees WHERE employee_id = 999;
 ```
 
 ### WITH CHECK OPTION
 
-Ensures that INSERT and UPDATE operations satisfy the view's WHERE clause:
+Đảm bảo rằng các thao tác INSERT và UPDATE thỏa mãn mệnh đề WHERE của view:
 
 ```sql
 CREATE OR REPLACE VIEW high_salary_employees AS
@@ -316,18 +318,18 @@ FROM employees
 WHERE salary > 10000
 WITH CHECK OPTION;
 
--- This will fail
+-- Điều này sẽ thất bại
 INSERT INTO high_salary_employees 
 VALUES (998, 'Jane', 'Smith', 8000, 20);
--- Error: CHECK OPTION constraint violated
+-- Lỗi: CHECK OPTION constraint violated
 ```
 
-### INSTEAD OF Triggers for Complex Views
+### INSTEAD OF Triggers cho Complex Views
 
-For complex views that aren't naturally updatable:
+Đối với các complex views không thể cập nhật một cách tự nhiên:
 
 ```sql
--- Create a complex view
+-- Tạo một complex view
 CREATE OR REPLACE VIEW employee_department_view AS
 SELECT 
     e.employee_id,
@@ -338,7 +340,7 @@ SELECT
 FROM employees e
 JOIN departments d ON e.department_id = d.department_id;
 
--- Create INSTEAD OF trigger for updates
+-- Tạo INSTEAD OF trigger cho updates
 CREATE OR REPLACE TRIGGER employee_dept_update_trigger
 INSTEAD OF UPDATE ON employee_department_view
 FOR EACH ROW
@@ -355,11 +357,11 @@ END;
 
 ## Materialized Views
 
-Materialized views physically store the result set, providing significant performance benefits for complex queries.
+Materialized views lưu trữ vật lý tập kết quả, cung cấp lợi ích hiệu suất đáng kể cho các truy vấn phức tạp.
 
-### Creating Materialized Views
+### Tạo Materialized Views
 
-#### Basic Syntax
+#### Cú pháp Cơ bản
 ```sql
 CREATE MATERIALIZED VIEW mv_name
 [BUILD IMMEDIATE | BUILD DEFERRED]
@@ -370,9 +372,9 @@ AS
 SELECT ...;
 ```
 
-#### Example 1: Basic Materialized View
+#### Ví dụ 1: Materialized View Cơ bản
 ```sql
--- Create materialized view for monthly sales summary
+-- Tạo materialized view cho tóm tắt doanh số hàng tháng
 CREATE MATERIALIZED VIEW mv_monthly_sales
 BUILD IMMEDIATE
 REFRESH COMPLETE ON DEMAND
@@ -387,11 +389,11 @@ FROM sales.orders o
 JOIN sales.order_items oi ON o.order_id = oi.order_id
 GROUP BY TO_CHAR(o.order_date, 'YYYY-MM');
 
--- Query the materialized view (very fast)
+-- Truy vấn materialized view (rất nhanh)
 SELECT * FROM mv_monthly_sales ORDER BY sales_month;
 ```
 
-#### Example 2: Product Performance Materialized View
+#### Ví dụ 2: Materialized View Hiệu suất Sản phẩm
 ```sql
 CREATE MATERIALIZED VIEW mv_product_performance
 BUILD IMMEDIATE
@@ -413,24 +415,24 @@ LEFT JOIN sales.orders o ON oi.order_id = o.order_id
 GROUP BY p.product_id, p.product_name, p.category_id;
 ```
 
-### Refresh Options
+### Tùy chọn Refresh
 
 #### ON DEMAND Refresh
 ```sql
--- Manual refresh
+-- Refresh thủ công
 EXEC DBMS_MVIEW.REFRESH('MV_MONTHLY_SALES', 'C');
 
--- Refresh multiple materialized views
+-- Refresh nhiều materialized views
 EXEC DBMS_MVIEW.REFRESH_ALL_MVIEWS();
 ```
 
-#### ON COMMIT Refresh (for fast refresh)
+#### ON COMMIT Refresh (cho fast refresh)
 ```sql
--- Create materialized view log for fast refresh
+-- Tạo materialized view log cho fast refresh
 CREATE MATERIALIZED VIEW LOG ON sales.orders;
 CREATE MATERIALIZED VIEW LOG ON sales.order_items;
 
--- Create fast refresh materialized view
+-- Tạo fast refresh materialized view
 CREATE MATERIALIZED VIEW mv_daily_sales
 BUILD IMMEDIATE
 REFRESH FAST ON COMMIT
@@ -444,32 +446,32 @@ JOIN sales.order_items oi ON o.order_id = oi.order_id
 GROUP BY TRUNC(o.order_date);
 ```
 
-### Materialized View Management
+### Quản lý Materialized View
 
 ```sql
--- Check materialized view status
+-- Kiểm tra trạng thái materialized view
 SELECT mview_name, refresh_mode, refresh_method, last_refresh_date
 FROM user_mviews;
 
--- Check refresh history
+-- Kiểm tra lịch sử refresh
 SELECT mview_name, refresh_date, refresh_method 
 FROM user_mview_refresh_times
 ORDER BY refresh_date DESC;
 
--- Drop materialized view
+-- Xóa materialized view
 DROP MATERIALIZED VIEW mv_monthly_sales;
 ```
 
 ---
 
-## View Security
+## Bảo mật View
 
-Views are powerful tools for implementing database security by controlling data access.
+Views là công cụ mạnh mẽ để triển khai bảo mật cơ sở dữ liệu bằng cách kiểm soát truy cập dữ liệu.
 
-### Column-Level Security
+### Bảo mật Cấp Cột
 
 ```sql
--- Hide sensitive employee data
+-- Ẩn dữ liệu nhạy cảm của nhân viên
 CREATE OR REPLACE VIEW employee_public AS
 SELECT 
     employee_id,
@@ -478,17 +480,17 @@ SELECT
     email,
     hire_date,
     department_id
-    -- salary, ssn, and other sensitive fields excluded
+    -- salary, ssn và các trường nhạy cảm khác được loại trừ
 FROM employees;
 
--- Grant access to the view instead of the table
+-- Cấp quyền truy cập vào view thay vì bảng
 GRANT SELECT ON employee_public TO hr_users;
 ```
 
-### Row-Level Security
+### Bảo mật Cấp Hàng
 
 ```sql
--- Department managers can only see their department's employees
+-- Quản lý phòng ban chỉ có thể xem nhân viên của phòng ban họ
 CREATE OR REPLACE VIEW manager_employee_view AS
 SELECT 
     e.employee_id,
@@ -500,15 +502,15 @@ FROM employees e
 WHERE e.department_id = (
     SELECT department_id 
     FROM employees 
-    WHERE employee_id = USER  -- Assuming USER contains employee_id
+    WHERE employee_id = USER  -- Giả sử USER chứa employee_id
     AND job_id LIKE '%MANAGER%'
 );
 ```
 
-### Application Context Security
+### Bảo mật Application Context
 
 ```sql
--- Using application context for dynamic security
+-- Sử dụng application context cho bảo mật động
 CREATE OR REPLACE VIEW secure_employee_view AS
 SELECT 
     employee_id,
@@ -524,45 +526,45 @@ FROM employees;
 
 ---
 
-## Performance Considerations
+## Cân nhắc Hiệu suất
 
-### When to Use Views
+### Khi nào Sử dụng Views
 
-#### **Good Use Cases:**
-- **Frequently Used Complex Queries**: Save development time
-- **Data Security**: Control access to sensitive information  
-- **Data Abstraction**: Hide complexity from end users
-- **Standardization**: Ensure consistent business logic
+#### **Trường hợp Sử dụng Tốt:**
+- **Truy vấn Phức tạp Thường xuyên**: Tiết kiệm thời gian phát triển
+- **Bảo mật Dữ liệu**: Kiểm soát truy cập thông tin nhạy cảm  
+- **Trừu tượng hóa Dữ liệu**: Ẩn độ phức tạp khỏi người dùng cuối
+- **Chuẩn hóa**: Đảm bảo logic business nhất quán
 
-#### **Performance Considerations:**
-- **Simple Views**: Minimal performance impact
-- **Complex Views**: May impact performance, consider materialized views
-- **Nested Views**: Avoid views based on other views (performance killer)
+#### **Cân nhắc Hiệu suất:**
+- **Simple Views**: Tác động hiệu suất tối thiểu
+- **Complex Views**: Có thể ảnh hưởng hiệu suất, cân nhắc materialized views
+- **Nested Views**: Tránh views dựa trên views khác (giết hiệu suất)
 
-### View Performance Tips
+### Mẹo Hiệu suất View
 
-#### 1. Use Indexes on Base Tables
+#### 1. Sử dụng Indexes trên Base Tables
 ```sql
--- Ensure base tables have appropriate indexes
+-- Đảm bảo base tables có indexes phù hợp
 CREATE INDEX idx_employees_dept_salary ON employees(department_id, salary);
 CREATE INDEX idx_orders_customer_date ON sales.orders(customer_id, order_date);
 ```
 
-#### 2. Avoid SELECT *
+#### 2. Tránh SELECT *
 ```sql
--- BAD: Uses all columns
+-- XẤU: Sử dụng tất cả các cột
 CREATE VIEW all_employee_data AS
 SELECT * FROM employees e JOIN departments d ON e.department_id = d.department_id;
 
--- GOOD: Only necessary columns
+-- TỐT: Chỉ các cột cần thiết
 CREATE VIEW employee_summary AS
 SELECT e.employee_id, e.first_name, e.last_name, d.department_name
 FROM employees e JOIN departments d ON e.department_id = d.department_id;
 ```
 
-#### 3. Consider Materialized Views for Heavy Aggregations
+#### 3. Cân nhặc Materialized Views cho Aggregations Nặng
 ```sql
--- Heavy aggregation - good candidate for materialized view
+-- Aggregation nặng - ứng cử viên tốt cho materialized view
 CREATE MATERIALIZED VIEW sales_summary_mv AS
 SELECT 
     p.category_id,
@@ -578,40 +580,40 @@ GROUP BY p.category_id, EXTRACT(YEAR FROM o.order_date), EXTRACT(MONTH FROM o.or
 
 ---
 
-## Best Practices
+## Thực hành Tốt
 
-### 1. Naming Conventions
+### 1. Quy ước Đặt tên
 
 ```sql
--- Use clear, descriptive names
-CREATE VIEW vw_employee_department_summary AS ...     -- Good
-CREATE VIEW emp_dept AS ...                           -- Poor
+-- Sử dụng tên rõ ràng, mô tả
+CREATE VIEW vw_employee_department_summary AS ...     -- Tốt
+CREATE VIEW emp_dept AS ...                           -- Kém
 
--- Prefix materialized views
-CREATE MATERIALIZED VIEW mv_monthly_sales AS ...      -- Good
-CREATE MATERIALIZED VIEW monthly_sales AS ...         -- Unclear
+-- Tiền tố materialized views
+CREATE MATERIALIZED VIEW mv_monthly_sales AS ...      -- Tốt
+CREATE MATERIALIZED VIEW monthly_sales AS ...         -- Không rõ ràng
 ```
 
-### 2. Documentation
+### 2. Tài liệu
 
 ```sql
--- Document complex views with comments
+-- Tài liệu hóa complex views với comments
 CREATE OR REPLACE VIEW employee_performance_metrics AS
--- Purpose: Provides comprehensive employee performance analysis
--- Created: 2025-01-15
--- Author: HR Analytics Team
--- Dependencies: employees, departments, jobs tables
--- Refresh: Real-time (regular view)
--- Notes: Includes tenure calculation and salary ranking
+-- Mục đích: Cung cấp phân tích hiệu suất nhân viên toàn diện
+-- Tạo: 2025-01-15
+-- Tác giả: HR Analytics Team
+-- Phụ thuộc: employees, departments, jobs tables
+-- Refresh: Thời gian thực (regular view)
+-- Ghi chú: Bao gồm tính toán thâm niên và xếp hạng lương
 SELECT 
     e.employee_id,
-    -- ... rest of query
+    -- ... phần còn lại của truy vấn
 ```
 
-### 3. Error Handling
+### 3. Xử lý Lỗi
 
 ```sql
--- Handle potential NULL values
+-- Xử lý các giá trị NULL tiềm ẩn
 CREATE OR REPLACE VIEW safe_employee_metrics AS
 SELECT 
     employee_id,
@@ -621,60 +623,60 @@ SELECT
 FROM employees;
 ```
 
-### 4. Testing and Validation
+### 4. Kiểm tra và Xác thực
 
 ```sql
--- Test view performance
+-- Kiểm tra hiệu suất view
 EXPLAIN PLAN FOR SELECT * FROM employee_department_summary;
 SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
 
--- Validate view results
-SELECT COUNT(*) FROM employee_department_summary;  -- Should match expectations
-SELECT MAX(salary), MIN(salary) FROM employee_department_summary;  -- Check ranges
+-- Xác thực kết quả view
+SELECT COUNT(*) FROM employee_department_summary;  -- Nên khớp với kỳ vọng
+SELECT MAX(salary), MIN(salary) FROM employee_department_summary;  -- Kiểm tra phạm vi
 ```
 
-### 5. Maintenance
+### 5. Bảo trì
 
 ```sql
--- Regular maintenance tasks
--- 1. Monitor view usage
+-- Nhiệm vụ bảo trì thường xuyên
+-- 1. Giám sát việc sử dụng view
 SELECT view_name, num_rows FROM user_tables WHERE table_name LIKE 'VW_%';
 
--- 2. Update materialized views
+-- 2. Cập nhật materialized views
 EXEC DBMS_MVIEW.REFRESH_ALL_MVIEWS();
 
--- 3. Check for invalid views
+-- 3. Kiểm tra views không hợp lệ
 SELECT object_name, status FROM user_objects WHERE object_type = 'VIEW' AND status = 'INVALID';
 
--- 4. Recompile invalid views
+-- 4. Biên dịch lại views không hợp lệ
 ALTER VIEW invalid_view_name COMPILE;
 ```
 
 ---
 
-## Summary
+## Tóm Tắt
 
-Views and materialized views are essential tools for:
+Views và materialized views là công cụ thiết yếu cho:
 
-- **Data Security**: Controlling access to sensitive information
-- **Query Simplification**: Hiding complex logic behind simple interfaces  
-- **Performance Optimization**: Pre-calculating complex aggregations
-- **Data Abstraction**: Presenting data in business-friendly formats
-- **Standardization**: Ensuring consistent business logic across applications
+- **Bảo mật Dữ liệu**: Kiểm soát truy cập đến thông tin nhạy cảm
+- **Đơn giản hóa Truy vấn**: Ẩn logic phức tạp đằng sau giao diện đơn giản  
+- **Tối ưu hóa Hiệu suất**: Tính toán trước các aggregations phức tạp
+- **Trừu tượng hóa Dữ liệu**: Trình bày dữ liệu ở định dạng thân thiện với business
+- **Chuẩn hóa**: Đảm bảo logic business nhất quán trên các ứng dụng
 
-### Key Takeaways:
+### Điểm Chính:
 
-1. **Regular Views**: Virtual tables, no storage, real-time data
-2. **Materialized Views**: Physical storage, periodic refresh, high performance
-3. **Security**: Views provide excellent column and row-level security
-4. **Performance**: Consider materialized views for complex aggregations
-5. **Maintenance**: Regular monitoring and refresh strategies are essential
+1. **Regular Views**: Bảng ảo, không lưu trữ, dữ liệu thời gian thực
+2. **Materialized Views**: Lưu trữ vật lý, refresh định kỳ, hiệu suất cao
+3. **Bảo mật**: Views cung cấp bảo mật tuyệt vời ở cấp cột và hàng
+4. **Hiệu suất**: Cân nhắc materialized views cho aggregations phức tạp
+5. **Bảo trì**: Giám sát thường xuyên và chiến lược refresh là cần thiết
 
-### Next Steps:
+### Bước Tiếp Theo:
 
-- Practice creating views for your specific business requirements
-- Experiment with materialized view refresh strategies
-- Implement view-based security in your applications
-- Monitor and optimize view performance
+- Thực hành tạo views cho yêu cầu business cụ thể của bạn
+- Thử nghiệm với các chiến lược refresh materialized view
+- Triển khai bảo mật dựa trên view trong ứng dụng của bạn
+- Giám sát và tối ưu hóa hiệu suất view
 
-**Practice File**: Work through `src/advanced/views-materialized-views.sql` for hands-on examples and exercises.
+**File Thực hành**: Làm việc qua `src/advanced/views-materialized-views.sql` cho các ví dụ và bài tập thực hành.

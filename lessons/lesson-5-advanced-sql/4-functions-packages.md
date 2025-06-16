@@ -1,34 +1,34 @@
-# Functions and Packages in Oracle Database
+# Functions và Packages trong Oracle Database
 
-## Learning Objectives
-By the end of this lesson, you will be able to:
-- Create and use different types of Oracle functions
-- Understand the difference between functions and procedures
-- Design and implement database packages
-- Implement package specifications and bodies
-- Use built-in Oracle functions effectively
-- Apply best practices for function and package development
+## Mục Tiêu Học Tập
+Sau khi hoàn thành bài học này, bạn sẽ có thể:
+- Tạo và sử dụng các loại Oracle functions khác nhau
+- Hiểu sự khác biệt giữa functions và procedures
+- Thiết kế và triển khai database packages
+- Triển khai package specifications và bodies
+- Sử dụng các built-in Oracle functions hiệu quả
+- Áp dụng thực hành tốt cho việc phát triển function và package
 
-## Prerequisites
-- Completion of stored procedures lesson
-- Understanding of PL/SQL basics
-- Knowledge of Oracle data types and variables
-- Familiarity with SQL and basic programming concepts
+## Điều Kiện Tiên Quyết
+- Hoàn thành bài học stored procedures
+- Hiểu cơ bản về PL/SQL
+- Kiến thức về Oracle data types và variables
+- Quen thuộc với SQL và các khái niệm lập trình cơ bản
 
-## 1. Introduction to Functions
+## 1. Giới thiệu về Functions
 
-### What are Functions?
-Functions in Oracle are named PL/SQL blocks that return a single value. Unlike procedures, functions must return a value and can be used in SQL expressions, WHERE clauses, and SELECT statements.
+### Functions là gì?
+Functions trong Oracle là các PL/SQL blocks có tên trả về một giá trị duy nhất. Khác với procedures, functions phải trả về một giá trị và có thể được sử dụng trong các biểu thức SQL, mệnh đề WHERE và câu lệnh SELECT.
 
-### Key Characteristics:
-- **Return Value**: Must return exactly one value
-- **Deterministic**: Should produce the same result for the same input
-- **SQL Integration**: Can be called from SQL statements
-- **Performance**: Can be optimized by the Oracle optimizer
+### Đặc điểm Chính:
+- **Giá trị Trả về**: Phải trả về chính xác một giá trị
+- **Deterministic**: Nên tạo ra cùng kết quả cho cùng đầu vào
+- **Tích hợp SQL**: Có thể được gọi từ các câu lệnh SQL
+- **Hiệu suất**: Có thể được tối ưu hóa bởi Oracle optimizer
 
-### Function vs Procedure Comparison:
+### So sánh Function vs Procedure:
 ```sql
--- Function Example
+-- Ví dụ Function
 CREATE OR REPLACE FUNCTION calculate_bonus(salary NUMBER)
 RETURN NUMBER
 IS
@@ -36,7 +36,7 @@ BEGIN
     RETURN salary * 0.10;
 END;
 
--- Procedure Example  
+-- Ví dụ Procedure  
 CREATE OR REPLACE PROCEDURE update_employee_bonus(emp_id NUMBER)
 IS
     bonus_amount NUMBER;
@@ -46,10 +46,10 @@ BEGIN
 END;
 ```
 
-## 2. Types of Functions
+## 2. Các loại Functions
 
 ### 2.1 Scalar Functions
-Return a single atomic value (number, string, date, etc.)
+Trả về một giá trị nguyên tử duy nhất (number, string, date, v.v.)
 
 ```sql
 CREATE OR REPLACE FUNCTION format_phone(phone_number VARCHAR2)
@@ -57,25 +57,25 @@ RETURN VARCHAR2
 IS
     formatted_phone VARCHAR2(20);
 BEGIN
-    -- Remove all non-numeric characters
+    -- Loại bỏ tất cả ký tự không phải số
     formatted_phone := REGEXP_REPLACE(phone_number, '[^0-9]', '');
     
-    -- Format as (xxx) xxx-xxxx
+    -- Định dạng thành (xxx) xxx-xxxx
     IF LENGTH(formatted_phone) = 10 THEN
         RETURN '(' || SUBSTR(formatted_phone, 1, 3) || ') ' ||
                SUBSTR(formatted_phone, 4, 3) || '-' ||
                SUBSTR(formatted_phone, 7, 4);
     ELSE
-        RETURN phone_number; -- Return original if invalid
+        RETURN phone_number; -- Trả về bản gốc nếu không hợp lệ
     END IF;
 END format_phone;
 ```
 
 ### 2.2 Table Functions
-Return a collection that can be used in FROM clause
+Trả về một collection có thể được sử dụng trong mệnh đề FROM
 
 ```sql
--- Define object type for employee data
+-- Định nghĩa object type cho dữ liệu employee
 CREATE OR REPLACE TYPE emp_obj AS OBJECT (
     employee_id NUMBER,
     full_name VARCHAR2(100),
@@ -83,10 +83,10 @@ CREATE OR REPLACE TYPE emp_obj AS OBJECT (
     salary NUMBER
 );
 
--- Define table type
+-- Định nghĩa table type
 CREATE OR REPLACE TYPE emp_table AS TABLE OF emp_obj;
 
--- Create table function
+-- Tạo table function
 CREATE OR REPLACE FUNCTION get_department_employees(dept_name VARCHAR2)
 RETURN emp_table PIPELINED
 IS
@@ -646,8 +646,7 @@ END test_employee_management;
 
 CREATE OR REPLACE PACKAGE BODY test_employee_management AS
     
-    PROCEDURE assert_equals(
-        p_expected NUMBER,
+    PROCEDURE assert_equals(        p_expected NUMBER,
         p_actual NUMBER,
         p_test_name VARCHAR2
     ) IS
@@ -664,11 +663,11 @@ CREATE OR REPLACE PACKAGE BODY test_employee_management AS
     PROCEDURE test_bonus_calculation IS
         v_bonus NUMBER;
     BEGIN
-        -- Test with performance rating 5
+        -- Test với performance rating 5
         v_bonus := employee_management.calculate_annual_bonus(100, 5);
         assert_equals(10000, v_bonus, 'High performer bonus');
         
-        -- Test with performance rating 3
+        -- Test với performance rating 3
         v_bonus := employee_management.calculate_annual_bonus(100, 3);
         assert_equals(5000, v_bonus, 'Average performer bonus');
         
@@ -676,35 +675,35 @@ CREATE OR REPLACE PACKAGE BODY test_employee_management AS
     
     PROCEDURE run_all_tests IS
     BEGIN
-        DBMS_OUTPUT.PUT_LINE('Running Employee Management Tests...');
+        DBMS_OUTPUT.PUT_LINE('Chạy Employee Management Tests...');
         test_bonus_calculation;
-        -- Add more test procedures here
-        DBMS_OUTPUT.PUT_LINE('Tests completed.');
+        -- Thêm các test procedures khác ở đây
+        DBMS_OUTPUT.PUT_LINE('Tests hoàn thành.');
     END run_all_tests;
     
 END test_employee_management;
 ```
 
-## Summary
+## Tóm Tắt
 
-Functions and packages are powerful features of Oracle Database that enable:
+Functions và packages là các tính năng mạnh mẽ của Oracle Database cho phép:
 
-1. **Code Reusability**: Write once, use many times
-2. **Modularity**: Organize code into logical units
-3. **Performance**: Cached execution and optimization
-4. **Security**: Controlled access to functionality
-5. **Maintainability**: Centralized business logic
+1. **Khả năng Tái sử dụng Code**: Viết một lần, sử dụng nhiều lần
+2. **Tính Modular**: Tổ chức code thành các đơn vị logic
+3. **Hiệu suất**: Cached execution và optimization
+4. **Bảo mật**: Kiểm soát truy cập đến functionality
+5. **Khả năng Bảo trì**: Logic business tập trung
 
-Key takeaways:
-- Functions return values and can be used in SQL
-- Packages provide encapsulation and namespace management
-- Proper error handling is crucial for robust applications
-- Testing ensures code quality and reliability
-- Built-in functions provide extensive functionality
+Điểm chính:
+- Functions trả về giá trị và có thể được sử dụng trong SQL
+- Packages cung cấp encapsulation và namespace management
+- Xử lý lỗi phù hợp là quan trọng cho các ứng dụng robust
+- Testing đảm bảo chất lượng và độ tin cậy của code
+- Built-in functions cung cấp functionality mở rộng
 
-## Next Steps
-- Practice creating different types of functions
-- Design and implement your own packages
-- Explore advanced package features like object types
-- Learn about package dependencies and compilation
-- Study Oracle's built-in packages (DBMS_*)
+## Bước Tiếp Theo
+- Thực hành tạo các loại functions khác nhau
+- Thiết kế và triển khai packages của riêng bạn
+- Khám phá các tính năng package nâng cao như object types
+- Học về package dependencies và compilation
+- Nghiên cứu các built-in packages của Oracle (DBMS_*)

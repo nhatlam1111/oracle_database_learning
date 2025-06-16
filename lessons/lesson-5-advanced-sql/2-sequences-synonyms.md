@@ -1,119 +1,119 @@
-# Sequences and Synonyms
+# Sequences và Synonyms
 
-Sequences and synonyms are essential Oracle database objects that provide automation and abstraction capabilities. Sequences generate unique numbers automatically, while synonyms create aliases for database objects, improving code maintainability and security.
+Sequences và synonyms là những đối tượng cơ sở dữ liệu Oracle thiết yếu cung cấp khả năng tự động hóa và trừu tượng hóa. Sequences tạo ra các số duy nhất tự động, trong khi synonyms tạo bí danh cho các đối tượng cơ sở dữ liệu, cải thiện khả năng bảo trì code và bảo mật.
 
-## 🎯 Learning Objectives
+## 🎯 Mục Tiêu Học Tập
 
-By the end of this section, you will understand:
+Sau khi hoàn thành phần này, bạn sẽ hiểu được:
 
-1. **Sequence Fundamentals**: Auto-incrementing number generation
-2. **Sequence Creation and Management**: Configuring and maintaining sequences
-3. **Sequence Usage Patterns**: Best practices for primary keys and numbering
-4. **Synonym Types**: Public vs private synonyms
-5. **Synonym Benefits**: Code portability and security
-6. **Object Management**: Organizing database objects effectively
+1. **Cơ bản về Sequence**: Tạo số tự động tăng
+2. **Tạo và Quản lý Sequence**: Cấu hình và bảo trì sequences
+3. **Mẫu Sử dụng Sequence**: Thực hành tốt cho primary keys và đánh số
+4. **Các loại Synonym**: Public vs private synonyms
+5. **Lợi ích Synonym**: Tính di động code và bảo mật
+6. **Quản lý Đối tượng**: Tổ chức các đối tượng cơ sở dữ liệu hiệu quả
 
-## 📖 Table of Contents
+## 📖 Mục Lục
 
-1. [Understanding Sequences](#understanding-sequences)
-2. [Creating and Managing Sequences](#creating-and-managing-sequences)
-3. [Sequence Usage Patterns](#sequence-usage-patterns)
-4. [Understanding Synonyms](#understanding-synonyms)
-5. [Creating and Managing Synonyms](#creating-and-managing-synonyms)
-6. [Advanced Object Management](#advanced-object-management)
-7. [Best Practices](#best-practices)
+1. [Hiểu về Sequences](#understanding-sequences)
+2. [Tạo và Quản lý Sequences](#creating-and-managing-sequences)
+3. [Mẫu Sử dụng Sequence](#sequence-usage-patterns)
+4. [Hiểu về Synonyms](#understanding-synonyms)
+5. [Tạo và Quản lý Synonyms](#creating-and-managing-synonyms)
+6. [Quản lý Đối tượng Nâng cao](#advanced-object-management)
+7. [Thực hành Tốt](#best-practices)
 
 ---
 
-## Understanding Sequences
+## Hiểu về Sequences
 
-### What is a Sequence?
+### Sequence là gì?
 
-A **sequence** is a database object that generates unique numbers automatically. Sequences are commonly used for:
+**Sequence** là một đối tượng cơ sở dữ liệu tạo ra các số duy nhất tự động. Sequences thường được sử dụng cho:
 
-- **Primary Key Values**: Auto-incrementing IDs
-- **Transaction Numbers**: Unique transaction identifiers
-- **Version Numbers**: Document or record versioning
-- **Batch Numbers**: Processing batch identification
+- **Giá trị Primary Key**: ID tự động tăng
+- **Số giao dịch**: Định danh giao dịch duy nhất
+- **Số phiên bản**: Phiên bản tài liệu hoặc bản ghi
+- **Số lô**: Định danh lô xử lý
 
-### Key Features of Sequences
+### Đặc điểm Chính của Sequences
 
-#### **Guaranteed Uniqueness**
+#### **Đảm bảo Tính Duy nhất**
 ```sql
--- Each call to NEXTVAL returns a unique number
-SELECT employee_seq.NEXTVAL FROM dual;  -- Returns 1
-SELECT employee_seq.NEXTVAL FROM dual;  -- Returns 2
-SELECT employee_seq.NEXTVAL FROM dual;  -- Returns 3
+-- Mỗi lần gọi NEXTVAL trả về một số duy nhất
+SELECT employee_seq.NEXTVAL FROM dual;  -- Trả về 1
+SELECT employee_seq.NEXTVAL FROM dual;  -- Trả về 2
+SELECT employee_seq.NEXTVAL FROM dual;  -- Trả về 3
 ```
 
-#### **Performance Optimization**
-- Numbers are pre-allocated in memory
-- No locking required for number generation
-- High concurrency support
+#### **Tối ưu hóa Hiệu suất**
+- Các số được phân bổ trước trong bộ nhớ
+- Không cần khóa để tạo số
+- Hỗ trợ đồng thời cao
 
-#### **Flexibility**
-- Configurable increment values
-- Start values and maximum values
-- Cycling and caching options
+#### **Tính Linh hoạt**
+- Giá trị increment có thể cấu hình
+- Giá trị bắt đầu và giá trị tối đa
+- Tùy chọn cycling và caching
 
-### Sequence vs Alternative Methods
+### Sequence vs Các Phương pháp Thay thế
 
-| Method | Pros | Cons |
+| Phương pháp | Ưu điểm | Nhược điểm |
 |--------|------|------|
-| **Sequences** | Fast, concurrent, guaranteed unique | Oracle-specific, gaps possible |
-| **MAX(ID)+1** | Simple, no gaps | Slow, locking issues, not concurrent |
-| **Application Logic** | Portable | Complex, prone to errors |
-| **UUID/GUID** | Globally unique | Large storage, not sequential |
+| **Sequences** | Nhanh, đồng thời, đảm bảo duy nhất | Chỉ Oracle, có thể có khoảng trống |
+| **MAX(ID)+1** | Đơn giản, không có khoảng trống | Chậm, vấn đề khóa, không đồng thời |
+| **Application Logic** | Di động | Phức tạp, dễ bị lỗi |
+| **UUID/GUID** | Duy nhất toàn cầu | Lưu trữ lớn, không tuần tự |
 
 ---
 
-## Creating and Managing Sequences
+## Tạo và Quản lý Sequences
 
-### Basic Sequence Creation
+### Tạo Sequence Cơ bản
 
-#### Simple Sequence
+#### Sequence Đơn giản
 ```sql
--- Create a basic sequence starting at 1
+-- Tạo sequence cơ bản bắt đầu từ 1
 CREATE SEQUENCE employee_seq
 START WITH 1
 INCREMENT BY 1;
 
--- Use the sequence
-SELECT employee_seq.NEXTVAL FROM dual;  -- Gets next value
-SELECT employee_seq.CURRVAL FROM dual;  -- Gets current value (after NEXTVAL)
+-- Sử dụng sequence
+SELECT employee_seq.NEXTVAL FROM dual;  -- Lấy giá trị tiếp theo
+SELECT employee_seq.CURRVAL FROM dual;  -- Lấy giá trị hiện tại (sau NEXTVAL)
 ```
 
-#### Sequence with All Options
+#### Sequence với Tất cả Tùy chọn
 ```sql
 CREATE SEQUENCE order_seq
-    START WITH 1000          -- Start at 1000
-    INCREMENT BY 1           -- Increment by 1
-    MAXVALUE 999999         -- Maximum value
-    MINVALUE 1              -- Minimum value (for cycling)
-    NOCYCLE                 -- Don't cycle when max reached
-    CACHE 20                -- Cache 20 values in memory
-    NOORDER;                -- Don't guarantee order in RAC
+    START WITH 1000          -- Bắt đầu từ 1000
+    INCREMENT BY 1           -- Tăng thêm 1
+    MAXVALUE 999999         -- Giá trị tối đa
+    MINVALUE 1              -- Giá trị tối thiểu (cho cycling)
+    NOCYCLE                 -- Không cycle khi đạt max
+    CACHE 20                -- Cache 20 giá trị trong bộ nhớ
+    NOORDER;                -- Không đảm bảo thứ tự trong RAC
 ```
 
-### Sequence Parameters Explained
+### Giải thích Tham số Sequence
 
 #### **START WITH**
 ```sql
--- Start sequence at specific value
+-- Bắt đầu sequence từ giá trị cụ thể
 CREATE SEQUENCE invoice_seq START WITH 10000;
--- First value will be 10000
+-- Giá trị đầu tiên sẽ là 10000
 ```
 
 #### **INCREMENT BY**
 ```sql
--- Increment by different amounts
+-- Tăng theo số lượng khác nhau
 CREATE SEQUENCE even_seq INCREMENT BY 2;        -- 2, 4, 6, 8...
-CREATE SEQUENCE negative_seq INCREMENT BY -1;   -- Countdown sequence
+CREATE SEQUENCE negative_seq INCREMENT BY -1;   -- Sequence đếm ngược
 ```
 
-#### **MAXVALUE and MINVALUE**
+#### **MAXVALUE và MINVALUE**
 ```sql
--- Set bounds
+-- Đặt giới hạn
 CREATE SEQUENCE bounded_seq
     START WITH 1
     MAXVALUE 1000
@@ -122,55 +122,55 @@ CREATE SEQUENCE bounded_seq
 
 #### **CYCLE vs NOCYCLE**
 ```sql
--- Cycling sequence (returns to start after max)
+-- Cycling sequence (trở về điểm bắt đầu sau khi đạt max)
 CREATE SEQUENCE cycling_seq
     START WITH 1
     MAXVALUE 100
     CYCLE;
 
--- After reaching 100, next value will be 1 again
+-- Sau khi đạt 100, giá trị tiếp theo sẽ là 1
 ```
 
 #### **CACHE**
 ```sql
--- Cache for performance
+-- Cache để cải thiện hiệu suất
 CREATE SEQUENCE high_volume_seq
-    CACHE 100;              -- Pre-allocate 100 numbers
+    CACHE 100;              -- Phân bổ trước 100 số
 
 CREATE SEQUENCE low_volume_seq
-    NOCACHE;                -- Generate one at a time
+    NOCACHE;                -- Tạo từng cái một
 ```
 
 #### **ORDER vs NOORDER**
 ```sql
--- Important for Oracle RAC (Real Application Clusters)
-CREATE SEQUENCE rac_seq ORDER;      -- Guarantee order across nodes (slower)
-CREATE SEQUENCE rac_seq NOORDER;    -- No order guarantee (faster)
+-- Quan trọng cho Oracle RAC (Real Application Clusters)
+CREATE SEQUENCE rac_seq ORDER;      -- Đảm bảo thứ tự trên các nodes (chậm hơn)
+CREATE SEQUENCE rac_seq NOORDER;    -- Không đảm bảo thứ tự (nhanh hơn)
 ```
 
-### Modifying Sequences
+### Sửa đổi Sequences
 
 ```sql
--- Alter sequence parameters
+-- Thay đổi tham số sequence
 ALTER SEQUENCE employee_seq
     INCREMENT BY 5
     MAXVALUE 100000
     CACHE 50;
 
--- Cannot modify START WITH value
--- Must drop and recreate to change START WITH
+-- Không thể sửa đổi giá trị START WITH
+-- Phải drop và tạo lại để thay đổi START WITH
 ```
 
-### Sequence Information
+### Thông tin Sequence
 
 ```sql
--- View sequence details
+-- Xem chi tiết sequence
 SELECT sequence_name, min_value, max_value, increment_by, 
        last_number, cache_size, cycle_flag
 FROM user_sequences
 WHERE sequence_name = 'EMPLOYEE_SEQ';
 
--- Check all sequences
+-- Kiểm tra tất cả sequences
 SELECT sequence_name, last_number, cache_size
 FROM user_sequences
 ORDER BY sequence_name;
@@ -178,13 +178,13 @@ ORDER BY sequence_name;
 
 ---
 
-## Sequence Usage Patterns
+## Mẫu Sử dụng Sequence
 
-### Primary Key Generation
+### Tạo Primary Key
 
-#### **Method 1: Direct in INSERT**
+#### **Phương pháp 1: Trực tiếp trong INSERT**
 ```sql
--- Create table with sequence-generated primary key
+-- Tạo bảng với primary key được tạo bởi sequence
 CREATE TABLE customers (
     customer_id NUMBER PRIMARY KEY,
     customer_name VARCHAR2(100) NOT NULL,
@@ -192,10 +192,10 @@ CREATE TABLE customers (
     created_date DATE DEFAULT SYSDATE
 );
 
--- Create sequence for primary key
+-- Tạo sequence cho primary key
 CREATE SEQUENCE customer_seq START WITH 1;
 
--- Insert using sequence
+-- Insert sử dụng sequence
 INSERT INTO customers (customer_id, customer_name, email)
 VALUES (customer_seq.NEXTVAL, 'John Doe', 'john@email.com');
 
@@ -203,9 +203,9 @@ INSERT INTO customers (customer_id, customer_name, email)
 VALUES (customer_seq.NEXTVAL, 'Jane Smith', 'jane@email.com');
 ```
 
-#### **Method 2: Using Triggers (Oracle 11g and earlier)**
+#### **Phương pháp 2: Sử dụng Triggers (Oracle 11g và trước đó)**
 ```sql
--- Create trigger for automatic ID assignment
+-- Tạo trigger để gán ID tự động
 CREATE OR REPLACE TRIGGER customers_pk_trigger
     BEFORE INSERT ON customers
     FOR EACH ROW
@@ -215,14 +215,14 @@ BEGIN
     END IF;
 END;
 
--- Now you can insert without specifying ID
+-- Bây giờ bạn có thể insert mà không cần chỉ định ID
 INSERT INTO customers (customer_name, email)
 VALUES ('Bob Johnson', 'bob@email.com');
 ```
 
-#### **Method 3: Identity Columns (Oracle 12c+)**
+#### **Phương pháp 3: Identity Columns (Oracle 12c+)**
 ```sql
--- Modern approach with identity columns
+-- Cách tiếp cận hiện đại với identity columns
 CREATE TABLE modern_customers (
     customer_id NUMBER GENERATED ALWAYS AS IDENTITY,
     customer_name VARCHAR2(100) NOT NULL,
@@ -230,30 +230,30 @@ CREATE TABLE modern_customers (
     created_date DATE DEFAULT SYSDATE
 );
 
--- Insert without specifying ID
+-- Insert mà không cần chỉ định ID
 INSERT INTO modern_customers (customer_name, email)
 VALUES ('Alice Brown', 'alice@email.com');
 ```
 
-### Multi-Table Sequences
+### Sequences Nhiều Bảng
 
 ```sql
--- Shared sequence across related tables
+-- Sequence chia sẻ giữa các bảng liên quan
 CREATE SEQUENCE transaction_seq START WITH 1;
 
--- Orders table
+-- Bảng Orders
 INSERT INTO sales.orders (order_id, customer_id, order_date)
 VALUES (transaction_seq.NEXTVAL, 1, SYSDATE);
 
--- Payments table (using same sequence for consistency)
+-- Bảng Payments (sử dụng cùng sequence để đảm bảo tính nhất quán)
 INSERT INTO payments (payment_id, order_id, amount)
 VALUES (transaction_seq.NEXTVAL, 1, 150.00);
 ```
 
-### Sequence Reset and Maintenance
+### Reset và Bảo trì Sequence
 
 ```sql
--- Function to reset sequence to specific value
+-- Function để reset sequence về giá trị cụ thể
 CREATE OR REPLACE FUNCTION reset_sequence(
     seq_name VARCHAR2,
     new_value NUMBER
@@ -261,50 +261,50 @@ CREATE OR REPLACE FUNCTION reset_sequence(
     current_val NUMBER;
     increment_val NUMBER;
 BEGIN
-    -- Get current value
+    -- Lấy giá trị hiện tại
     EXECUTE IMMEDIATE 'SELECT ' || seq_name || '.NEXTVAL FROM dual' INTO current_val;
     
-    -- Calculate increment needed
+    -- Tính increment cần thiết
     increment_val := new_value - current_val - 1;
     
-    -- Alter sequence
+    -- Thay đổi sequence
     EXECUTE IMMEDIATE 'ALTER SEQUENCE ' || seq_name || ' INCREMENT BY ' || increment_val;
     
-    -- Get next value (which will be the desired value)
+    -- Lấy giá trị tiếp theo (sẽ là giá trị mong muốn)
     EXECUTE IMMEDIATE 'SELECT ' || seq_name || '.NEXTVAL FROM dual' INTO current_val;
     
-    -- Reset increment to 1
+    -- Reset increment về 1
     EXECUTE IMMEDIATE 'ALTER SEQUENCE ' || seq_name || ' INCREMENT BY 1';
     
     RETURN current_val;
 END;
 
--- Usage
+-- Cách sử dụng
 SELECT reset_sequence('customer_seq', 5000) FROM dual;
 ```
 
-### Handling Sequence Gaps
+### Xử lý Khoảng trống Sequence
 
 ```sql
--- Sequences may have gaps due to:
+-- Sequences có thể có khoảng trống do:
 -- 1. Rollbacks
 -- 2. System crashes  
--- 3. Cached values not used
+-- 3. Cached values không được sử dụng
 
--- Example of gap creation
+-- Ví dụ về tạo khoảng trống
 BEGIN
     INSERT INTO customers (customer_id, customer_name)
     VALUES (customer_seq.NEXTVAL, 'Test Customer');
     
-    -- This rollback creates a gap
+    -- Rollback này tạo ra khoảng trống
     ROLLBACK;
 END;
 
--- Next insert will skip the rolled-back number
+-- Insert tiếp theo sẽ bỏ qua số đã rollback
 INSERT INTO customers (customer_id, customer_name)
 VALUES (customer_seq.NEXTVAL, 'Real Customer');
 
--- Check for gaps
+-- Kiểm tra khoảng trống
 SELECT customer_id, 
        LAG(customer_id) OVER (ORDER BY customer_id) as prev_id,
        customer_id - LAG(customer_id) OVER (ORDER BY customer_id) as gap
@@ -315,87 +315,87 @@ ORDER BY customer_id;
 
 ---
 
-## Understanding Synonyms
+## Hiểu về Synonyms
 
-### What is a Synonym?
+### Synonym là gì?
 
-A **synonym** is an alias for a database object (table, view, sequence, procedure, etc.). Synonyms provide:
+**Synonym** là bí danh cho một đối tượng cơ sở dữ liệu (table, view, sequence, procedure, v.v.). Synonyms cung cấp:
 
-- **Location Transparency**: Hide object location from users
-- **Security**: Control access through synonym permissions
-- **Portability**: Change underlying objects without changing code
-- **Simplification**: Shorter names for complex object paths
+- **Tính Minh bạch Vị trí**: Ẩn vị trí đối tượng khỏi người dùng
+- **Bảo mật**: Kiểm soát truy cập thông qua quyền synonym
+- **Tính Di động**: Thay đổi đối tượng cơ sở mà không thay đổi code
+- **Đơn giản hóa**: Tên ngắn hơn cho các đường dẫn đối tượng phức tạp
 
-### Types of Synonyms
+### Các loại Synonyms
 
 #### **Private Synonyms**
-- Owned by a specific user
-- Only accessible to that user (unless granted)
-- Created in user's schema
+- Thuộc sở hữu của user cụ thể
+- Chỉ user đó mới truy cập được (trừ khi được cấp quyền)
+- Tạo trong schema của user
 
 #### **Public Synonyms**
-- Available to all database users
-- Created by privileged users (DBA)
-- No schema qualification needed
+- Có sẵn cho tất cả database users
+- Tạo bởi privileged users (DBA)
+- Không cần schema qualification
 
-### Benefits of Synonyms
+### Lợi ích của Synonyms
 
-#### **Code Portability**
+#### **Tính Di động Code**
 ```sql
--- Without synonyms - environment-specific code
+-- Không có synonyms - code tùy thuộc môi trường
 SELECT * FROM prod_schema.employees;      -- Production
 SELECT * FROM test_schema.employees;      -- Test
 SELECT * FROM dev_schema.employees;       -- Development
 
--- With synonyms - environment-independent code
+-- Với synonyms - code độc lập môi trường
 CREATE SYNONYM employees FOR prod_schema.employees;  -- Production
 CREATE SYNONYM employees FOR test_schema.employees;  -- Test  
 CREATE SYNONYM employees FOR dev_schema.employees;   -- Development
 
--- Same code works in all environments
+-- Cùng code hoạt động trên tất cả môi trường
 SELECT * FROM employees;
 ```
 
-#### **Simplified Access**
+#### **Truy cập Đơn giản**
 ```sql
--- Complex object name
+-- Tên đối tượng phức tạp
 SELECT * FROM hr_application.employee_management.current_employees_view;
 
--- Create synonym for simplification
+-- Tạo synonym để đơn giản hóa
 CREATE SYNONYM emp FOR hr_application.employee_management.current_employees_view;
 
--- Simplified access
+-- Truy cập đơn giản
 SELECT * FROM emp;
 ```
 
 ---
 
-## Creating and Managing Synonyms
+## Tạo và Quản lý Synonyms
 
-### Creating Private Synonyms
+### Tạo Private Synonyms
 
 ```sql
--- Basic private synonym
+-- Private synonym cơ bản
 CREATE SYNONYM emp FOR employees;
 
--- Synonym for object in different schema
+-- Synonym cho đối tượng trong schema khác
 CREATE SYNONYM sales_data FOR sales_schema.orders;
 
--- Synonym for complex object
+-- Synonym cho đối tượng phức tạp
 CREATE SYNONYM monthly_sales FOR reporting.monthly_sales_materialized_view;
 ```
 
-### Creating Public Synonyms
+### Tạo Public Synonyms
 
 ```sql
--- Create public synonym (requires DBA privileges)
+-- Tạo public synonym (cần DBA privileges)
 CREATE PUBLIC SYNONYM global_employees FOR hr.employees;
 
--- Now all users can access without schema qualification
+-- Bây giờ tất cả users có thể truy cập mà không cần schema qualification
 SELECT * FROM global_employees;
 ```
 
-### Synonym for Different Object Types
+### Synonym cho Các loại Đối tượng Khác nhau
 
 #### **Table Synonyms**
 ```sql
@@ -413,7 +413,7 @@ CREATE SYNONYM sales_rpt FOR monthly_sales_report_view;
 ```sql
 CREATE SYNONYM next_id FOR customer_seq;
 
--- Usage
+-- Cách sử dụng
 INSERT INTO customers (customer_id, customer_name)
 VALUES (next_id.NEXTVAL, 'New Customer');
 ```
@@ -422,160 +422,160 @@ VALUES (next_id.NEXTVAL, 'New Customer');
 ```sql
 CREATE SYNONYM calc_bonus FOR hr.calculate_employee_bonus;
 
--- Usage
+-- Cách sử dụng
 EXEC calc_bonus(employee_id => 100);
 ```
 
-### Managing Synonyms
+### Quản lý Synonyms
 
-#### **View Synonym Information**
+#### **Xem Thông tin Synonym**
 ```sql
--- Check user's private synonyms
+-- Kiểm tra private synonyms của user
 SELECT synonym_name, table_owner, table_name
 FROM user_synonyms
 ORDER BY synonym_name;
 
--- Check all synonyms accessible to user
+-- Kiểm tra tất cả synonyms mà user có thể truy cập
 SELECT owner, synonym_name, table_owner, table_name
 FROM all_synonyms
 WHERE synonym_name LIKE 'EMP%'
 ORDER BY owner, synonym_name;
 
--- Check public synonyms
+-- Kiểm tra public synonyms
 SELECT synonym_name, table_owner, table_name
 FROM dba_synonyms
 WHERE owner = 'PUBLIC'
 ORDER BY synonym_name;
 ```
 
-#### **Dropping Synonyms**
+#### **Xóa Synonyms**
 ```sql
--- Drop private synonym
+-- Xóa private synonym
 DROP SYNONYM emp;
 
--- Drop public synonym (requires DBA privileges)
+-- Xóa public synonym (cần DBA privileges)
 DROP PUBLIC SYNONYM global_employees;
 ```
 
-#### **Replace Synonyms**
+#### **Thay thế Synonyms**
 ```sql
--- Replace synonym with OR REPLACE
+-- Thay thế synonym với OR REPLACE
 CREATE OR REPLACE SYNONYM emp FOR new_employees_table;
 
--- Synonyms don't support OR REPLACE, so drop first
+-- Synonyms không hỗ trợ OR REPLACE, nên phải drop trước
 DROP SYNONYM emp;
 CREATE SYNONYM emp FOR new_employees_table;
 ```
 
 ---
 
-## Advanced Object Management
+## Quản lý Đối tượng Nâng cao
 
-### Database Links with Synonyms
+### Database Links với Synonyms
 
 ```sql
--- Create database link to remote database
+-- Tạo database link đến remote database
 CREATE DATABASE LINK remote_db
 CONNECT TO hr_user IDENTIFIED BY password
 USING 'remote_server';
 
--- Create synonym for remote table
+-- Tạo synonym cho remote table
 CREATE SYNONYM remote_employees FOR employees@remote_db;
 
--- Access remote data transparently
+-- Truy cập remote data một cách minh bạch
 SELECT * FROM remote_employees WHERE department_id = 20;
 ```
 
-### Schema Migration with Synonyms
+### Schema Migration với Synonyms
 
 ```sql
--- Original application points to old schema
+-- Ứng dụng gốc trỏ đến old schema
 -- CREATE SYNONYM app_employees FOR old_schema.employees;
 
--- Phase 1: Create synonyms pointing to old schema
+-- Giai đoạn 1: Tạo synonyms trỏ đến old schema
 CREATE SYNONYM app_employees FOR old_schema.employees;
 CREATE SYNONYM app_departments FOR old_schema.departments;
 
--- Phase 2: Migrate data to new schema
--- (Data migration process)
+-- Giai đoạn 2: Migrate data đến new schema
+-- (Quá trình migration dữ liệu)
 
--- Phase 3: Switch synonyms to new schema
+-- Giai đoạn 3: Chuyển synonyms đến new schema
 DROP SYNONYM app_employees;
 CREATE SYNONYM app_employees FOR new_schema.employees;
 
 DROP SYNONYM app_departments;
 CREATE SYNONYM app_departments FOR new_schema.departments;
 
--- Application code remains unchanged!
+-- Application code vẫn không thay đổi!
 ```
 
-### Multi-Environment Setup
+### Thiết lập Nhiều Môi trường
 
 ```sql
--- Development environment setup
+-- Thiết lập môi trường Development
 CREATE SYNONYM config_table FOR dev_config.application_config;
 CREATE SYNONYM log_table FOR dev_logs.application_logs;
 
--- Production environment setup
+-- Thiết lập môi trường Production
 -- CREATE SYNONYM config_table FOR prod_config.application_config;
 -- CREATE SYNONYM log_table FOR prod_logs.application_logs;
 
--- Same application code works in both environments
+-- Cùng application code hoạt động trong cả hai môi trường
 SELECT config_value FROM config_table WHERE config_name = 'MAX_USERS';
 INSERT INTO log_table (log_message, log_date) VALUES ('User login', SYSDATE);
 ```
 
-### Sequence and Synonym Integration
+### Tích hợp Sequence và Synonym
 
 ```sql
--- Create sequence in specific schema
+-- Tạo sequence trong schema cụ thể
 CREATE SEQUENCE hr.employee_id_seq START WITH 1000;
 
--- Create public synonym for the sequence
+-- Tạo public synonym cho sequence
 CREATE PUBLIC SYNONYM emp_id_seq FOR hr.employee_id_seq;
 
--- Application uses synonym
+-- Application sử dụng synonym
 INSERT INTO employees (employee_id, first_name, last_name)
 VALUES (emp_id_seq.NEXTVAL, 'John', 'Doe');
 
--- Easy to change sequence location later
+-- Dễ dàng thay đổi vị trí sequence sau này
 DROP PUBLIC SYNONYM emp_id_seq;
 CREATE PUBLIC SYNONYM emp_id_seq FOR new_hr.employee_id_seq;
 ```
 
 ---
 
-## Best Practices
+## Thực hành Tốt
 
-### Sequence Best Practices
+### Thực hành Tốt cho Sequence
 
-#### **1. Naming Conventions**
+#### **1. Quy ước Đặt tên**
 ```sql
--- Good naming conventions
-CREATE SEQUENCE customer_seq;          -- Clear purpose
-CREATE SEQUENCE order_id_seq;          -- Specific to use case
-CREATE SEQUENCE transaction_number_seq; -- Descriptive
+-- Quy ước đặt tên tốt
+CREATE SEQUENCE customer_seq;          -- Mục đích rõ ràng
+CREATE SEQUENCE order_id_seq;          -- Cụ thể cho trường hợp sử dụng
+CREATE SEQUENCE transaction_number_seq; -- Mô tả rõ ràng
 
--- Poor naming
-CREATE SEQUENCE seq1;                  -- Unclear
-CREATE SEQUENCE s_cust;               -- Too abbreviated
+-- Đặt tên kém
+CREATE SEQUENCE seq1;                  -- Không rõ ràng
+CREATE SEQUENCE s_cust;               -- Quá viết tắt
 ```
 
-#### **2. Appropriate Cache Sizes**
+#### **2. Kích thước Cache Phù hợp**
 ```sql
--- High-volume sequences
-CREATE SEQUENCE order_seq CACHE 100;   -- Frequent inserts
+-- Sequences khối lượng cao
+CREATE SEQUENCE order_seq CACHE 100;   -- Insert thường xuyên
 
--- Low-volume sequences  
-CREATE SEQUENCE config_seq CACHE 5;    -- Infrequent inserts
+-- Sequences khối lượng thấp  
+CREATE SEQUENCE config_seq CACHE 5;    -- Insert không thường xuyên
 
 -- Single-user sequences
-CREATE SEQUENCE user_pref_seq NOCACHE; -- One user, no caching needed
+CREATE SEQUENCE user_pref_seq NOCACHE; -- Một user, không cần caching
 ```
 
-#### **3. Monitoring and Maintenance**
+#### **3. Giám sát và Bảo trì**
 ```sql
--- Monitor sequence usage
+-- Giám sát việc sử dụng sequence
 SELECT 
     sequence_name,
     last_number,
@@ -586,7 +586,7 @@ SELECT
     END as status
 FROM user_sequences;
 
--- Regular sequence health check
+-- Kiểm tra sức khỏe sequence thường xuyên
 CREATE OR REPLACE PROCEDURE check_sequence_health IS
     v_warning_threshold NUMBER := 1000;
 BEGIN
@@ -601,64 +601,64 @@ BEGIN
 END;
 ```
 
-### Synonym Best Practices
+### Thực hành Tốt cho Synonym
 
-#### **1. Clear Naming Strategy**
+#### **1. Chiến lược Đặt tên Rõ ràng**
 ```sql
--- Good synonym names
-CREATE SYNONYM emp FOR employees;              -- Clear abbreviation
-CREATE SYNONYM monthly_rpt FOR monthly_report_view; -- Descriptive
+-- Tên synonym tốt
+CREATE SYNONYM emp FOR employees;              -- Viết tắt rõ ràng
+CREATE SYNONYM monthly_rpt FOR monthly_report_view; -- Mô tả rõ ràng
 
--- Avoid confusing names
--- CREATE SYNONYM data FOR employees;          -- Too generic
--- CREATE SYNONYM e FOR employees;             -- Too short
+-- Tránh tên gây nhầm lẫn
+-- CREATE SYNONYM data FOR employees;          -- Quá chung chung
+-- CREATE SYNONYM e FOR employees;             -- Quá ngắn
 ```
 
-#### **2. Documentation**
+#### **2. Tài liệu hóa**
 ```sql
--- Document synonym purposes
+-- Tài liệu hóa mục đích synonym
 -- Synonym: emp_data
--- Purpose: Points to current employee table, may change during migrations
--- Created: 2025-01-15
--- Owner: HR Application Team
+-- Mục đích: Trỏ đến bảng employee hiện tại, có thể thay đổi trong migrations
+-- Tạo: 2025-01-15
+-- Chủ sở hữu: HR Application Team
 CREATE SYNONYM emp_data FOR current_schema.employees;
 ```
 
-#### **3. Consistent Usage Patterns**
+#### **3. Mẫu Sử dụng Nhất quán**
 ```sql
--- Establish patterns for your organization
--- Pattern 1: Synonyms for cross-schema access
+-- Thiết lập mẫu cho tổ chức của bạn
+-- Mẫu 1: Synonyms cho cross-schema access
 CREATE SYNONYM hr_employees FOR hr_schema.employees;
 CREATE SYNONYM sales_orders FOR sales_schema.orders;
 
--- Pattern 2: Synonyms for environment independence
+-- Mẫu 2: Synonyms cho sự độc lập môi trường
 CREATE SYNONYM app_config FOR current_env.application_config;
 CREATE SYNONYM app_logs FOR current_env.application_logs;
 ```
 
-#### **4. Permission Management**
+#### **4. Quản lý Quyền**
 ```sql
--- Grant permissions on underlying objects, not synonyms
+-- Cấp quyền trên underlying objects, không phải synonyms
 GRANT SELECT ON employees TO app_user;
 CREATE SYNONYM emp FOR employees;
 
--- App_user can now use the synonym
--- GRANT SELECT ON emp TO another_user;  -- This won't work
--- GRANT SELECT ON employees TO another_user;  -- This works
+-- App_user bây giờ có thể sử dụng synonym
+-- GRANT SELECT ON emp TO another_user;  -- Điều này sẽ không hoạt động
+-- GRANT SELECT ON employees TO another_user;  -- Điều này hoạt động
 ```
 
-### Integration Best Practices
+### Thực hành Tích hợp Tốt
 
-#### **1. Sequence + Trigger + Synonym Pattern**
+#### **1. Mẫu Sequence + Trigger + Synonym**
 ```sql
--- Complete pattern for auto-incrementing IDs
--- 1. Create sequence
+-- Mẫu hoàn chính cho auto-incrementing IDs
+-- 1. Tạo sequence
 CREATE SEQUENCE customer_id_seq START WITH 1;
 
--- 2. Create synonym for sequence
+-- 2. Tạo synonym cho sequence
 CREATE SYNONYM next_cust_id FOR customer_id_seq;
 
--- 3. Create trigger for automatic assignment
+-- 3. Tạo trigger cho automatic assignment
 CREATE OR REPLACE TRIGGER customers_auto_id
     BEFORE INSERT ON customers
     FOR EACH ROW
@@ -668,13 +668,13 @@ BEGIN
     END IF;
 END;
 
--- 4. Application code is clean
+-- 4. Application code gọn gàng
 INSERT INTO customers (customer_name) VALUES ('New Customer');
 ```
 
-#### **2. Error Handling**
+#### **2. Xử lý Lỗi**
 ```sql
--- Handle synonym resolution errors
+-- Xử lý lỗi synonym resolution
 CREATE OR REPLACE FUNCTION safe_synonym_access(
     synonym_name VARCHAR2
 ) RETURN NUMBER IS
@@ -690,58 +690,58 @@ EXCEPTION
 END;
 ```
 
-#### **3. Migration Planning**
+#### **3. Lập kế hoạch Migration**
 ```sql
--- Plan for synonym changes during migrations
--- Step 1: Create new synonyms pointing to old objects
+-- Lập kế hoạch cho việc thay đổi synonym trong migrations
+-- Bước 1: Tạo synonyms mới trỏ đến objects cũ
 CREATE SYNONYM old_employees FOR legacy_schema.employees;
 
--- Step 2: Update application to use synonyms
--- (Application deployment)
+-- Bước 2: Cập nhật application để sử dụng synonyms
+-- (Triển khai ứng dụng)
 
--- Step 3: Create new schema and migrate data
--- (Data migration process)
+-- Bước 3: Tạo schema mới và migrate dữ liệu
+-- (Quá trình migration dữ liệu)
 
--- Step 4: Switch synonyms to new objects
+-- Bước 4: Chuyển synonyms đến objects mới
 DROP SYNONYM old_employees;
 CREATE SYNONYM old_employees FOR new_schema.employees;
 
--- Step 5: Rename synonyms to remove "old" prefix
+-- Bước 5: Đổi tên synonyms để loại bỏ tiền tố "old"
 DROP SYNONYM old_employees;
 CREATE SYNONYM employees FOR new_schema.employees;
 ```
 
 ---
 
-## Summary
+## Tóm Tắt
 
-Sequences and synonyms are fundamental Oracle objects that provide:
+Sequences và synonyms là những đối tượng Oracle cơ bản cung cấp:
 
 ### **Sequences:**
-- **Automatic Number Generation**: Reliable, unique, high-performance
-- **Concurrency Support**: Multiple users can generate numbers simultaneously
-- **Flexibility**: Configurable increment, start, max values, and caching
-- **Gap Tolerance**: Understand that gaps are normal and acceptable
+- **Tạo Số Tự động**: Đáng tin cậy, duy nhất, hiệu suất cao
+- **Hỗ trợ Đồng thời**: Nhiều users có thể tạo số đồng thời
+- **Tính Linh hoạt**: Có thể cấu hình increment, start, max values và caching
+- **Chấp nhận Khoảng trống**: Hiểu rằng khoảng trống là bình thường và chấp nhận được
 
 ### **Synonyms:**
-- **Location Transparency**: Hide physical object locations
-- **Code Portability**: Same code works across environments
-- **Security**: Control access through synonym permissions  
-- **Simplification**: Easier names for complex object paths
+- **Tính Minh bạch Vị trí**: Ẩn vị trí vật lý của objects
+- **Tính Di động Code**: Cùng code hoạt động trên các môi trường
+- **Bảo mật**: Kiểm soát truy cập thông qua quyền synonym  
+- **Đơn giản hóa**: Tên dễ dàng hơn cho các đường dẫn object phức tạp
 
-### Key Takeaways:
+### Điểm Chính:
 
-1. **Use sequences for primary keys** - Much more efficient than MAX(ID)+1
-2. **Cache sequences appropriately** - Balance performance vs gap tolerance
-3. **Synonyms enable flexible architecture** - Easy to change underlying objects
-4. **Plan for migrations** - Synonyms make schema changes transparent
-5. **Follow naming conventions** - Clear, consistent names improve maintainability
+1. **Sử dụng sequences cho primary keys** - Hiệu quả hơn nhiều so với MAX(ID)+1
+2. **Cache sequences một cách phù hợp** - Cân bằng hiệu suất vs gap tolerance
+3. **Synonyms cho phép kiến trúc linh hoạt** - Dễ dàng thay đổi underlying objects
+4. **Lập kế hoạch cho migrations** - Synonyms làm cho việc thay đổi schema minh bạch
+5. **Tuân theo quy ước đặt tên** - Tên rõ ràng, nhất quán cải thiện khả năng bảo trì
 
-### Next Steps:
+### Bước Tiếp Theo:
 
-- Implement sequences for all auto-incrementing columns
-- Create synonyms for cross-schema object access
-- Design migration strategies using synonyms
-- Monitor sequence performance and usage
+- Triển khai sequences cho tất cả các cột auto-incrementing
+- Tạo synonyms cho cross-schema object access
+- Thiết kế chiến lược migration sử dụng synonyms
+- Giám sát hiệu suất và cách sử dụng sequence
 
-**Practice File**: Work through `src/advanced/sequences-synonyms.sql` for hands-on examples and exercises.
+**Tệp Thực hành**: Làm việc thông qua `src/advanced/sequences-synonyms.sql` để có ví dụ và bài tập thực hành.

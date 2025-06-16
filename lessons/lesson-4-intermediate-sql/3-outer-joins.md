@@ -1,139 +1,139 @@
-# Outer Joins in Oracle Database
+# Outer Joins trong Oracle Database
 
-## Learning Objectives
-By the end of this section, you will understand:
-- Different types of outer joins (LEFT, RIGHT, FULL)
-- When and why to use outer joins
-- Oracle's traditional (+) syntax vs ANSI SQL syntax
-- Practical applications of outer joins
-- Performance considerations
+## Mục Tiêu Học Tập
+Đến cuối phần này, bạn sẽ hiểu:
+- Các loại outer join khác nhau (LEFT, RIGHT, FULL)
+- Khi nào và tại sao sử dụng outer joins
+- Cú pháp truyền thống (+) của Oracle so với cú pháp ANSI SQL
+- Ứng dụng thực tế của outer joins
+- Cân nhắc về hiệu suất
 
-## Introduction to Outer Joins
+## Giới Thiệu về Outer Joins
 
-Outer joins return all rows from one or both tables, even when there are no matching rows in the joined table. Unlike inner joins that only return matching rows, outer joins preserve unmatched rows by filling missing values with NULL.
+Outer joins trả về tất cả các hàng từ một hoặc cả hai bảng, ngay cả khi không có hàng khớp trong bảng được nối. Khác với inner joins chỉ trả về các hàng khớp, outer joins bảo toàn các hàng không khớp bằng cách điền các giá trị thiếu với NULL.
 
-### Why Use Outer Joins?
+### Tại Sao Sử Dụng Outer Joins?
 
-1. **Find Missing Data**: Identify records that don't have corresponding entries
-2. **Complete Reporting**: Include all entities even without related data
-3. **Data Analysis**: Analyze gaps and missing relationships
-4. **Business Intelligence**: Generate comprehensive reports
+1. **Tìm Dữ Liệu Thiếu**: Xác định các bản ghi không có mục tương ứng
+2. **Báo Cáo Hoàn Chỉnh**: Bao gồm tất cả thực thể ngay cả không có dữ liệu liên quan
+3. **Phân Tích Dữ Liệu**: Phân tích khoảng trống và mối quan hệ thiếu
+4. **Business Intelligence**: Tạo báo cáo toàn diện
 
-## Types of Outer Joins
+## Các Loại Outer Joins
 
-### 1. LEFT OUTER JOIN (or LEFT JOIN)
+### 1. LEFT OUTER JOIN (hoặc LEFT JOIN)
 
-Returns ALL rows from the left table and matching rows from the right table. If no match exists, NULL values are returned for right table columns.
+Trả về TẤT CẢ các hàng từ bảng bên trái và các hàng khớp từ bảng bên phải. Nếu không có khớp, giá trị NULL được trả về cho các cột bảng bên phải.
 
-**Syntax:**
+**Cú pháp:**
 ```sql
 SELECT columns
 FROM table1 LEFT OUTER JOIN table2
 ON table1.column = table2.column;
 
--- Shorter syntax
+-- Cú pháp ngắn hơn
 SELECT columns
 FROM table1 LEFT JOIN table2
 ON table1.column = table2.column;
 ```
 
-**Use Cases:**
-- List all customers and their orders (including customers without orders)
-- Show all employees and their assigned projects (including unassigned employees)
-- Display all products and their sales (including products never sold)
+**Trường Hợp Sử Dụng:**
+- Liệt kê tất cả khách hàng và đơn hàng của họ (bao gồm khách hàng không có đơn hàng)
+- Hiển thị tất cả nhân viên và các dự án được giao (bao gồm nhân viên không được giao việc)
+- Hiển thị tất cả sản phẩm và doanh số của chúng (bao gồm sản phẩm chưa bao giờ được bán)
 
-### 2. RIGHT OUTER JOIN (or RIGHT JOIN)
+### 2. RIGHT OUTER JOIN (hoặc RIGHT JOIN)
 
-Returns ALL rows from the right table and matching rows from the left table. If no match exists, NULL values are returned for left table columns.
+Trả về TẤT CẢ các hàng từ bảng bên phải và các hàng khớp từ bảng bên trái. Nếu không có khớp, giá trị NULL được trả về cho các cột bảng bên trái.
 
-**Syntax:**
+**Cú pháp:**
 ```sql
 SELECT columns
 FROM table1 RIGHT OUTER JOIN table2
 ON table1.column = table2.column;
 
--- Shorter syntax
+-- Cú pháp ngắn hơn
 SELECT columns
 FROM table1 RIGHT JOIN table2
 ON table1.column = table2.column;
 ```
 
-**Use Cases:**
-- List all departments and their employees (including empty departments)
-- Show all categories and their products (including empty categories)
-- Display all locations and their offices (including unused locations)
+**Trường Hợp Sử Dụng:**
+- Liệt kê tất cả phòng ban và nhân viên của họ (bao gồm phòng ban trống)
+- Hiển thị tất cả danh mục và sản phẩm của chúng (bao gồm danh mục trống)
+- Hiển thị tất cả địa điểm và văn phòng của chúng (bao gồm địa điểm không sử dụng)
 
-### 3. FULL OUTER JOIN (or FULL JOIN)
+### 3. FULL OUTER JOIN (hoặc FULL JOIN)
 
-Returns ALL rows from both tables. If no match exists, NULL values are returned for the non-matching table's columns.
+Trả về TẤT CẢ các hàng từ cả hai bảng. Nếu không có khớp, giá trị NULL được trả về cho các cột của bảng không khớp.
 
-**Syntax:**
+**Cú pháp:**
 ```sql
 SELECT columns
 FROM table1 FULL OUTER JOIN table2
 ON table1.column = table2.column;
 
--- Shorter syntax
+-- Cú pháp ngắn hơn
 SELECT columns
 FROM table1 FULL JOIN table2
 ON table1.column = table2.column;
 ```
 
-**Use Cases:**
-- Compare two datasets and find differences
-- Merge data from different sources
-- Data reconciliation tasks
-- Generate comprehensive comparison reports
+**Trường Hợp Sử Dụng:**
+- So sánh hai tập dữ liệu và tìm sự khác biệt
+- Hợp nhất dữ liệu từ các nguồn khác nhau
+- Nhiệm vụ đối soát dữ liệu
+- Tạo báo cáo so sánh toàn diện
 
-## Oracle Traditional (+) Syntax
+## Cú Pháp Truyền Thống (+) của Oracle
 
-Oracle provides a traditional syntax using the (+) operator for outer joins. While ANSI SQL syntax is preferred for new development, you may encounter this syntax in legacy code.
+Oracle cung cấp cú pháp truyền thống sử dụng toán tử (+) cho outer joins. Mặc dù cú pháp ANSI SQL được ưa chuộng cho phát triển mới, bạn có thể gặp cú pháp này trong mã cũ.
 
-### LEFT OUTER JOIN with (+)
+### LEFT OUTER JOIN với (+)
 ```sql
 -- ANSI SQL
 SELECT e.employee_id, e.first_name, d.department_name
 FROM employees e LEFT JOIN departments d
 ON e.department_id = d.department_id;
 
--- Oracle traditional syntax
+-- Cú pháp truyền thống Oracle
 SELECT e.employee_id, e.first_name, d.department_name
 FROM employees e, departments d
 WHERE e.department_id = d.department_id(+);
 ```
 
-### RIGHT OUTER JOIN with (+)
+### RIGHT OUTER JOIN với (+)
 ```sql
 -- ANSI SQL
 SELECT e.employee_id, e.first_name, d.department_name
 FROM employees e RIGHT JOIN departments d
 ON e.department_id = d.department_id;
 
--- Oracle traditional syntax
+-- Cú pháp truyền thống Oracle
 SELECT e.employee_id, e.first_name, d.department_name
 FROM employees e, departments d
 WHERE e.department_id(+) = d.department_id;
 ```
 
-**Note:** The (+) operator goes on the side that may have NULL values (the "optional" side).
+**Lưu ý:** Toán tử (+) đặt ở phía có thể có giá trị NULL (phía "tùy chọn").
 
-## Practical Examples
+## Ví Dụ Thực Tế
 
-### Example 1: Finding Employees Without Departments
+### Ví Dụ 1: Tìm Nhân Viên Không Có Phòng Ban
 ```sql
--- List all employees, showing department name or 'No Department'
+-- Liệt kê tất cả nhân viên, hiển thị tên phòng ban hoặc 'Không Có Phòng Ban'
 SELECT 
     e.employee_id,
     e.first_name || ' ' || e.last_name AS employee_name,
-    NVL(d.department_name, 'No Department') AS department
+    NVL(d.department_name, 'Không Có Phòng Ban') AS department
 FROM employees e
 LEFT JOIN departments d ON e.department_id = d.department_id
 ORDER BY e.employee_id;
 ```
 
-### Example 2: Finding Departments Without Employees
+### Ví Dụ 2: Tìm Phòng Ban Không Có Nhân Viên
 ```sql
--- List all departments, showing employee count
+-- Liệt kê tất cả phòng ban, hiển thị số lượng nhân viên
 SELECT 
     d.department_id,
     d.department_name,
@@ -144,75 +144,75 @@ GROUP BY d.department_id, d.department_name
 ORDER BY employee_count DESC;
 ```
 
-### Example 3: Complete Employee-Department Analysis
+### Ví Dụ 3: Phân Tích Hoàn Chỉnh Nhân Viên-Phòng Ban
 ```sql
--- Full outer join to see all employees and all departments
+-- Full outer join để xem tất cả nhân viên và tất cả phòng ban
 SELECT 
     COALESCE(e.employee_id, 0) AS employee_id,
-    COALESCE(e.first_name || ' ' || e.last_name, 'No Employee') AS employee_name,
-    COALESCE(d.department_name, 'No Department') AS department_name,
+    COALESCE(e.first_name || ' ' || e.last_name, 'Không Có Nhân Viên') AS employee_name,
+    COALESCE(d.department_name, 'Không Có Phòng Ban') AS department_name,
     CASE 
-        WHEN e.employee_id IS NULL THEN 'Empty Department'
-        WHEN d.department_id IS NULL THEN 'Unassigned Employee'
-        ELSE 'Matched'
+        WHEN e.employee_id IS NULL THEN 'Phòng Ban Trống'
+        WHEN d.department_id IS NULL THEN 'Nhân Viên Chưa Phân Công'
+        ELSE 'Đã Khớp'
     END AS match_status
 FROM employees e
 FULL OUTER JOIN departments d ON e.department_id = d.department_id
 ORDER BY match_status, d.department_name, e.last_name;
 ```
 
-## NULL Handling in Outer Joins
+## Xử Lý NULL trong Outer Joins
 
-### Understanding NULL Values
-When an outer join doesn't find a match, it returns NULL for the columns from the non-matching table. It's important to handle these NULLs appropriately.
+### Hiểu về Giá Trị NULL
+Khi outer join không tìm thấy khớp, nó trả về NULL cho các cột từ bảng không khớp. Điều quan trọng là xử lý các NULL này một cách phù hợp.
 
-### Common NULL Handling Functions
-1. **NVL(expr1, expr2)**: Returns expr2 if expr1 is NULL
-2. **NVL2(expr1, expr2, expr3)**: Returns expr2 if expr1 is not NULL, expr3 if NULL
-3. **COALESCE(expr1, expr2, ...)**: Returns first non-NULL expression
-4. **CASE**: Provides conditional logic for NULL handling
+### Các Hàm Xử Lý NULL Phổ Biến
+1. **NVL(expr1, expr2)**: Trả về expr2 nếu expr1 là NULL
+2. **NVL2(expr1, expr2, expr3)**: Trả về expr2 nếu expr1 không NULL, expr3 nếu NULL
+3. **COALESCE(expr1, expr2, ...)**: Trả về biểu thức không NULL đầu tiên
+4. **CASE**: Cung cấp logic điều kiện cho xử lý NULL
 
-### Example: Enhanced NULL Handling
+### Ví Dụ: Xử Lý NULL Nâng Cao
 ```sql
 SELECT 
     e.employee_id,
     e.first_name,
     e.last_name,
-    NVL(d.department_name, 'Unassigned') AS department_name,
-    NVL2(e.salary, TO_CHAR(e.salary, '$999,999'), 'No Salary Info') AS salary_display,
+    NVL(d.department_name, 'Chưa Phân Công') AS department_name,
+    NVL2(e.salary, TO_CHAR(e.salary, '$999,999'), 'Không Có Thông Tin Lương') AS salary_display,
     COALESCE(e.commission_pct, 0) AS commission_rate,
     CASE 
-        WHEN d.department_id IS NULL THEN 'Employee needs department assignment'
-        WHEN e.manager_id IS NULL THEN 'Top-level manager'
-        ELSE 'Regular employee'
+        WHEN d.department_id IS NULL THEN 'Nhân viên cần phân công phòng ban'
+        WHEN e.manager_id IS NULL THEN 'Quản lý cấp cao'
+        ELSE 'Nhân viên thường'
     END AS employee_status
 FROM employees e
 LEFT JOIN departments d ON e.department_id = d.department_id
 ORDER BY e.employee_id;
 ```
 
-## Performance Considerations
+## Cân Nhắc Về Hiệu Suất
 
-### Index Usage
-- Ensure join columns are indexed
-- Consider composite indexes for multi-column joins
-- Outer joins may prevent some index optimizations
+### Sử Dụng Index
+- Đảm bảo các cột join được lập index
+- Xem xét composite indexes cho joins nhiều cột
+- Outer joins có thể ngăn một số tối ưu hóa index
 
-### Query Optimization Tips
-1. **Filter Early**: Apply WHERE conditions before joining when possible
-2. **Use EXISTS**: Sometimes EXISTS is more efficient than outer joins
-3. **Consider Subqueries**: May be more efficient for certain scenarios
-4. **Analyze Execution Plans**: Use EXPLAIN PLAN to understand query performance
+### Mẹo Tối Ưu Truy Vấn
+1. **Lọc Sớm**: Áp dụng điều kiện WHERE trước khi joining khi có thể
+2. **Sử Dụng EXISTS**: Đôi khi EXISTS hiệu quả hơn outer joins
+3. **Xem Xét Subqueries**: Có thể hiệu quả hơn cho một số tình huống cụ thể
+4. **Phân Tích Execution Plans**: Sử dụng EXPLAIN PLAN để hiểu hiệu suất truy vấn
 
-### Example: Optimized Outer Join
+### Ví Dụ: Outer Join Được Tối Ưu
 ```sql
--- Less efficient - filtering after join
+-- Kém hiệu quả - lọc sau khi join
 SELECT e.employee_id, e.first_name, d.department_name
 FROM employees e
 LEFT JOIN departments d ON e.department_id = d.department_id
 WHERE e.hire_date >= DATE '2020-01-01';
 
--- More efficient - filter before join
+-- Hiệu quả hơn - lọc trước khi join
 SELECT e.employee_id, e.first_name, d.department_name
 FROM (
     SELECT employee_id, first_name, department_id
@@ -222,20 +222,20 @@ FROM (
 LEFT JOIN departments d ON e.department_id = d.department_id;
 ```
 
-## Common Patterns and Best Practices
+## Mẫu Phổ Biến và Thực Hành Tốt Nhất
 
-### 1. Finding Unmatched Records
+### 1. Tìm Bản Ghi Không Khớp
 ```sql
--- Find customers who haven't placed orders
+-- Tìm khách hàng chưa đặt hàng
 SELECT c.customer_id, c.customer_name
 FROM customers c
 LEFT JOIN orders o ON c.customer_id = o.customer_id
 WHERE o.customer_id IS NULL;
 ```
 
-### 2. Aggregating with Outer Joins
+### 2. Tổng Hợp với Outer Joins
 ```sql
--- Count orders per customer (including customers with no orders)
+-- Đếm đơn hàng cho mỗi khách hàng (bao gồm khách hàng không có đơn hàng)
 SELECT 
     c.customer_id,
     c.customer_name,
@@ -247,14 +247,14 @@ GROUP BY c.customer_id, c.customer_name
 ORDER BY total_spent DESC;
 ```
 
-### 3. Multi-Level Outer Joins
+### 3. Outer Joins Nhiều Cấp
 ```sql
--- Employee hierarchy with optional department and manager info
+-- Cấu trúc phân cấp nhân viên với thông tin phòng ban và quản lý tùy chọn
 SELECT 
     e.employee_id,
     e.first_name || ' ' || e.last_name AS employee_name,
-    NVL(d.department_name, 'No Department') AS department,
-    NVL(m.first_name || ' ' || m.last_name, 'No Manager') AS manager_name
+    NVL(d.department_name, 'Không Có Phòng Ban') AS department,
+    NVL(m.first_name || ' ' || m.last_name, 'Không Có Quản Lý') AS manager_name
 FROM employees e
 LEFT JOIN departments d ON e.department_id = d.department_id
 LEFT JOIN employees m ON e.manager_id = m.employee_id

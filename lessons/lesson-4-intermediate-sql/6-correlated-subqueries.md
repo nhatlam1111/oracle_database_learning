@@ -1,40 +1,40 @@
-# Correlated Subqueries in Oracle Database
+# Correlated Subqueries trong Oracle Database
 
-## Learning Objectives
-By the end of this section, you will understand:
-- What correlated subqueries are and how they differ from regular subqueries
-- When to use correlated subqueries effectively
-- Performance implications and optimization strategies
-- Advanced patterns using correlated subqueries
-- Alternatives to correlated subqueries
+## Mục Tiêu Học Tập
+Sau khi hoàn thành phần này, bạn sẽ hiểu được:
+- Correlated subqueries là gì và chúng khác với regular subqueries như thế nào
+- Khi nào sử dụng correlated subqueries hiệu quả
+- Tác động hiệu suất và chiến lược tối ưu hóa
+- Các mẫu nâng cao sử dụng correlated subqueries
+- Các lựa chọn thay thế cho correlated subqueries
 
-## Introduction to Correlated Subqueries
+## Giới Thiệu về Correlated Subqueries
 
-A correlated subquery is a subquery that references columns from the outer (main) query. Unlike regular subqueries that execute once and return a result set, correlated subqueries execute once for each row of the outer query, making them more powerful but potentially less efficient.
+Correlated subquery là một subquery tham chiếu đến các cột từ truy vấn ngoài (chính). Không giống như regular subqueries thực thi một lần và trả về một tập kết quả, correlated subqueries thực thi một lần cho mỗi hàng của truy vấn ngoài, làm cho chúng mạnh mẽ hơn nhưng có thể kém hiệu quả hơn.
 
-### Basic Structure
+### Cấu Trúc Cơ Bản
 ```sql
 SELECT outer_table.column1, outer_table.column2
 FROM outer_table
 WHERE outer_table.column3 operator (
     SELECT inner_table.column1
     FROM inner_table
-    WHERE inner_table.column2 = outer_table.column2  -- Correlation
+    WHERE inner_table.column2 = outer_table.column2  -- Tương quan
 );
 ```
 
-### Key Characteristics
-- References outer query columns
-- Executes for each row of outer query
-- Cannot be executed independently
-- Often used with EXISTS, NOT EXISTS
-- Useful for row-by-row comparisons
+### Đặc Điểm Chính
+- Tham chiếu các cột truy vấn ngoài
+- Thực thi cho mỗi hàng của truy vấn ngoài
+- Không thể được thực thi độc lập
+- Thường được sử dụng với EXISTS, NOT EXISTS
+- Hữu ích cho so sánh từng hàng
 
-## Basic Correlated Subquery Examples
+## Ví Dụ Correlated Subquery Cơ Bản
 
-### 1. Employee Salary Comparison
+### 1. So Sánh Lương Nhân Viên
 ```sql
--- Find employees earning more than average in their department
+-- Tìm nhân viên kiếm được nhiều hơn mức trung bình trong department của họ
 SELECT 
     e.employee_id,
     e.first_name,
@@ -45,13 +45,13 @@ FROM employees e
 WHERE e.salary > (
     SELECT AVG(salary)
     FROM employees e2
-    WHERE e2.department_id = e.department_id  -- Correlation with outer query
+    WHERE e2.department_id = e.department_id  -- Tương quan với truy vấn ngoài
 );
 ```
 
-### 2. Latest Record Per Group
+### 2. Bản Ghi Mới Nhất Theo Nhóm
 ```sql
--- Find each employee's most recent job change
+-- Tìm thay đổi công việc gần nhất của mỗi nhân viên
 SELECT 
     jh.employee_id,
     jh.start_date,
@@ -62,27 +62,27 @@ FROM job_history jh
 WHERE jh.start_date = (
     SELECT MAX(start_date)
     FROM job_history jh2
-    WHERE jh2.employee_id = jh.employee_id  -- Correlation
+    WHERE jh2.employee_id = jh.employee_id  -- Tương quan
 );
 ```
 
-### 3. Existence Checking
+### 3. Kiểm Tra Sự Tồn Tại
 ```sql
--- Find employees who have job history records
+-- Tìm nhân viên có bản ghi lịch sử công việc
 SELECT e.employee_id, e.first_name, e.last_name
 FROM employees e
 WHERE EXISTS (
     SELECT 1
     FROM job_history jh
-    WHERE jh.employee_id = e.employee_id  -- Correlation
+    WHERE jh.employee_id = e.employee_id  -- Tương quan
 );
 ```
 
-## Advanced Correlated Subquery Patterns
+## Các Mẫu Correlated Subquery Nâng Cao
 
-### 1. Running Calculations
+### 1. Tính Toán Running
 ```sql
--- Calculate running total of salaries by hire date
+-- Tính tổng cộng dồn của lương theo ngày thuê
 SELECT 
     e.employee_id,
     e.first_name,
@@ -95,7 +95,7 @@ SELECT
 FROM employees e
 ORDER BY e.hire_date;
 
--- Running count of employees hired before each employee
+-- Đếm running các nhân viên được thuê trước mỗi nhân viên
 SELECT 
     e.employee_id,
     e.first_name,
@@ -107,9 +107,9 @@ FROM employees e
 ORDER BY e.hire_date;
 ```
 
-### 2. Ranking and Top-N
+### 2. Xếp Hạng và Top-N
 ```sql
--- Find top 3 highest paid employees in each department
+-- Tìm top 3 nhân viên có lương cao nhất trong mỗi department
 SELECT 
     e.employee_id,
     e.first_name,
@@ -125,7 +125,7 @@ WHERE (
 ) < 3
 ORDER BY e.department_id, e.salary DESC;
 
--- Alternative: Find employees with salary in top 3 for their department
+-- Cách thay thế: Tìm nhân viên có lương trong top 3 của department họ
 SELECT 
     e.employee_id,
     e.first_name,
@@ -144,9 +144,9 @@ WHERE e.salary IN (
 );
 ```
 
-### 3. Data Quality and Validation
+### 3. Chất Lượng Dữ Liệu và Xác Thực
 ```sql
--- Find employees with salary higher than their manager
+-- Tìm nhân viên có lương cao hơn quản lý của họ
 SELECT 
     e.employee_id,
     e.first_name,
@@ -157,29 +157,29 @@ FROM employees e
 WHERE e.salary > (
     SELECT m.salary
     FROM employees m
-    WHERE m.employee_id = e.manager_id  -- Correlation
+    WHERE m.employee_id = e.manager_id  -- Tương quan
 )
 AND e.manager_id IS NOT NULL;
 
--- Find departments where all employees earn more than 5000
+-- Tìm departments mà tất cả nhân viên kiếm được hơn 5000
 SELECT d.department_id, d.department_name
 FROM departments d
 WHERE NOT EXISTS (
     SELECT 1
     FROM employees e
-    WHERE e.department_id = d.department_id  -- Correlation
+    WHERE e.department_id = d.department_id  -- Tương quan
     AND e.salary <= 5000
 )
 AND EXISTS (
     SELECT 1
     FROM employees e
-    WHERE e.department_id = d.department_id  -- At least one employee
+    WHERE e.department_id = d.department_id  -- Ít nhất một nhân viên
 );
 ```
 
-### 4. Sequential Data Analysis
+### 4. Phân Tích Dữ Liệu Tuần Tự
 ```sql
--- Find employees hired immediately after another employee left
+-- Tìm nhân viên được thuê ngay sau khi nhân viên khác rời đi
 SELECT 
     e.employee_id,
     e.first_name,
@@ -189,11 +189,11 @@ FROM employees e
 WHERE EXISTS (
     SELECT 1
     FROM job_history jh
-    WHERE jh.department_id = e.department_id  -- Same department
-    AND jh.end_date = e.hire_date - 1  -- Hired day after someone left
+    WHERE jh.department_id = e.department_id  -- Cùng department
+    AND jh.end_date = e.hire_date - 1  -- Được thuê ngày sau khi ai đó rời đi
 );
 
--- Find gaps in employee ID sequence
+-- Tìm khoảng trống trong chuỗi employee ID
 SELECT 
     e1.employee_id AS current_id,
     e1.employee_id + 1 AS missing_id
@@ -201,15 +201,15 @@ FROM employees e1
 WHERE NOT EXISTS (
     SELECT 1
     FROM employees e2
-    WHERE e2.employee_id = e1.employee_id + 1  -- Next ID doesn't exist
+    WHERE e2.employee_id = e1.employee_id + 1  -- ID tiếp theo không tồn tại
 )
 AND e1.employee_id < (SELECT MAX(employee_id) FROM employees)
 ORDER BY e1.employee_id;
 ```
 
-## Complex Business Scenarios
+## Kịch Bản Business Phức Tạp
 
-### 1. Customer Analysis
+### 1. Phân Tích Khách Hàng
 ```sql
 -- Find customers whose last order was more than 6 months ago
 SELECT 
@@ -311,12 +311,12 @@ WHERE (
 AND e.manager_id IS NOT NULL;
 ```
 
-## Performance Considerations
+## Cân Nhắc Hiệu Suất
 
-### 1. Understanding Execution
+### 1. Hiểu Về Thực Thi
 ```sql
--- Correlated subquery executes for each outer row
--- This query could execute the subquery 107 times (once per employee)
+-- Correlated subquery thực thi cho mỗi hàng ngoài
+-- Truy vấn này có thể thực thi subquery 107 lần (một lần cho mỗi nhân viên)
 SELECT e.employee_id, e.first_name, e.salary
 FROM employees e
 WHERE e.salary > (
@@ -325,7 +325,7 @@ WHERE e.salary > (
     WHERE e2.department_id = e.department_id
 );
 
--- Better approach using window functions
+-- Cách tiếp cận tốt hơn sử dụng window functions
 SELECT employee_id, first_name, salary
 FROM (
     SELECT 
@@ -551,53 +551,53 @@ WHERE e.salary > (
 - Multiple correlations (use CTEs)
 - Performance is critical
 
-## Practice Exercises
+## Bài Tập Thực Hành
 
-### Exercise 1: Basic Correlations
-1. Find employees earning more than the median salary in their job category
-2. List customers who haven't ordered in the last 6 months
-3. Find products that have been ordered more than the average for their category
+### Bài Tập 1: Tương Quan Cơ Bản
+1. Tìm nhân viên kiếm được nhiều hơn mức lương median trong category công việc của họ
+2. Liệt kê khách hàng chưa đặt hàng trong 6 tháng qua
+3. Tìm sản phẩm được đặt hàng nhiều hơn mức trung bình cho category của chúng
 
-### Exercise 2: Advanced Scenarios
-1. Identify employees whose current salary is lower than their historical maximum
-2. Find departments where the manager earns less than the department average
-3. List products with consistently increasing monthly sales over the last year
+### Bài Tập 2: Kịch Bản Nâng Cao
+1. Xác định nhân viên có lương hiện tại thấp hơn mức tối đa lịch sử của họ
+2. Tìm departments mà quản lý kiếm được ít hơn mức trung bình department
+3. Liệt kê sản phẩm có doanh số tăng đều đặn hàng tháng trong năm qua
 
-### Exercise 3: Performance Optimization
-1. Convert a slow correlated subquery to use window functions
-2. Optimize a multiple-correlation subquery using CTEs
-3. Compare execution plans for different approaches to the same problem
+### Bài Tập 3: Tối Ưu Hóa Hiệu Suất
+1. Chuyển đổi correlated subquery chậm để sử dụng window functions
+2. Tối ưu hóa multiple-correlation subquery sử dụng CTEs
+3. So sánh execution plans cho các cách tiếp cận khác nhau cho cùng một vấn đề
 
-## Common Patterns Summary
+## Tóm Tắt Các Mẫu Phổ Biến
 
-| Pattern | Use Case | Example |
+| Mẫu | Trường hợp sử dụng | Ví dụ |
 |---------|----------|---------|
-| EXISTS | Existence checking | Find customers with orders |
-| NOT EXISTS | Anti-join | Find customers without orders |
-| Scalar correlation | Value comparison | Salary > department average |
-| Aggregation correlation | Group statistics | Count per category |
-| Sequential comparison | Time-based analysis | Latest record per group |
-| Ranking correlation | Top-N per group | Top 3 employees per department |
+| EXISTS | Kiểm tra sự tồn tại | Tìm khách hàng có đơn hàng |
+| NOT EXISTS | Anti-join | Tìm khách hàng không có đơn hàng |
+| Scalar correlation | So sánh giá trị | Lương > trung bình department |
+| Aggregation correlation | Thống kê nhóm | Đếm theo category |
+| Sequential comparison | Phân tích theo thời gian | Bản ghi mới nhất theo nhóm |
+| Ranking correlation | Top-N theo nhóm | Top 3 nhân viên mỗi department |
 
-## Summary
+## Tóm Tắt
 
-Correlated subqueries provide powerful capabilities for:
-- Row-by-row processing and comparisons
-- Complex conditional logic
-- Existence and non-existence checking
-- Hierarchical and sequential data analysis
+Correlated subqueries cung cấp khả năng mạnh mẽ cho:
+- Xử lý và so sánh từng hàng
+- Logic điều kiện phức tạp
+- Kiểm tra sự tồn tại và không tồn tại
+- Phân tích dữ liệu phân cấp và tuần tự
 
-Key considerations:
-- **Performance**: Execute once per outer row
-- **Indexing**: Critical for correlation columns
-- **Alternatives**: Window functions, CTEs, joins
-- **Debugging**: Test correlation logic separately
-- **Readability**: Format clearly with proper indentation
+Các cân nhắc chính:
+- **Hiệu suất**: Thực thi một lần cho mỗi hàng ngoài
+- **Indexing**: Quan trọng cho các cột tương quan
+- **Lựa chọn thay thế**: Window functions, CTEs, joins
+- **Debugging**: Kiểm tra logic tương quan riêng biệt
+- **Khả năng đọc**: Format rõ ràng với thụt lề phù hợp
 
-Choose correlated subqueries when:
-- Logic requires row-by-row evaluation
-- EXISTS/NOT EXISTS semantics are needed
-- Alternative approaches are more complex
-- Performance is acceptable for data volume
+Chọn correlated subqueries khi:
+- Logic yêu cầu đánh giá từng hàng
+- Cần ngữ nghĩa EXISTS/NOT EXISTS
+- Các cách tiếp cận thay thế phức tạp hơn
+- Hiệu suất chấp nhận được với khối lượng dữ liệu
 
-This completes our comprehensive coverage of subqueries. Next, we'll move on to advanced SQL techniques including stored procedures, functions, and triggers.
+Điều này hoàn thành phạm vi toàn diện của chúng ta về subqueries. Tiếp theo, chúng ta sẽ chuyển sang các kỹ thuật SQL nâng cao bao gồm stored procedures, functions và triggers.

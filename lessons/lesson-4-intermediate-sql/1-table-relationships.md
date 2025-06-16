@@ -1,118 +1,118 @@
-# Table Relationships and Join Fundamentals
+# Mối Quan Hệ Bảng và Kiến Thức Cơ Bản về Join
 
-Understanding how tables relate to each other is crucial for writing effective SQL queries that combine data from multiple sources. This guide covers the fundamental concepts of relational database design and introduces you to JOIN operations.
+Hiểu cách các bảng liên quan với nhau là rất quan trọng để viết các truy vấn SQL hiệu quả kết hợp dữ liệu từ nhiều nguồn. Hướng dẫn này bao gồm các khái niệm cơ bản về thiết kế cơ sở dữ liệu quan hệ và giới thiệu bạn với các thao tác JOIN.
 
-## Table of Contents
-1. [Relational Database Principles](#relational-database-principles)
-2. [Types of Relationships](#types-of-relationships)
-3. [Primary and Foreign Keys](#primary-and-foreign-keys)
-4. [Referential Integrity](#referential-integrity)
-5. [Introduction to JOINs](#introduction-to-joins)
-6. [Sample Schema Relationships](#sample-schema-relationships)
+## Mục Lục
+1. [Nguyên Tắc Cơ Sở Dữ Liệu Quan Hệ](#nguyên-tắc-cơ-sở-dữ-liệu-quan-hệ)
+2. [Các Loại Mối Quan Hệ](#các-loại-mối-quan-hệ)
+3. [Khóa Chính và Khóa Ngoại](#khóa-chính-và-khóa-ngoại)
+4. [Tính Toàn Vẹn Tham Chiếu](#tính-toàn-vẹn-tham-chiếu)
+5. [Giới Thiệu về JOINs](#giới-thiệu-về-joins)
+6. [Mối Quan Hệ Schema Mẫu](#mối-quan-hệ-schema-mẫu)
 
-## Relational Database Principles
+## Nguyên Tắc Cơ Sở Dữ Liệu Quan Hệ
 
-### What Makes a Database "Relational"?
+### Điều Gì Làm Cho Cơ Sở Dữ Liệu "Quan Hệ"?
 
-A relational database is based on the relational model, which organizes data into tables (relations) that can be linked—or related—based on data common to each. Key principles include:
+Cơ sở dữ liệu quan hệ dựa trên mô hình quan hệ, tổ chức dữ liệu thành các bảng (quan hệ) có thể được liên kết—hoặc liên quan—dựa trên dữ liệu chung cho mỗi bảng. Các nguyên tắc chính bao gồm:
 
-1. **Tables**: Data is stored in tables with rows (records) and columns (attributes)
-2. **Relationships**: Tables are connected through common data elements
-3. **Normalization**: Data is organized to reduce redundancy and dependency
-4. **Integrity**: Rules ensure data accuracy and consistency
+1. **Bảng**: Dữ liệu được lưu trữ trong các bảng với các hàng (bản ghi) và cột (thuộc tính)
+2. **Mối Quan Hệ**: Các bảng được kết nối thông qua các phần tử dữ liệu chung
+3. **Chuẩn Hóa**: Dữ liệu được tổ chức để giảm sự dư thừa và phụ thuộc
+4. **Toàn Vẹn**: Các quy tắc đảm bảo tính chính xác và nhất quán của dữ liệu
 
-### Benefits of Relational Design
+### Lợi Ích Của Thiết Kế Quan Hệ
 
-- **Data Integrity**: Prevents inconsistent or invalid data
-- **Reduced Redundancy**: Information stored once, referenced everywhere
-- **Flexibility**: Easy to modify structure without affecting applications
-- **Scalability**: Efficient storage and retrieval of large datasets
-- **Security**: Fine-grained access control at table and column levels
+- **Toàn Vẹn Dữ Liệu**: Ngăn ngừa dữ liệu không nhất quán hoặc không hợp lệ
+- **Giảm Sự Dư Thừa**: Thông tin được lưu trữ một lần, tham chiếu ở mọi nơi
+- **Tính Linh Hoạt**: Dễ dàng sửa đổi cấu trúc mà không ảnh hưởng đến ứng dụng
+- **Khả Năng Mở Rộng**: Lưu trữ và truy xuất hiệu quả các tập dữ liệu lớn
+- **Bảo Mật**: Kiểm soát truy cập chi tiết ở cấp độ bảng và cột
 
-## Types of Relationships
+## Các Loại Mối Quan Hệ
 
-### 1. One-to-Many (1:M) Relationship
+### 1. Mối Quan Hệ Một-Nhiều (1:M)
 
-The most common relationship type where one record in Table A can relate to multiple records in Table B.
+Loại mối quan hệ phổ biến nhất trong đó một bản ghi ở Bảng A có thể liên quan đến nhiều bản ghi ở Bảng B.
 
-**Example**: One department can have many employees
+**Ví dụ**: Một phòng ban có thể có nhiều nhân viên
 ```
-DEPARTMENTS (1) ←→ (Many) EMPLOYEES
-```
-
-**Business Logic**:
-- Each employee belongs to exactly one department
-- Each department can have zero or more employees
-- The foreign key is stored in the "many" side (EMPLOYEES table)
-
-### 2. Many-to-Many (M:M) Relationship
-
-A relationship where multiple records in Table A can relate to multiple records in Table B.
-
-**Example**: Products and Orders
-```
-PRODUCTS (Many) ←→ (Many) ORDERS
+DEPARTMENTS (1) ←→ (Nhiều) EMPLOYEES
 ```
 
-**Implementation**: Requires a junction/bridge table
+**Logic Nghiệp Vụ**:
+- Mỗi nhân viên thuộc về đúng một phòng ban
+- Mỗi phòng ban có thể có không hoặc nhiều nhân viên
+- Khóa ngoại được lưu trữ ở phía "nhiều" (bảng EMPLOYEES)
+
+### 2. Mối Quan Hệ Nhiều-Nhiều (M:M)
+
+Mối quan hệ trong đó nhiều bản ghi ở Bảng A có thể liên quan đến nhiều bản ghi ở Bảng B.
+
+**Ví dụ**: Sản phẩm và Đơn hàng
 ```
-PRODUCTS (1) ←→ (Many) ORDER_ITEMS (Many) ←→ (1) ORDERS
+PRODUCTS (Nhiều) ←→ (Nhiều) ORDERS
 ```
 
-**Business Logic**:
-- Each order can contain multiple products
-- Each product can appear in multiple orders
-- The ORDER_ITEMS table stores the relationship plus additional data (quantity, price)
+**Triển khai**: Yêu cầu bảng nối/cầu nối
+```
+PRODUCTS (1) ←→ (Nhiều) ORDER_ITEMS (Nhiều) ←→ (1) ORDERS
+```
 
-### 3. One-to-One (1:1) Relationship
+**Logic Nghiệp Vụ**:
+- Mỗi đơn hàng có thể chứa nhiều sản phẩm
+- Mỗi sản phẩm có thể xuất hiện trong nhiều đơn hàng
+- Bảng ORDER_ITEMS lưu trữ mối quan hệ cộng thêm dữ liệu bổ sung (số lượng, giá)
 
-A relationship where one record in Table A relates to exactly one record in Table B.
+### 3. Mối Quan Hệ Một-Một (1:1)
 
-**Example**: Employee and Employee_Details
+Mối quan hệ trong đó một bản ghi ở Bảng A liên quan đến đúng một bản ghi ở Bảng B.
+
+**Ví dụ**: Employee và Employee_Details
 ```
 EMPLOYEES (1) ←→ (1) EMPLOYEE_DETAILS
 ```
 
-**Business Logic**:
-- Each employee has exactly one detailed profile
-- Each profile belongs to exactly one employee
-- Often used for security or performance reasons (sensitive data separation)
+**Logic Nghiệp Vụ**:
+- Mỗi nhân viên có đúng một hồ sơ chi tiết
+- Mỗi hồ sơ thuộc về đúng một nhân viên
+- Thường được sử dụng vì lý do bảo mật hoặc hiệu suất (tách biệt dữ liệu nhạy cảm)
 
-### 4. Self-Referencing Relationship
+### 4. Mối Quan Hệ Tự Tham Chiếu
 
-A table that relates to itself, typically used for hierarchical data.
+Bảng liên quan đến chính nó, thường được sử dụng cho dữ liệu phân cấp.
 
-**Example**: Employee management hierarchy
+**Ví dụ**: Cấu trúc quản lý nhân viên
 ```
-EMPLOYEES (Manager) ←→ (Employee) EMPLOYEES
+EMPLOYEES (Quản lý) ←→ (Nhân viên) EMPLOYEES
 ```
 
-**Business Logic**:
-- Each employee can have one manager (who is also an employee)
-- Each manager can supervise multiple employees
+**Logic Nghiệp Vụ**:
+- Mỗi nhân viên có thể có một người quản lý (cũng là nhân viên)
+- Mỗi người quản lý có thể giám sát nhiều nhân viên
 
-## Primary and Foreign Keys
+## Khóa Chính và Khóa Ngoại
 
-### Primary Keys
+### Khóa Chính
 
-A primary key is a column (or combination of columns) that uniquely identifies each row in a table.
+Khóa chính là một cột (hoặc tổ hợp các cột) xác định duy nhất mỗi hàng trong bảng.
 
-**Characteristics**:
-- Must be unique for each row
-- Cannot contain NULL values
-- Should not change once assigned
-- Should be as simple as possible
+**Đặc điểm**:
+- Phải là duy nhất cho mỗi hàng
+- Không thể chứa giá trị NULL
+- Không nên thay đổi sau khi được gán
+- Nên đơn giản nhất có thể
 
-**Examples**:
+**Ví dụ**:
 ```sql
--- Single column primary key
+-- Khóa chính một cột
 CREATE TABLE employees (
     employee_id NUMBER PRIMARY KEY,
     first_name VARCHAR2(50),
     last_name VARCHAR2(50)
 );
 
--- Composite primary key
+-- Khóa chính tổ hợp
 CREATE TABLE order_items (
     order_id NUMBER,
     product_id NUMBER,
@@ -121,19 +121,19 @@ CREATE TABLE order_items (
 );
 ```
 
-### Foreign Keys
+### Khóa Ngoại
 
-A foreign key is a column (or combination of columns) that refers to the primary key of another table.
+Khóa ngoại là một cột (hoặc tổ hợp các cột) tham chiếu đến khóa chính của bảng khác.
 
-**Characteristics**:
-- Must match an existing primary key value in the referenced table
-- Can be NULL (unless specified otherwise)
-- Enforces referential integrity
-- Can have multiple foreign keys in one table
+**Đặc điểm**:
+- Phải khớp với giá trị khóa chính hiện có trong bảng được tham chiếu
+- Có thể là NULL (trừ khi được chỉ định khác)
+- Thực thi tính toàn vẹn tham chiếu
+- Có thể có nhiều khóa ngoại trong một bảng
 
-**Examples**:
+**Ví dụ**:
 ```sql
--- Foreign key constraint
+-- Ràng buộc khóa ngoại
 CREATE TABLE employees (
     employee_id NUMBER PRIMARY KEY,
     first_name VARCHAR2(50),
@@ -145,73 +145,73 @@ CREATE TABLE employees (
 );
 ```
 
-## Referential Integrity
+## Tính Toàn Vẹn Tham Chiếu
 
-Referential integrity ensures that relationships between tables remain consistent.
+Tính toàn vẹn tham chiếu đảm bảo rằng mối quan hệ giữa các bảng luôn nhất quán.
 
-### Rules Enforced:
+### Các Quy Tắc Được Thực Thi:
 
-1. **Insert Rule**: Cannot insert a foreign key value that doesn't exist in the parent table
-2. **Update Rule**: Cannot update a foreign key to a value that doesn't exist in the parent table
-3. **Delete Rule**: Cannot delete a parent record if child records exist (by default)
+1. **Quy Tắc Chèn**: Không thể chèn giá trị khóa ngoại không tồn tại trong bảng cha
+2. **Quy Tắc Cập Nhật**: Không thể cập nhật khóa ngoại thành giá trị không tồn tại trong bảng cha
+3. **Quy Tắc Xóa**: Không thể xóa bản ghi cha nếu các bản ghi con tồn tại (mặc định)
 
-### Cascade Options:
+### Tùy Chọn Cascade:
 
 ```sql
--- Cascade delete: Delete child records when parent is deleted
+-- Cascade delete: Xóa bản ghi con khi bản ghi cha bị xóa
 CONSTRAINT fk_emp_dept 
     FOREIGN KEY (department_id) 
     REFERENCES departments(department_id)
     ON DELETE CASCADE
 
--- Set null: Set foreign key to NULL when parent is deleted
+-- Set null: Đặt khóa ngoại thành NULL khi bản ghi cha bị xóa
 CONSTRAINT fk_emp_dept 
     FOREIGN KEY (department_id) 
     REFERENCES departments(department_id)
     ON DELETE SET NULL
 ```
 
-## Introduction to JOINs
+## Giới Thiệu về JOINs
 
-### What is a JOIN?
+### JOIN là gì?
 
-A JOIN is a SQL operation that combines rows from two or more tables based on a related column between them.
+JOIN là một thao tác SQL kết hợp các hàng từ hai hoặc nhiều bảng dựa trên cột liên quan giữa chúng.
 
-### Basic JOIN Syntax
+### Cú Pháp JOIN Cơ Bản
 
 ```sql
--- ANSI Standard Syntax (Recommended)
+-- Cú pháp chuẩn ANSI (Khuyến nghị)
 SELECT columns
 FROM table1
 JOIN table2 ON table1.column = table2.column;
 
--- Oracle Traditional Syntax (Legacy)
+-- Cú pháp truyền thống Oracle (Cũ)
 SELECT columns
 FROM table1, table2
 WHERE table1.column = table2.column;
 ```
 
-### Why Use JOINs?
+### Tại Sao Sử Dụng JOINs?
 
-1. **Combine Related Data**: Get complete information from normalized tables
-2. **Avoid Data Duplication**: Keep data in appropriate tables
-3. **Maintain Data Integrity**: Leverage foreign key relationships
-4. **Flexible Reporting**: Create views combining multiple data sources
+1. **Kết Hợp Dữ Liệu Liên Quan**: Lấy thông tin đầy đủ từ các bảng được chuẩn hóa
+2. **Tránh Trùng Lặp Dữ Liệu**: Giữ dữ liệu trong các bảng phù hợp
+3. **Duy Trì Toàn Vẹn Dữ Liệu**: Tận dụng mối quan hệ khóa ngoại
+4. **Báo Cáo Linh Hoạt**: Tạo views kết hợp nhiều nguồn dữ liệu
 
-### JOIN Types Overview
+### Tổng Quan Các Loại JOIN
 
-| Join Type | Description | When to Use |
-|-----------|-------------|-------------|
-| INNER JOIN | Returns only matching records | When you need data that exists in both tables |
-| LEFT OUTER JOIN | Returns all left table records + matches | When you need all records from the left table |
-| RIGHT OUTER JOIN | Returns all right table records + matches | When you need all records from the right table |
-| FULL OUTER JOIN | Returns all records from both tables | When you need all records regardless of matches |
-| CROSS JOIN | Cartesian product of both tables | For creating combinations or test data |
-| SELF JOIN | Table joined with itself | For hierarchical or comparative queries |
+| Loại Join | Mô Tả | Khi Nào Sử Dụng |
+|-----------|-------|------------------|
+| INNER JOIN | Chỉ trả về các bản ghi khớp | Khi bạn cần dữ liệu tồn tại ở cả hai bảng |
+| LEFT OUTER JOIN | Trả về tất cả bản ghi bảng trái + các bản ghi khớp | Khi bạn cần tất cả bản ghi từ bảng trái |
+| RIGHT OUTER JOIN | Trả về tất cả bản ghi bảng phải + các bản ghi khớp | Khi bạn cần tất cả bản ghi từ bảng phải |
+| FULL OUTER JOIN | Trả về tất cả bản ghi từ cả hai bảng | Khi bạn cần tất cả bản ghi bất kể có khớp hay không |
+| CROSS JOIN | Tích Cartesian của cả hai bảng | Để tạo tổ hợp hoặc dữ liệu thử nghiệm |
+| SELF JOIN | Bảng được nối với chính nó | Cho các truy vấn phân cấp hoặc so sánh |
 
-## Sample Schema Relationships
+## Mối Quan Hệ Schema Mẫu
 
-### HR Schema Entity Relationship Diagram
+### Sơ Đồ Thực Thể Quan Hệ HR Schema
 
 ```
 COUNTRIES
@@ -221,19 +221,19 @@ LOCATIONS
 DEPARTMENTS
     ↓ (1:M)
 EMPLOYEES → JOBS (M:1)
-    ↓ (self-reference)
+    ↓ (tự tham chiếu)
 EMPLOYEES (manager_id)
 ```
 
-### Detailed HR Relationships:
+### Mối Quan Hệ HR Chi Tiết:
 
-1. **EMPLOYEES ↔ DEPARTMENTS**: Each employee belongs to one department
-2. **EMPLOYEES ↔ JOBS**: Each employee has one job title
-3. **EMPLOYEES ↔ EMPLOYEES**: Each employee may have one manager
-4. **DEPARTMENTS ↔ LOCATIONS**: Each department is in one location
-5. **LOCATIONS ↔ COUNTRIES**: Each location is in one country
+1. **EMPLOYEES ↔ DEPARTMENTS**: Mỗi nhân viên thuộc về một phòng ban
+2. **EMPLOYEES ↔ JOBS**: Mỗi nhân viên có một chức danh công việc
+3. **EMPLOYEES ↔ EMPLOYEES**: Mỗi nhân viên có thể có một người quản lý
+4. **DEPARTMENTS ↔ LOCATIONS**: Mỗi phòng ban ở một địa điểm
+5. **LOCATIONS ↔ COUNTRIES**: Mỗi địa điểm ở một quốc gia
 
-### SALES Schema Entity Relationship Diagram
+### Sơ Đồ Thực Thể Quan Hệ SALES Schema
 
 ```
 CUSTOMERS
@@ -243,26 +243,26 @@ ORDERS
 ORDER_ITEMS → PRODUCTS (M:1)
 ```
 
-### Detailed SALES Relationships:
+### Mối Quan Hệ SALES Chi Tiết:
 
-1. **CUSTOMERS ↔ ORDERS**: Each customer can have multiple orders
-2. **ORDERS ↔ ORDER_ITEMS**: Each order can have multiple line items
-3. **PRODUCTS ↔ ORDER_ITEMS**: Each product can appear in multiple orders
+1. **CUSTOMERS ↔ ORDERS**: Mỗi khách hàng có thể có nhiều đơn hàng
+2. **ORDERS ↔ ORDER_ITEMS**: Mỗi đơn hàng có thể có nhiều mục hàng
+3. **PRODUCTS ↔ ORDER_ITEMS**: Mỗi sản phẩm có thể xuất hiện trong nhiều đơn hàng
 
-## Common Relationship Patterns
+## Các Mẫu Mối Quan Hệ Phổ Biến
 
-### 1. Lookup Tables
+### 1. Bảng Tra Cứu
 
-Tables that store reference data used by other tables.
+Bảng lưu trữ dữ liệu tham chiếu được sử dụng bởi các bảng khác.
 
 ```sql
--- Countries table (lookup)
+-- Bảng countries (tra cứu)
 CREATE TABLE countries (
     country_id CHAR(2) PRIMARY KEY,
     country_name VARCHAR2(40)
 );
 
--- Locations table (uses country lookup)
+-- Bảng locations (sử dụng tra cứu country)
 CREATE TABLE locations (
     location_id NUMBER PRIMARY KEY,
     street_address VARCHAR2(40),
@@ -272,12 +272,12 @@ CREATE TABLE locations (
 );
 ```
 
-### 2. Bridge/Junction Tables
+### 2. Bảng Cầu Nối/Nối
 
-Tables that resolve many-to-many relationships.
+Bảng giải quyết mối quan hệ nhiều-nhiều.
 
 ```sql
--- Many-to-many between orders and products
+-- Nhiều-nhiều giữa orders và products
 CREATE TABLE order_items (
     order_id NUMBER,
     product_id NUMBER,
@@ -289,12 +289,12 @@ CREATE TABLE order_items (
 );
 ```
 
-### 3. Hierarchical Tables
+### 3. Bảng Phân Cấp
 
-Tables that reference themselves for tree structures.
+Bảng tự tham chiếu cho cấu trúc cây.
 
 ```sql
--- Employee hierarchy
+-- Cấu trúc phân cấp nhân viên
 CREATE TABLE employees (
     employee_id NUMBER PRIMARY KEY,
     first_name VARCHAR2(20),
@@ -304,16 +304,16 @@ CREATE TABLE employees (
 );
 ```
 
-## Best Practices for Relationships
+## Thực Hành Tốt Nhất Cho Mối Quan Hệ
 
-### 1. Naming Conventions
+### 1. Quy Ước Đặt Tên
 
-- Use consistent naming for primary and foreign keys
-- Foreign key names should indicate the referenced table
-- Use meaningful constraint names
+- Sử dụng quy ước đặt tên nhất quán cho khóa chính và khóa ngoại
+- Tên khóa ngoại nên chỉ ra bảng được tham chiếu
+- Sử dụng tên ràng buộc có ý nghĩa
 
 ```sql
--- Good naming
+-- Đặt tên tốt
 CREATE TABLE employees (
     employee_id NUMBER PRIMARY KEY,
     department_id NUMBER,
@@ -322,30 +322,30 @@ CREATE TABLE employees (
 );
 ```
 
-### 2. Indexing Foreign Keys
+### 2. Tạo Index cho Khóa Ngoại
 
-Always create indexes on foreign key columns for better JOIN performance.
+Luôn tạo index trên các cột khóa ngoại để có hiệu suất JOIN tốt hơn.
 
 ```sql
 CREATE INDEX idx_emp_dept_id ON employees(department_id);
 CREATE INDEX idx_emp_manager_id ON employees(manager_id);
 ```
 
-### 3. Avoid Circular References
+### 3. Tránh Tham Chiếu Vòng Tròn
 
-Design relationships to prevent circular dependencies.
+Thiết kế mối quan hệ để ngăn ngừa phụ thuộc vòng tròn.
 
 ```sql
--- Avoid: A references B, B references C, C references A
--- Instead: Use hierarchical or one-way relationships
+-- Tránh: A tham chiếu B, B tham chiếu C, C tham chiếu A
+-- Thay vào đó: Sử dụng mối quan hệ phân cấp hoặc một chiều
 ```
 
-### 4. Consider Relationship Cardinality
+### 4. Xem Xét Cardinality Mối Quan Hệ
 
-Design tables based on actual business requirements.
+Thiết kế bảng dựa trên yêu cầu nghiệp vụ thực tế.
 
 ```sql
--- If a customer can have multiple addresses
+-- Nếu khách hàng có thể có nhiều địa chỉ
 CREATE TABLE customer_addresses (
     customer_id NUMBER,
     address_type VARCHAR2(10), -- 'HOME', 'WORK', 'BILLING'
@@ -355,66 +355,66 @@ CREATE TABLE customer_addresses (
 );
 ```
 
-## Understanding Query Execution
+## Hiểu Về Thực Thi Truy Vấn
 
-### How JOINs Work Internally
+### Cách JOINs Hoạt Động Bên Trong
 
-1. **Table Access**: Database accesses the required tables
-2. **Join Condition Evaluation**: Compares values based on join condition
-3. **Result Set Construction**: Combines matching rows
-4. **Filtering**: Applies WHERE clause conditions
-5. **Sorting**: Applies ORDER BY if specified
+1. **Truy Cập Bảng**: Cơ sở dữ liệu truy cập các bảng cần thiết
+2. **Đánh Giá Điều Kiện Join**: So sánh giá trị dựa trên điều kiện join
+3. **Xây Dựng Tập Kết Quả**: Kết hợp các hàng khớp
+4. **Lọc**: Áp dụng điều kiện mệnh đề WHERE
+5. **Sắp Xếp**: Áp dụng ORDER BY nếu được chỉ định
 
-### Join Algorithms
+### Thuật Toán Join
 
-- **Nested Loop Join**: Good for small tables or when one table is much smaller
-- **Hash Join**: Efficient for large tables with equality conditions
-- **Sort-Merge Join**: Good for sorted data or inequality conditions
+- **Nested Loop Join**: Tốt cho bảng nhỏ hoặc khi một bảng nhỏ hơn nhiều
+- **Hash Join**: Hiệu quả cho bảng lớn với điều kiện bằng nhau
+- **Sort-Merge Join**: Tốt cho dữ liệu đã sắp xếp hoặc điều kiện không bằng
 
-## Troubleshooting Common Issues
+## Khắc Phục Các Vấn Đề Phổ Biến
 
-### 1. Cartesian Products
+### 1. Tích Cartesian
 
 ```sql
--- Problem: Missing join condition
+-- Vấn đề: Thiếu điều kiện join
 SELECT * FROM employees, departments;
 
--- Solution: Add proper join condition
+-- Giải pháp: Thêm điều kiện join phù hợp
 SELECT * FROM employees e
 JOIN departments d ON e.department_id = d.department_id;
 ```
 
-### 2. Unexpected Result Counts
+### 2. Số Lượng Kết Quả Không Mong Đợi
 
 ```sql
--- Problem: Duplicate rows due to one-to-many relationship
+-- Vấn đề: Hàng trùng lặp do mối quan hệ một-nhiều
 SELECT e.employee_id, e.first_name, d.department_name
 FROM employees e
 JOIN departments d ON e.department_id = d.department_id;
 
--- If you need unique employees, consider what you're actually trying to achieve
+-- Nếu bạn cần nhân viên duy nhất, hãy xem xét bạn thực sự muốn đạt được gì
 ```
 
-### 3. NULL Handling in Relationships
+### 3. Xử Lý NULL trong Mối Quan Hệ
 
 ```sql
--- Employees without departments won't appear in INNER JOIN
+-- Nhân viên không có phòng ban sẽ không xuất hiện trong INNER JOIN
 SELECT e.first_name, d.department_name
 FROM employees e
 LEFT JOIN departments d ON e.department_id = d.department_id;
 ```
 
-## Next Steps
+## Bước Tiếp Theo
 
-Now that you understand table relationships and JOIN fundamentals, you're ready to:
+Bây giờ bạn đã hiểu về mối quan hệ bảng và kiến thức cơ bản về JOIN, bạn đã sẵn sàng để:
 
-1. **Practice INNER JOINs**: Start with simple two-table joins
-2. **Explore OUTER JOINs**: Learn when to include unmatched records
-3. **Master Complex JOINs**: Work with multiple tables and conditions
-4. **Optimize Performance**: Learn about indexes and execution plans
+1. **Thực Hành INNER JOINs**: Bắt đầu với joins hai bảng đơn giản
+2. **Khám Phá OUTER JOINs**: Học khi nào bao gồm các bản ghi không khớp
+3. **Thành Thạo JOINs Phức Tạp**: Làm việc với nhiều bảng và điều kiện
+4. **Tối Ưu Hiệu Suất**: Học về indexes và kế hoạch thực thi
 
-The following lessons will dive deep into each JOIN type with practical examples and real-world scenarios.
+Các bài học tiếp theo sẽ đi sâu vào từng loại JOIN với các ví dụ thực tế và tình huống thực tế.
 
 ---
 
-**Key Takeaway**: Understanding relationships is the foundation of effective SQL querying. Take time to analyze your data model before writing JOINs, and always consider the business logic behind the relationships.
+**Điểm Chính**: Hiểu về mối quan hệ là nền tảng của việc truy vấn SQL hiệu quả. Hãy dành thời gian phân tích mô hình dữ liệu của bạn trước khi viết JOINs, và luôn xem xét logic nghiệp vụ đằng sau các mối quan hệ.

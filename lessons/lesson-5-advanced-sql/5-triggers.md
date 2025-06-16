@@ -1,53 +1,53 @@
-# Triggers in Oracle Database
+# Triggers trong Oracle Database
 
-## Learning Objectives
-By the end of this lesson, you will be able to:
-- Understand what database triggers are and when to use them
-- Create different types of triggers (DML, DDL, System)
-- Implement business logic using triggers
-- Handle trigger timing and events effectively
-- Apply best practices for trigger development
-- Debug and troubleshoot trigger issues
+## Mục Tiêu Học Tập
+Sau khi hoàn thành bài học này, bạn sẽ có thể:
+- Hiểu triggers trong database là gì và khi nào sử dụng chúng
+- Tạo các loại triggers khác nhau (DML, DDL, System)
+- Triển khai logic business sử dụng triggers
+- Xử lý timing và events của trigger hiệu quả
+- Áp dụng thực hành tốt cho việc phát triển trigger
+- Debug và troubleshoot các vấn đề trigger
 
-## Prerequisites
-- Understanding of PL/SQL basics
-- Knowledge of DML operations (INSERT, UPDATE, DELETE)
-- Familiarity with database tables and constraints
-- Completion of stored procedures and functions lessons
+## Điều Kiện Tiên Quyết
+- Hiểu cơ bản về PL/SQL
+- Kiến thức về các thao tác DML (INSERT, UPDATE, DELETE)
+- Quen thuộc với database tables và constraints
+- Hoàn thành các bài học stored procedures và functions
 
-## 1. Introduction to Triggers
+## 1. Giới thiệu về Triggers
 
-### What are Triggers?
-Triggers are special PL/SQL programs that execute automatically in response to specific database events. They cannot be explicitly called - they "fire" automatically when their triggering event occurs.
+### Triggers là gì?
+Triggers là các chương trình PL/SQL đặc biệt thực thi tự động để phản hồi các sự kiện database cụ thể. Chúng không thể được gọi một cách rõ ràng - chúng "fire" tự động khi sự kiện triggering của chúng xảy ra.
 
-### Key Characteristics:
-- **Automatic Execution**: Fire automatically on events
-- **Event-Driven**: Respond to specific database operations
-- **Transparent**: Users are unaware of their execution
-- **Powerful**: Can enforce complex business rules
-- **Dangerous**: Can impact performance if poorly designed
+### Đặc điểm Chính:
+- **Thực thi Tự động**: Fire tự động trên các events
+- **Điều khiển bởi Event**: Phản hồi các thao tác database cụ thể
+- **Minh bạch**: Users không biết về việc thực thi của chúng
+- **Mạnh mẽ**: Có thể thực thi các quy tắc business phức tạp
+- **Nguy hiểm**: Có thể ảnh hưởng hiệu suất nếu thiết kế kém
 
-### Common Use Cases:
-- **Auditing**: Track data changes
-- **Security**: Enforce access controls
-- **Business Rules**: Implement complex constraints
-- **Data Validation**: Ensure data integrity
-- **Automatic Calculations**: Update derived data
-- **Logging**: Track system events
+### Trường hợp Sử dụng Phổ biến:
+- **Auditing**: Theo dõi thay đổi dữ liệu
+- **Bảo mật**: Thực thi kiểm soát truy cập
+- **Quy tắc Business**: Triển khai các constraints phức tạp
+- **Xác thực Dữ liệu**: Đảm bảo tính toàn vẹn dữ liệu
+- **Tính toán Tự động**: Cập nhật dữ liệu dẫn xuất
+- **Logging**: Theo dõi các sự kiện hệ thống
 
-## 2. Types of Triggers
+## 2. Các loại Triggers
 
 ### 2.1 DML Triggers (Data Manipulation Language)
-Fire in response to INSERT, UPDATE, or DELETE operations.
+Fire để phản hồi các thao tác INSERT, UPDATE hoặc DELETE.
 
-#### Timing Options:
-- **BEFORE**: Execute before the triggering event
-- **AFTER**: Execute after the triggering event
-- **INSTEAD OF**: Replace the triggering event (views only)
+#### Tùy chọn Timing:
+- **BEFORE**: Thực thi trước sự kiện triggering
+- **AFTER**: Thực thi sau sự kiện triggering
+- **INSTEAD OF**: Thay thế sự kiện triggering (chỉ views)
 
-#### Event Options:
-- **INSERT**: New rows added
-- **UPDATE**: Existing rows modified
+#### Tùy chọn Event:
+- **INSERT**: Các hàng mới được thêm
+- **UPDATE**: Các hàng hiện tại được sửa đổi
 - **DELETE**: Rows removed
 
 ### 2.2 DDL Triggers (Data Definition Language)

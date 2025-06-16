@@ -1,50 +1,50 @@
-# Oracle Database Indexes - Comprehensive Guide
+# Oracle Database Indexes - Hướng dẫn Toàn diện
 
-Indexes are critical database objects that improve query performance by providing faster data access paths. This comprehensive guide covers all aspects of Oracle Database indexes, from basic concepts to advanced optimization techniques.
+Indexes là các đối tượng database quan trọng cải thiện hiệu suất truy vấn bằng cách cung cấp đường dẫn truy cập dữ liệu nhanh hơn. Hướng dẫn toàn diện này bao gồm tất cả các khía cạnh của Oracle Database indexes, từ khái niệm cơ bản đến kỹ thuật tối ưu hóa nâng cao.
 
-## Table of Contents
-1. [Index Fundamentals](#index-fundamentals)
+## Mục Lục
+1. [Cơ bản về Index](#index-fundamentals)
 2. [B-Tree Indexes](#b-tree-indexes)
 3. [Bitmap Indexes](#bitmap-indexes)
-4. [Specialized Index Types](#specialized-index-types)
+4. [Các loại Index Chuyên biệt](#specialized-index-types)
 5. [Partitioned Indexes](#partitioned-indexes)
-6. [Index Design Principles](#index-design-principles)
-7. [Index Maintenance](#index-maintenance)
-8. [Performance Monitoring](#performance-monitoring)
-9. [Best Practices](#best-practices)
+6. [Nguyên tắc Thiết kế Index](#index-design-principles)
+7. [Bảo trì Index](#index-maintenance)
+8. [Giám sát Hiệu suất](#performance-monitoring)
+9. [Thực hành Tốt](#best-practices)
 
-## Index Fundamentals
+## Cơ bản về Index
 
-### What is an Index?
-An index is a database object that provides a fast access path to table data. Think of it like an index in a book - it points to the location of specific information without having to scan through every page.
+### Index là gì?
+Index là một đối tượng database cung cấp đường dẫn truy cập nhanh đến dữ liệu table. Hãy nghĩ về nó như một chỉ mục trong sách - nó trỏ đến vị trí của thông tin cụ thể mà không cần phải quét qua từng trang.
 
-### How Indexes Work
+### Cách Indexes Hoạt động
 ```sql
--- Without index: Full table scan
+-- Không có index: Full table scan
 SELECT * FROM employees WHERE employee_id = 100;
--- Scans every row in the table
+-- Quét mọi hàng trong table
 
--- With index on employee_id: Index lookup
+-- Với index trên employee_id: Index lookup
 CREATE INDEX idx_emp_id ON employees(employee_id);
--- Direct navigation to the specific row
+-- Điều hướng trực tiếp đến hàng cụ thể
 ```
 
-### Index Structure Overview
+### Tổng quan Cấu trúc Index
 ```
-Index Structure Tree
+Cây Cấu trúc Index
 ├── Index Root Block
 │   ├── Branch Blocks (Internal Nodes)
-│   │   ├── Contains key ranges and pointers
-│   │   └── Directs search to appropriate leaf blocks
+│   │   ├── Chứa key ranges và pointers
+│   │   └── Định hướng search đến leaf blocks phù hợp
 │   └── Leaf Blocks (Data Level)
-│       ├── Contains actual key values
-│       ├── Contains ROWIDs pointing to table rows
-│       └── Linked list for range scans
+│       ├── Chứa actual key values
+│       ├── Chứa ROWIDs trỏ đến table rows
+│       └── Linked list cho range scans
 ```
 
 ## B-Tree Indexes
 
-B-Tree (Balanced Tree) indexes are the most common type of Oracle indexes, suitable for most query patterns.
+B-Tree (Balanced Tree) indexes là loại Oracle indexes phổ biến nhất, phù hợp cho hầu hết các query patterns.
 
 ### 1. Standard B-Tree Index
 ```sql

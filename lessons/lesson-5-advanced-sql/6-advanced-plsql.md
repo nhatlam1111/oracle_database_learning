@@ -1,32 +1,32 @@
-# Advanced PL/SQL Concepts
+# Khái niệm PL/SQL Nâng cao
 
-## Learning Objectives
-By the end of this lesson, you will be able to:
-- Work with advanced PL/SQL data structures (collections, records, objects)
-- Implement dynamic SQL for flexible database programming
-- Use bulk operations for high-performance data processing
-- Apply advanced cursor techniques and cursor variables
-- Implement object-oriented programming concepts in PL/SQL
-- Work with external procedures and Java integration
+## Mục Tiêu Học Tập
+Sau khi hoàn thành bài học này, bạn sẽ có thể:
+- Làm việc với cấu trúc dữ liệu PL/SQL nâng cao (collections, records, objects)
+- Triển khai dynamic SQL cho lập trình database linh hoạt
+- Sử dụng bulk operations cho xử lý dữ liệu hiệu suất cao
+- Áp dụng kỹ thuật cursor nâng cao và cursor variables
+- Triển khai khái niệm lập trình hướng đối tượng trong PL/SQL
+- Làm việc với external procedures và Java integration
 
-## Prerequisites
-- Strong understanding of basic PL/SQL
-- Experience with functions, procedures, and packages
-- Knowledge of triggers and exception handling
-- Familiarity with Oracle database architecture
+## Điều Kiện Tiên Quyết
+- Hiểu vững về PL/SQL cơ bản
+- Kinh nghiệm với functions, procedures và packages
+- Kiến thức về triggers và exception handling
+- Quen thuộc với kiến trúc Oracle database
 
-## 1. Advanced Data Structures
+## 1. Cấu trúc Dữ liệu Nâng cao
 
-### 1.1 Collections in Detail
+### 1.1 Collections Chi tiết
 
 #### Associative Arrays (Index-By Tables)
 ```sql
 DECLARE
-    -- Associative array with VARCHAR2 index
+    -- Associative array với VARCHAR2 index
     TYPE salary_table_t IS TABLE OF NUMBER INDEX BY VARCHAR2(100);
     employee_salaries salary_table_t;
     
-    -- Associative array with PLS_INTEGER index
+    -- Associative array với PLS_INTEGER index
     TYPE name_list_t IS TABLE OF VARCHAR2(100) INDEX BY PLS_INTEGER;
     employee_names name_list_t;
     
@@ -41,7 +41,7 @@ DECLARE
     
     v_index VARCHAR2(100);
 BEGIN
-    -- Populate associative arrays
+    -- Điền vào associative arrays
     employee_salaries('JOHN_SMITH') := 75000;
     employee_salaries('JANE_DOE') := 85000;
     employee_salaries('BOB_WILSON') := 65000;

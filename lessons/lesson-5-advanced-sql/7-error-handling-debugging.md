@@ -1,40 +1,40 @@
-# Error Handling and Debugging in Oracle PL/SQL
+# Error Handling và Debugging trong Oracle PL/SQL
 
-## Learning Objectives
-By the end of this lesson, you will be able to:
-- Implement comprehensive error handling strategies
-- Use Oracle's exception handling mechanisms effectively
-- Debug PL/SQL code using various techniques and tools
-- Apply logging and monitoring best practices
-- Handle different types of errors appropriately
-- Create robust, production-ready PL/SQL applications
+## Mục Tiêu Học Tập
+Sau khi hoàn thành bài học này, bạn sẽ có thể:
+- Triển khai chiến lược xử lý lỗi toàn diện
+- Sử dụng cơ chế exception handling của Oracle hiệu quả
+- Debug PL/SQL code sử dụng nhiều kỹ thuật và công cụ khác nhau
+- Áp dụng thực hành tốt cho logging và monitoring
+- Xử lý các loại lỗi khác nhau một cách phù hợp
+- Tạo các ứng dụng PL/SQL robust, sẵn sàng production
 
-## Prerequisites
-- Strong understanding of PL/SQL fundamentals
-- Experience with procedures, functions, and packages
-- Knowledge of Oracle database architecture
-- Familiarity with SQL*Plus and development tools
+## Điều Kiện Tiên Quyết
+- Hiểu vững về PL/SQL fundamentals
+- Kinh nghiệm với procedures, functions và packages
+- Kiến thức về kiến trúc Oracle database
+- Quen thuộc với SQL*Plus và development tools
 
-## 1. Understanding Oracle Errors
+## 1. Hiểu về Oracle Errors
 
-### 1.1 Types of Errors
+### 1.1 Các loại Errors
 
 #### Compilation Errors
 ```sql
--- Example of compilation errors
+-- Ví dụ về compilation errors
 CREATE OR REPLACE PROCEDURE bad_syntax_example IS
-    v_count NUMER; -- Wrong data type
+    v_count NUMER; -- Sai data type
 BEGIN
-    SELCT COUNT(*) INTO v_count FROM employees; -- Typo in SELECT
+    SELCT COUNT(*) INTO v_count FROM employees; -- Lỗi chính tả trong SELECT
     IF v_count > 0
-        DBMS_OUTPUT.PUT_LINE('Found employees'); -- Missing THEN
+        DBMS_OUTPUT.PUT_LINE('Found employees'); -- Thiếu THEN
     END IF
-END; -- Missing semicolon
+END; -- Thiếu dấu chấm phẩy
 
--- Viewing compilation errors
+-- Xem compilation errors
 SHOW ERRORS PROCEDURE bad_syntax_example;
 
--- Or query user_errors
+-- Hoặc truy vấn user_errors
 SELECT line, position, text
 FROM user_errors
 WHERE name = 'BAD_SYNTAX_EXAMPLE'

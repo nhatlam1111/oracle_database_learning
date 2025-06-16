@@ -1,22 +1,22 @@
-# Subqueries in Oracle Database
+# Subqueries trong Oracle Database
 
-## Learning Objectives
-By the end of this section, you will understand:
-- Different types of subqueries (scalar, single-row, multi-row, multi-column)
-- Where subqueries can be used (SELECT, FROM, WHERE, HAVING)
+## Mục Tiêu Học Tập
+Sau khi hoàn thành phần này, bạn sẽ hiểu được:
+- Các loại subqueries khác nhau (scalar, single-row, multi-row, multi-column)
+- Nơi có thể sử dụng subqueries (SELECT, FROM, WHERE, HAVING)
 - Single-row vs multi-row subqueries
-- Performance considerations and optimization
-- When to use subqueries vs joins
+- Cân nhắc hiệu suất và tối ưu hóa
+- Khi nào sử dụng subqueries vs joins
 
-## Introduction to Subqueries
+## Giới Thiệu về Subqueries
 
-A subquery is a query nested inside another query. Subqueries enable you to:
-- Break complex problems into manageable parts
-- Use results from one query as input to another
-- Perform comparisons against aggregated data
-- Create dynamic, data-driven conditions
+Subquery là một truy vấn được lồng bên trong một truy vấn khác. Subqueries cho phép bạn:
+- Chia nhỏ các vấn đề phức tạp thành các phần dễ quản lý
+- Sử dụng kết quả từ một truy vấn làm đầu vào cho truy vấn khác
+- Thực hiện so sánh với dữ liệu tổng hợp
+- Tạo điều kiện động, dựa trên dữ liệu
 
-### Basic Subquery Structure
+### Cấu Trúc Subquery Cơ Bản
 ```sql
 SELECT column1, column2
 FROM table1
@@ -27,14 +27,14 @@ WHERE column1 operator (
 );
 ```
 
-## Types of Subqueries
+## Các Loại Subqueries
 
-### 1. Scalar Subqueries (Single Value)
+### 1. Scalar Subqueries (Giá Trị Đơn)
 
-Returns exactly one row and one column. Can be used anywhere a single value is expected.
+Trả về chính xác một hàng và một cột. Có thể được sử dụng ở bất kỳ đâu mà một giá trị đơn được mong đợi.
 
 ```sql
--- Find employees earning more than the average salary
+-- Tìm nhân viên kiếm được nhiều hơn mức lương trung bình
 SELECT employee_id, first_name, last_name, salary
 FROM employees
 WHERE salary > (
@@ -42,7 +42,7 @@ WHERE salary > (
     FROM employees
 );
 
--- Use in SELECT clause
+-- Sử dụng trong mệnh đề SELECT
 SELECT 
     employee_id,
     first_name,
@@ -55,10 +55,10 @@ ORDER BY salary_diff_from_avg DESC;
 
 ### 2. Single-Row Subqueries
 
-Returns one row but may have multiple columns. Use with single-row operators (=, !=, <, >, <=, >=).
+Trả về một hàng nhưng có thể có nhiều cột. Sử dụng với các toán tử single-row (=, !=, <, >, <=, >=).
 
 ```sql
--- Find employee with the highest salary
+-- Tìm nhân viên có mức lương cao nhất
 SELECT employee_id, first_name, last_name, salary
 FROM employees
 WHERE salary = (
@@ -66,23 +66,23 @@ WHERE salary = (
     FROM employees
 );
 
--- Find employees in the same department as 'John'
+-- Tìm nhân viên trong cùng department với 'John'
 SELECT employee_id, first_name, last_name, department_id
 FROM employees
 WHERE department_id = (
     SELECT department_id
     FROM employees
     WHERE first_name = 'John'
-    AND rownum = 1  -- Ensure single row if multiple Johns exist
+    AND rownum = 1  -- Đảm bảo single row nếu có nhiều John
 );
 ```
 
 ### 3. Multi-Row Subqueries
 
-Returns multiple rows. Use with multi-row operators (IN, NOT IN, ANY, ALL, EXISTS).
+Trả về nhiều hàng. Sử dụng với các toán tử multi-row (IN, NOT IN, ANY, ALL, EXISTS).
 
 ```sql
--- Find employees in departments located in 'Seattle' or 'London'
+-- Tìm nhân viên trong departments ở 'Seattle' hoặc 'London'
 SELECT employee_id, first_name, last_name, department_id
 FROM employees
 WHERE department_id IN (
@@ -92,7 +92,7 @@ WHERE department_id IN (
     WHERE l.city IN ('Seattle', 'London')
 );
 
--- Find employees earning more than ANY employee in department 50
+-- Tìm nhân viên kiếm được nhiều hơn BẤT KỲ nhân viên nào ở department 50
 SELECT employee_id, first_name, last_name, salary
 FROM employees
 WHERE salary > ANY (
@@ -101,7 +101,7 @@ WHERE salary > ANY (
     WHERE department_id = 50
 );
 
--- Find employees earning more than ALL employees in department 50
+-- Tìm nhân viên kiếm được nhiều hơn TẤT CẢ nhân viên ở department 50
 SELECT employee_id, first_name, last_name, salary
 FROM employees
 WHERE salary > ALL (
@@ -113,10 +113,10 @@ WHERE salary > ALL (
 
 ### 4. Multi-Column Subqueries
 
-Returns multiple columns. Used for complex comparisons.
+Trả về nhiều cột. Được sử dụng cho các so sánh phức tạp.
 
 ```sql
--- Find employees with same job and department as specific employee
+-- Tìm nhân viên có cùng job và department với nhân viên cụ thể
 SELECT employee_id, first_name, last_name, job_id, department_id
 FROM employees
 WHERE (job_id, department_id) = (
@@ -125,7 +125,7 @@ WHERE (job_id, department_id) = (
     WHERE employee_id = 100
 );
 
--- Find employees with maximum salary in their department
+-- Tìm nhân viên có mức lương tối đa trong department của họ
 SELECT employee_id, first_name, last_name, salary, department_id
 FROM employees
 WHERE (department_id, salary) IN (
@@ -135,9 +135,9 @@ WHERE (department_id, salary) IN (
 );
 ```
 
-## Subquery Locations
+## Vị Trí Subquery
 
-### 1. In SELECT Clause (Scalar Subqueries)
+### 1. Trong Mệnh Đề SELECT (Scalar Subqueries)
 ```sql
 SELECT 
     employee_id,
@@ -153,9 +153,9 @@ FROM employees e
 ORDER BY department_name, last_name;
 ```
 
-### 2. In FROM Clause (Inline Views)
+### 2. Trong Mệnh Đề FROM (Inline Views)
 ```sql
--- Use subquery as a table (inline view)
+-- Sử dụng subquery như một bảng (inline view)
 SELECT dept_summary.department_name, dept_summary.avg_salary, e.first_name, e.salary
 FROM (
     SELECT d.department_id, d.department_name, AVG(e.salary) AS avg_salary
@@ -168,9 +168,9 @@ WHERE e.salary > dept_summary.avg_salary
 ORDER BY dept_summary.department_name, e.salary DESC;
 ```
 
-### 3. In WHERE Clause
+### 3. Trong Mệnh Đề WHERE
 ```sql
--- Most common location for subqueries
+-- Vị trí phổ biến nhất cho subqueries
 SELECT employee_id, first_name, last_name, hire_date
 FROM employees
 WHERE hire_date > (
@@ -185,9 +185,9 @@ AND department_id IN (
 );
 ```
 
-### 4. In HAVING Clause
+### 4. Trong Mệnh Đề HAVING
 ```sql
--- Filter groups based on subquery results
+-- Lọc các nhóm dựa trên kết quả subquery
 SELECT department_id, AVG(salary) AS avg_salary
 FROM employees
 GROUP BY department_id
@@ -197,11 +197,11 @@ HAVING AVG(salary) > (
 );
 ```
 
-## Multi-Row Subquery Operators
+## Các Toán Tử Multi-Row Subquery
 
-### 1. IN Operator
+### 1. Toán Tử IN
 ```sql
--- Find employees in specific departments
+-- Tìm nhân viên trong departments cụ thể
 SELECT employee_id, first_name, last_name
 FROM employees
 WHERE department_id IN (
@@ -211,23 +211,23 @@ WHERE department_id IN (
 );
 ```
 
-### 2. NOT IN Operator
+### 2. Toán Tử NOT IN
 ```sql
--- Find employees NOT in specific departments
--- CAUTION: NOT IN with NULL values can return unexpected results
+-- Tìm nhân viên KHÔNG ở trong departments cụ thể
+-- CẨNG TRỌNG: NOT IN với giá trị NULL có thể trả về kết quả không mong đợi
 SELECT employee_id, first_name, last_name
 FROM employees
 WHERE department_id NOT IN (
     SELECT department_id
     FROM departments
     WHERE location_id = 1700
-    AND department_id IS NOT NULL  -- Important when using NOT IN
+    AND department_id IS NOT NULL  -- Quan trọng khi sử dụng NOT IN
 );
 ```
 
-### 3. ANY/SOME Operator
+### 3. Toán Tử ANY/SOME
 ```sql
--- Find employees earning more than ANY manager
+-- Tìm nhân viên kiếm được nhiều hơn BẤT KỲ manager nào
 SELECT employee_id, first_name, last_name, salary
 FROM employees
 WHERE salary > ANY (
@@ -237,7 +237,7 @@ WHERE salary > ANY (
 )
 AND job_id NOT LIKE '%MGR%';
 
--- SOME is synonym for ANY
+-- SOME là từ đồng nghĩa của ANY
 SELECT employee_id, first_name, last_name, salary
 FROM employees
 WHERE salary > SOME (
@@ -247,9 +247,9 @@ WHERE salary > SOME (
 );
 ```
 
-### 4. ALL Operator
+### 4. Toán Tử ALL
 ```sql
--- Find employees earning more than ALL employees in department 50
+-- Tìm nhân viên kiếm được nhiều hơn TẤT CẢ nhân viên ở department 50
 SELECT employee_id, first_name, last_name, salary
 FROM employees
 WHERE salary > ALL (
@@ -258,7 +258,7 @@ WHERE salary > ALL (
     WHERE department_id = 50
 );
 
--- Find departments with ALL employees earning > 5000
+-- Tìm departments với TẤT CẢ nhân viên kiếm được > 5000
 SELECT department_id, department_name
 FROM departments d
 WHERE 5000 < ALL (
@@ -268,13 +268,13 @@ WHERE 5000 < ALL (
 );
 ```
 
-## EXISTS and NOT EXISTS
+## EXISTS và NOT EXISTS
 
-### EXISTS Operator
-Tests for the existence of rows in a subquery. More efficient than IN for many scenarios.
+### Toán Tử EXISTS
+Kiểm tra sự tồn tại của các hàng trong subquery. Hiệu quả hơn IN trong nhiều kịch bản.
 
 ```sql
--- Find employees who have job history
+-- Tìm nhân viên có lịch sử công việc
 SELECT e.employee_id, e.first_name, e.last_name
 FROM employees e
 WHERE EXISTS (
@@ -283,7 +283,7 @@ WHERE EXISTS (
     WHERE jh.employee_id = e.employee_id
 );
 
--- Find departments with employees
+-- Tìm departments có nhân viên
 SELECT d.department_id, d.department_name
 FROM departments d
 WHERE EXISTS (
@@ -293,9 +293,9 @@ WHERE EXISTS (
 );
 ```
 
-### NOT EXISTS Operator
+### Toán Tử NOT EXISTS
 ```sql
--- Find employees with no job history
+-- Tìm nhân viên không có lịch sử công việc
 SELECT e.employee_id, e.first_name, e.last_name
 FROM employees e
 WHERE NOT EXISTS (
@@ -304,7 +304,7 @@ WHERE NOT EXISTS (
     WHERE jh.employee_id = e.employee_id
 );
 
--- Find departments with no employees
+-- Tìm departments không có nhân viên
 SELECT d.department_id, d.department_name
 FROM departments d
 WHERE NOT EXISTS (
@@ -314,11 +314,11 @@ WHERE NOT EXISTS (
 );
 ```
 
-## Complex Subquery Examples
+## Ví Dụ Subquery Phức Tạp
 
-### 1. Nested Subqueries
+### 1. Subqueries Lồng Nhau
 ```sql
--- Find employees in departments with the highest average salary
+-- Tìm nhân viên trong departments có mức lương trung bình cao nhất
 SELECT employee_id, first_name, last_name, department_id, salary
 FROM employees
 WHERE department_id = (
@@ -333,9 +333,9 @@ WHERE department_id = (
 );
 ```
 
-### 2. Subqueries with Analytical Functions
+### 2. Subqueries với Analytical Functions
 ```sql
--- Find employees whose salary is above their department median
+-- Tìm nhân viên có mức lương trên median của department họ
 SELECT 
     e.employee_id,
     e.first_name,
@@ -355,9 +355,9 @@ WHERE e.salary > dept_median.median_salary
 ORDER BY e.department_id, e.salary DESC;
 ```
 
-### 3. Subqueries for Data Validation
+### 3. Subqueries cho Xác Thực Dữ Liệu
 ```sql
--- Find inconsistencies: employees with invalid department_id
+-- Tìm không nhất quán: nhân viên có department_id không hợp lệ
 SELECT employee_id, first_name, last_name, department_id
 FROM employees
 WHERE department_id NOT IN (
@@ -367,7 +367,7 @@ WHERE department_id NOT IN (
 )
 AND department_id IS NOT NULL;
 
--- Find orphaned records
+-- Tìm bản ghi mồ côi
 SELECT 'EMPLOYEES' AS table_name, COUNT(*) AS orphaned_count
 FROM employees e
 WHERE NOT EXISTS (
@@ -381,11 +381,11 @@ WHERE NOT EXISTS (
 );
 ```
 
-## Performance Considerations
+## Cân Nhắc Hiệu Suất
 
 ### 1. Subqueries vs Joins
 ```sql
--- Subquery approach
+-- Cách tiếp cận Subquery
 SELECT employee_id, first_name, last_name
 FROM employees
 WHERE department_id IN (
@@ -394,17 +394,17 @@ WHERE department_id IN (
     WHERE location_id = 1700
 );
 
--- Equivalent JOIN approach (often more efficient)
+-- Cách tiếp cận JOIN tương đương (thường hiệu quả hơn)
 SELECT DISTINCT e.employee_id, e.first_name, e.last_name
 FROM employees e
 JOIN departments d ON e.department_id = d.department_id
 WHERE d.location_id = 1700;
 ```
 
-### 2. EXISTS vs IN Performance
+### 2. Hiệu Suất EXISTS vs IN
 ```sql
--- EXISTS is often more efficient, especially with large datasets
--- EXISTS stops at first match
+-- EXISTS thường hiệu quả hơn, đặc biệt với bộ dữ liệu lớn
+-- EXISTS dừng lại ở kết quả khớp đầu tiên
 SELECT e.employee_id, e.first_name
 FROM employees e
 WHERE EXISTS (
@@ -413,7 +413,7 @@ WHERE EXISTS (
     WHERE jh.employee_id = e.employee_id
 );
 
--- IN processes all values (less efficient for large result sets)
+-- IN xử lý tất cả giá trị (kém hiệu quả với bộ kết quả lớn)
 SELECT employee_id, first_name
 FROM employees
 WHERE employee_id IN (
@@ -422,26 +422,26 @@ WHERE employee_id IN (
 );
 ```
 
-### 3. Avoiding Unnecessary Subqueries
+### 3. Tránh Subqueries Không Cần Thiết
 ```sql
--- INEFFICIENT: Subquery for simple lookup
+-- KHÔNG HIỆU QUẢ: Subquery cho tra cứu đơn giản
 SELECT 
     employee_id,
     first_name,
     (SELECT department_name FROM departments WHERE department_id = e.department_id) AS dept_name
 FROM employees e;
 
--- EFFICIENT: Simple join
+-- HIỆU QUẢ: Join đơn giản
 SELECT e.employee_id, e.first_name, d.department_name
 FROM employees e
 LEFT JOIN departments d ON e.department_id = d.department_id;
 ```
 
-## Common Subquery Patterns
+## Các Mẫu Subquery Phổ Biến
 
-### 1. Top-N Analysis
+### 1. Phân Tích Top-N
 ```sql
--- Top 5 highest paid employees
+-- Top 5 nhân viên có lương cao nhất
 SELECT employee_id, first_name, last_name, salary
 FROM employees
 WHERE salary IN (
@@ -455,7 +455,7 @@ WHERE salary IN (
 )
 ORDER BY salary DESC;
 
--- Alternative with window functions (more efficient)
+-- Cách thay thế với window functions (hiệu quả hơn)
 SELECT employee_id, first_name, last_name, salary
 FROM (
     SELECT 
@@ -466,9 +466,9 @@ FROM (
 WHERE salary_rank <= 5;
 ```
 
-### 2. Running Totals and Comparisons
+### 2. Running Totals và So Sánh
 ```sql
--- Employees earning above running average of their hire order
+-- Nhân viên kiếm được trên mức trung bình running của thứ tự tuyển dụng
 SELECT 
     e.employee_id,
     e.first_name,
@@ -487,9 +487,9 @@ WHERE e.salary > (
 ORDER BY e.hire_date;
 ```
 
-### 3. Data Reconciliation
+### 3. Đối Chiếu Dữ Liệu
 ```sql
--- Find departments where total salaries don't match summary table
+-- Tìm departments mà tổng lương không khớp với bảng tóm tắt
 SELECT 
     d.department_id,
     d.department_name,
@@ -505,18 +505,18 @@ LEFT JOIN salary_summary summary ON d.department_id = summary.department_id
 WHERE ABS(calc_total.calculated_total - NVL(summary.summary_total, 0)) > 0.01;
 ```
 
-## Subquery Optimization Tips
+## Mẹo Tối Ưu Hóa Subquery
 
-### 1. Use Indexes on Subquery Columns
+### 1. Sử Dụng Indexes trên Các Cột Subquery
 ```sql
--- Ensure subquery filter columns are indexed
+-- Đảm bảo các cột filter subquery được đánh index
 CREATE INDEX idx_emp_dept_id ON employees(department_id);
 CREATE INDEX idx_emp_hire_date ON employees(hire_date);
 ```
 
-### 2. Minimize Subquery Executions
+### 2. Giảm Thiểu Việc Thực Thi Subquery
 ```sql
--- INEFFICIENT: Subquery executes for each row
+-- KHÔNG HIỆU QUẢ: Subquery thực thi cho mỗi hàng
 SELECT employee_id, first_name,
     CASE WHEN salary > (SELECT AVG(salary) FROM employees) 
          THEN 'Above Average' 
@@ -524,7 +524,7 @@ SELECT employee_id, first_name,
     END AS salary_category
 FROM employees;
 
--- EFFICIENT: Calculate once using WITH clause
+-- HIỆU QUẢ: Tính toán một lần sử dụng mệnh đề WITH
 WITH avg_salary AS (
     SELECT AVG(salary) AS avg_sal FROM employees
 )
@@ -537,17 +537,17 @@ FROM employees e
 CROSS JOIN avg_salary a;
 ```
 
-### 3. Use Appropriate Subquery Type
+### 3. Sử Dụng Loại Subquery Phù Hợp
 ```sql
--- For existence checking, use EXISTS instead of IN
--- EXISTS (better performance)
+-- Để kiểm tra sự tồn tại, sử dụng EXISTS thay vì IN
+-- EXISTS (hiệu suất tốt hơn)
 SELECT d.department_name
 FROM departments d
 WHERE EXISTS (
     SELECT 1 FROM employees e WHERE e.department_id = d.department_id
 );
 
--- IN (potentially slower)
+-- IN (có thể chậm hơn)
 SELECT department_name
 FROM departments
 WHERE department_id IN (
@@ -555,19 +555,19 @@ WHERE department_id IN (
 );
 ```
 
-## Common Subquery Mistakes
+## Lỗi Subquery Phổ Biến
 
-### 1. NULL Handling with NOT IN
+### 1. Xử Lý NULL với NOT IN
 ```sql
--- WRONG: NOT IN with NULL values
+-- SAI: NOT IN với giá trị NULL
 SELECT employee_id, first_name
 FROM employees
 WHERE department_id NOT IN (
     SELECT department_id FROM departments WHERE location_id = 1700
 );
--- If any department_id is NULL, this returns no rows!
+-- Nếu có bất kỳ department_id nào là NULL, điều này sẽ không trả về hàng nào!
 
--- CORRECT: Handle NULLs explicitly
+-- ĐÚNG: Xử lý NULLs một cách tường minh
 SELECT employee_id, first_name
 FROM employees
 WHERE department_id NOT IN (
@@ -577,7 +577,7 @@ WHERE department_id NOT IN (
     AND department_id IS NOT NULL
 );
 
--- OR use NOT EXISTS (preferred)
+-- HOẶC sử dụng NOT EXISTS (được khuyến nghị)
 SELECT e.employee_id, e.first_name
 FROM employees e
 WHERE NOT EXISTS (
@@ -587,17 +587,17 @@ WHERE NOT EXISTS (
 );
 ```
 
-### 2. Subquery Returns Multiple Rows
+### 2. Subquery Trả Về Nhiều Hàng
 ```sql
--- WRONG: Single-row operator with multi-row subquery
+-- SAI: Toán tử single-row với multi-row subquery
 SELECT employee_id, first_name
 FROM employees
 WHERE department_id = (
     SELECT department_id FROM departments WHERE location_id IN (1400, 1700)
 );
--- ERROR: ORA-01427: single-row subquery returns more than one row
+-- LỖI: ORA-01427: single-row subquery returns more than one row
 
--- CORRECT: Use multi-row operator
+-- ĐÚNG: Sử dụng toán tử multi-row
 SELECT employee_id, first_name
 FROM employees
 WHERE department_id IN (
@@ -605,16 +605,16 @@ WHERE department_id IN (
 );
 ```
 
-### 3. Inefficient Correlated Subqueries
+### 3. Correlated Subqueries Không Hiệu Quả
 ```sql
--- INEFFICIENT: Correlated subquery in SELECT
+-- KHÔNG HIỆU QUẢ: Correlated subquery trong SELECT
 SELECT 
     e.employee_id,
     e.first_name,
     (SELECT COUNT(*) FROM employees e2 WHERE e2.department_id = e.department_id) AS dept_count
 FROM employees e;
 
--- EFFICIENT: Use window function
+-- HIỆU QUẢ: Sử dụng window function
 SELECT 
     employee_id,
     first_name,
@@ -622,42 +622,42 @@ SELECT
 FROM employees;
 ```
 
-## Practice Exercises
+## Bài Tập Thực Hành
 
-### Exercise 1: Basic Subqueries
-1. Find employees earning more than the average salary in their department
-2. List departments with more than 5 employees
-3. Find the employee with the second-highest salary
+### Bài Tập 1: Subqueries Cơ Bản
+1. Tìm nhân viên kiếm được nhiều hơn mức lương trung bình trong department của họ
+2. Liệt kê departments có hơn 5 nhân viên
+3. Tìm nhân viên có mức lương cao thứ hai
 
-### Exercise 2: Advanced Subqueries
-1. Find employees who have changed jobs (use job_history table)
-2. List products that have never been ordered
-3. Find customers who have placed orders in consecutive months
+### Bài Tập 2: Subqueries Nâng Cao
+1. Tìm nhân viên đã thay đổi công việc (sử dụng bảng job_history)
+2. Liệt kê sản phẩm chưa bao giờ được đặt hàng
+3. Tìm khách hàng đã đặt hàng trong các tháng liên tiếp
 
-### Exercise 3: Performance Optimization
-1. Rewrite a correlated subquery using window functions
-2. Compare execution plans for EXISTS vs IN vs JOIN
-3. Optimize a complex nested subquery
+### Bài Tập 3: Tối Ưu Hóa Hiệu Suất
+1. Viết lại correlated subquery sử dụng window functions
+2. So sánh execution plans cho EXISTS vs IN vs JOIN
+3. Tối ưu hóa một nested subquery phức tạp
 
-## Summary
+## Tóm Tắt
 
-Subqueries are powerful tools for:
-- Breaking complex problems into simpler parts
-- Dynamic data-driven conditions
-- Analytical and reporting queries
-- Data validation and quality checks
+Subqueries là công cụ mạnh mẽ cho:
+- Chia nhỏ các vấn đề phức tạp thành các phần đơn giản hơn
+- Điều kiện động dựa trên dữ liệu
+- Truy vấn phân tích và báo cáo
+- Kiểm tra xác thực và chất lượng dữ liệu
 
-Key concepts:
-- **Scalar subqueries**: Single value, use anywhere
-- **Multi-row subqueries**: Use with IN, ANY, ALL, EXISTS
-- **Correlated subqueries**: Reference outer query
-- **Performance**: Consider joins and window functions as alternatives
-- **NULL handling**: Be careful with NOT IN and NULL values
+Các khái niệm chính:
+- **Scalar subqueries**: Giá trị đơn, sử dụng ở bất cứ đâu
+- **Multi-row subqueries**: Sử dụng với IN, ANY, ALL, EXISTS
+- **Correlated subqueries**: Tham chiếu truy vấn ngoài
+- **Hiệu suất**: Cân nhắc joins và window functions như các lựa chọn thay thế
+- **Xử lý NULL**: Cẩn thận với NOT IN và giá trị NULL
 
-Choose the right approach based on:
-- Query complexity and readability
-- Performance requirements
-- Data volume and indexes
-- Maintenance considerations
+Chọn cách tiếp cận phù hợp dựa trên:
+- Độ phức tạp và khả năng đọc của truy vấn
+- Yêu cầu hiệu suất
+- Khối lượng dữ liệu và indexes
+- Cân nhắc bảo trì
 
-Next, we'll explore correlated subqueries in detail, which provide even more sophisticated querying capabilities.
+Tiếp theo, chúng ta sẽ khám phá correlated subqueries chi tiết, cung cấp khả năng truy vấn phức tạp hơn nữa.
