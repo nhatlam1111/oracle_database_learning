@@ -2,6 +2,43 @@
 
 Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để thiết kế và phát triển cơ sở dữ liệu hiệu quả. Oracle cung cấp một bộ kiểu dữ liệu tích hợp sẵn toàn diện để lưu trữ các loại thông tin khác nhau một cách hiệu quả. Hướng dẫn này bao gồm tất cả các kiểu dữ liệu chính có sẵn trong Oracle Database.
 
+## Tóm Tắt Kiểu Dữ Liệu Oracle
+
+### Bảng Tóm Tắt Nhanh
+
+| **Nhóm** | **Kiểu Dữ Liệu** | **Kích Thước** | **Mô Tả Ngắn** |
+|----------|-------------------|----------------|-----------------|
+| **Ký Tự** | VARCHAR2(size) | 1-4000 byte | Văn bản độ dài biến đổi |
+| | CHAR(size) | 1-2000 byte | Văn bản độ dài cố định |
+| | NVARCHAR2(size) | 1-4000 byte | Unicode văn bản biến đổi |
+| | NCHAR(size) | 1-2000 byte | Unicode văn bản cố định |
+| **Số** | NUMBER(p,s) | 1-22 byte | Số thập phân với độ chính xác |
+| | INTEGER | Biến đổi | Số nguyên |
+| | FLOAT | 1-22 byte | Số dấu phẩy động |
+| | BINARY_FLOAT | 4 byte | Số thực 32-bit |
+| | BINARY_DOUBLE | 8 byte | Số thực 64-bit |
+| **Ngày/Giờ** | DATE | 7 byte | Ngày và giờ |
+| | TIMESTAMP | 7-11 byte | Ngày giờ với độ chính xác cao |
+| | TIMESTAMP WITH TIME ZONE | 13 byte | Có múi giờ |
+| | INTERVAL | 5-11 byte | Khoảng thời gian |
+| **Nhị Phân** | RAW(size) | 1-2000 byte | Dữ liệu nhị phân nhỏ |
+| | BLOB | Đến 128TB | Đối tượng nhị phân lớn |
+| **Văn Bản Lớn** | CLOB | Đến 128TB | Văn bản lớn |
+| | NCLOB | Đến 128TB | Unicode văn bản lớn |
+| **Đặc Biệt** | ROWID | 10 byte | Định danh hàng |
+| | JSON | Biến đổi | Dữ liệu JSON (21c+) |
+
+### Lựa Chọn Nhanh Theo Mục Đích
+
+- 🔤 **Tên, địa chỉ**: VARCHAR2(50-500)
+- 💰 **Tiền tệ**: NUMBER(10,2)
+- 📅 **Ngày tháng**: DATE hoặc TIMESTAMP
+- 🔢 **Đếm, ID**: INTEGER hoặc NUMBER
+- 📱 **Mã quốc gia**: CHAR(2)
+- 📄 **Tài liệu dài**: CLOB
+- 🖼️ **Hình ảnh, file**: BLOB
+- 🌍 **Đa ngôn ngữ**: NVARCHAR2
+
 ## Kiểu Dữ Liệu Ký Tự
 
 ### VARCHAR2(size)
@@ -224,14 +261,190 @@ TO_DATE('2023-05-15', 'YYYY-MM-DD')
 TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')
 ```
 
-## Tóm Tắt Thực Hành Tốt
+## Cách Phân Biệt Kiểu Dữ Liệu Bằng Mắt
 
-1. **Chọn kích thước phù hợp**: Không phân bổ quá mức (ví dụ: VARCHAR2(4000) cho trường 10 ký tự)
-2. **Sử dụng độ chính xác phù hợp**: NUMBER(10,2) cho tiền tệ, không phải NUMBER
-3. **Cân nhắc nhu cầu Unicode**: Sử dụng NVARCHAR2 cho ứng dụng quốc tế
-4. **Ưu tiên kiểu chuẩn**: Sử dụng DATE thay vì VARCHAR2 cho ngày
-5. **Lập kế hoạch cho tăng trưởng**: Cân nhắc khối lượng dữ liệu tương lai khi chọn kiểu LOB
-6. **Xác thực ràng buộc**: Sử dụng ràng buộc CHECK để thực thi quy tắc dữ liệu
-7. **Tài liệu hóa lựa chọn**: Bình luận về lý do chọn kiểu dữ liệu cụ thể
+### 1. Nhận Diện Qua Giá Trị Mẫu
 
-Hiểu về các kiểu dữ liệu này và cách sử dụng phù hợp là rất quan trọng để thiết kế các cơ sở dữ liệu Oracle hiệu quả, có thể mở rộng và biểu diễn chính xác dữ liệu kinh doanh của bạn.
+#### Kiểu Văn Bản:
+- **VARCHAR2/CHAR**: `'John Doe'`, `'Hà Nội'`, `'hello@email.com'`
+- **Dấu hiệu**: Có dấu ngoặc đơn `' '`, chứa chữ cái, ký tự đặc biệt
+
+#### Kiểu Số:
+- **NUMBER**: `123`, `456.78`, `-999.99`, `0`
+- **INTEGER**: `1`, `100`, `-50` (không có dấu thập phân)
+- **Dấu hiệu**: Chỉ chứa chữ số, dấu âm, dấu thập phân
+
+#### Kiểu Ngày:
+- **DATE**: `'2023-12-25'`, `'25-DEC-23'`, `'2023/12/25 14:30:00'`
+- **TIMESTAMP**: `'2023-12-25 14:30:25.123456'`
+- **Dấu hiệu**: Định dạng ngày/tháng/năm, có thể kèm giờ:phút:giây
+
+#### Kiểu Đặc Biệt:
+- **NULL**: Không có giá trị, hiển thị là `NULL`
+- **BLOB/CLOB**: Hiển thị như `<BLOB>` hoặc text rất dài
+- **ROWID**: Dạng `AAAEPAAGAAAAACAAA`
+
+### 2. Dấu Hiệu Trực Quan Trong SQL Developer/Tools
+
+- **Số**: Căn phải trong cột
+- **Văn bản**: Căn trái trong cột  
+- **Ngày**: Định dạng ngày/giờ đặc trưng
+- **NULL**: Hiển thị rỗng hoặc `(null)`
+
+## Chuyển Đổi Kiểu Dữ Liệu
+
+### 1. Chuyển Đổi Tự Động (Implicit Conversion)
+
+Oracle tự động chuyển đổi trong một số trường hợp:
+
+```sql
+-- Số thành văn bản (khi nối chuỗi)
+SELECT 'ID: ' || 123 FROM dual;
+-- Kết quả: 'ID: 123'
+
+-- Văn bản thành số (khi tính toán)
+SELECT '100' + 50 FROM dual;
+-- Kết quả: 150
+
+-- Ngày thành văn bản
+SELECT 'Hôm nay: ' || SYSDATE FROM dual;
+-- Kết quả: 'Hôm nay: 22-JUN-25'
+```
+
+### 2. Chuyển Đổi Thủ Công (Explicit Conversion)
+
+#### A. Chuyển Thành Số
+
+```sql
+-- Văn bản thành số
+SELECT TO_NUMBER('123.45') FROM dual;
+SELECT TO_NUMBER('1,234.56', '9,999.99') FROM dual;
+
+-- Ngày thành số (số ngày từ epoch)
+SELECT TO_NUMBER(SYSDATE - DATE '1970-01-01') FROM dual;
+
+-- Xử lý lỗi chuyển đổi
+SELECT TO_NUMBER('123abc', DEFAULT 0 ON CONVERSION ERROR) FROM dual;
+-- Kết quả: 0 (thay vì lỗi)
+```
+
+#### B. Chuyển Thành Văn Bản
+
+```sql
+-- Số thành văn bản
+SELECT TO_CHAR(12345.67) FROM dual;
+SELECT TO_CHAR(12345.67, '999,999.99') FROM dual;
+SELECT TO_CHAR(12345.67, 'L999,999.99') FROM dual; -- Với ký hiệu tiền tệ
+
+-- Ngày thành văn bản
+SELECT TO_CHAR(SYSDATE, 'DD/MM/YYYY') FROM dual;
+SELECT TO_CHAR(SYSDATE, 'DD-MON-YYYY HH24:MI:SS') FROM dual;
+SELECT TO_CHAR(SYSDATE, 'Day, DD Month YYYY', 'NLS_DATE_LANGUAGE=VIETNAMESE') FROM dual;
+
+-- Số với định dạng đặc biệt
+SELECT TO_CHAR(1234567.89, '9,999,999.99') FROM dual; -- 1,234,567.89
+SELECT TO_CHAR(123, '000000') FROM dual; -- 000123
+```
+
+#### C. Chuyển Thành Ngày
+
+```sql
+-- Văn bản thành ngày
+SELECT TO_DATE('2023-12-25', 'YYYY-MM-DD') FROM dual;
+SELECT TO_DATE('25/12/2023 14:30', 'DD/MM/YYYY HH24:MI') FROM dual;
+SELECT TO_DATE('Dec 25, 2023', 'MON DD, YYYY') FROM dual;
+
+-- Số thành ngày (từ timestamp)
+SELECT TO_DATE('1703520000', 'J') FROM dual; -- Julian date
+```
+
+### 3. Chuyển Đổi Giữa Các Kiểu Ngày/Giờ
+
+```sql
+-- DATE thành TIMESTAMP
+SELECT CAST(SYSDATE AS TIMESTAMP) FROM dual;
+
+-- TIMESTAMP thành DATE
+SELECT CAST(SYSTIMESTAMP AS DATE) FROM dual;
+
+-- Thêm múi giờ
+SELECT FROM_TZ(TIMESTAMP '2023-12-25 14:30:00', '+07:00') FROM dual;
+
+-- Chuyển múi giờ
+SELECT SYSTIMESTAMP AT TIME ZONE 'Asia/Ho_Chi_Minh' FROM dual;
+```
+
+### 4. Chuyển Đổi LOB
+
+```sql
+-- CLOB thành VARCHAR2 (nếu đủ nhỏ)
+SELECT SUBSTR(clob_column, 1, 4000) FROM table_name;
+
+-- VARCHAR2 thành CLOB
+SELECT TO_CLOB(varchar2_column) FROM table_name;
+
+-- BLOB thành RAW (nếu đủ nhỏ)
+SELECT UTL_RAW.SUBSTR(blob_column, 1, 2000) FROM table_name;
+```
+
+### 5. Chuyển Đổi Trong DDL (Thay Đổi Cấu Trúc Bảng)
+
+```sql
+-- Thay đổi kiểu dữ liệu cột
+ALTER TABLE employees MODIFY (salary NUMBER(10,2));
+
+-- Thay đổi từ VARCHAR2 thành NUMBER (cần đảm bảo dữ liệu hợp lệ)
+ALTER TABLE products MODIFY (price NUMBER(8,2));
+
+-- Thay đổi kích thước VARCHAR2
+ALTER TABLE customers MODIFY (customer_name VARCHAR2(200));
+
+-- Chuyển đổi phức tạp qua cột tạm
+ALTER TABLE orders ADD (order_date_new DATE);
+UPDATE orders SET order_date_new = TO_DATE(order_date_text, 'DD/MM/YYYY');
+ALTER TABLE orders DROP COLUMN order_date_text;
+ALTER TABLE orders RENAME COLUMN order_date_new TO order_date;
+```
+
+### 6. Hàm Chuyển Đổi Hữu Ích
+
+```sql
+-- CAST - Chuyển đổi chuẩn SQL
+SELECT CAST('123' AS NUMBER) FROM dual;
+SELECT CAST(SYSDATE AS VARCHAR2(20)) FROM dual;
+
+-- CONVERT - Chuyển đổi bộ ký tự
+SELECT CONVERT('Hội nghị', 'UTF8', 'AL32UTF8') FROM dual;
+
+-- HEXTORAW và RAWTOHEX - Chuyển đổi hex
+SELECT HEXTORAW('48656C6C6F') FROM dual; -- 'Hello' in hex
+SELECT RAWTOHEX(UTL_RAW.CAST_TO_RAW('Hello')) FROM dual;
+
+-- Kiểm tra khả năng chuyển đổi
+SELECT VALIDATE_CONVERSION('123.45' AS NUMBER) FROM dual; -- 1 nếu OK
+SELECT VALIDATE_CONVERSION('abc' AS NUMBER) FROM dual; -- 0 nếu lỗi
+```
+
+
+### 8. Bảng Tham Khảo Chuyển Đổi
+
+| **Từ** | **Sang** | **Hàm** | **Ví Dụ** |
+|---------|----------|---------|-----------|
+| VARCHAR2 | NUMBER | TO_NUMBER() | `TO_NUMBER('123.45')` |
+| NUMBER | VARCHAR2 | TO_CHAR() | `TO_CHAR(123.45, '999.99')` |
+| VARCHAR2 | DATE | TO_DATE() | `TO_DATE('2023-12-25', 'YYYY-MM-DD')` |
+| DATE | VARCHAR2 | TO_CHAR() | `TO_CHAR(SYSDATE, 'DD/MM/YYYY')` |
+| DATE | TIMESTAMP | CAST() | `CAST(SYSDATE AS TIMESTAMP)` |
+| TIMESTAMP | DATE | CAST() | `CAST(SYSTIMESTAMP AS DATE)` |
+| CLOB | VARCHAR2 | SUBSTR() | `SUBSTR(clob_col, 1, 4000)` |
+| VARCHAR2 | CLOB | TO_CLOB() | `TO_CLOB(varchar_col)` |
+
+### 9. Lưu Ý Quan Trọng
+
+- ⚠️ **Luôn backup** trước khi thay đổi kiểu dữ liệu
+- 🔍 **Kiểm tra dữ liệu** trước khi chuyển đổi
+- 📏 **Chú ý kích thước**: VARCHAR2(10) không thể chứa số 12345.67890
+- 🌐 **Múi giờ**: Cẩn thận khi chuyển đổi TIMESTAMP có múi giờ
+- 🎯 **Độ chính xác**: NUMBER(5,2) chỉ chứa được 999.99
+
+Hiểu rõ cách phân biệt và chuyển đổi kiểu dữ liệu sẽ giúp bạn làm việc hiệu quả hơn với Oracle Database và tránh được nhiều lỗi phổ biến trong quá trình phát triển ứng dụng.
