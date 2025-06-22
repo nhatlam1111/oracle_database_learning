@@ -8,24 +8,30 @@ Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để 
 
 | **Nhóm** | **Kiểu Dữ Liệu** | **Kích Thước** | **Mô Tả Ngắn** |
 |----------|-------------------|----------------|-----------------|
-| **Ký Tự** | VARCHAR2(size) | 1-4000 byte | Văn bản độ dài biến đổi |
+| **Ký Tự** 
+| | VARCHAR2(size) | 1-4000 byte | Văn bản độ dài biến đổi |
 | | CHAR(size) | 1-2000 byte | Văn bản độ dài cố định |
 | | NVARCHAR2(size) | 1-4000 byte | Unicode văn bản biến đổi |
 | | NCHAR(size) | 1-2000 byte | Unicode văn bản cố định |
-| **Số** | NUMBER(p,s) | 1-22 byte | Số thập phân với độ chính xác |
+| **Số** 
+| | NUMBER(p,s) | 1-22 byte | Số thập phân với độ chính xác |
 | | INTEGER | Biến đổi | Số nguyên |
 | | FLOAT | 1-22 byte | Số dấu phẩy động |
 | | BINARY_FLOAT | 4 byte | Số thực 32-bit |
 | | BINARY_DOUBLE | 8 byte | Số thực 64-bit |
-| **Ngày/Giờ** | DATE | 7 byte | Ngày và giờ |
+| **Ngày/Giờ** 
+| | DATE | 7 byte | Ngày và giờ |
 | | TIMESTAMP | 7-11 byte | Ngày giờ với độ chính xác cao |
 | | TIMESTAMP WITH TIME ZONE | 13 byte | Có múi giờ |
 | | INTERVAL | 5-11 byte | Khoảng thời gian |
-| **Nhị Phân** | RAW(size) | 1-2000 byte | Dữ liệu nhị phân nhỏ |
+| **Nhị Phân** 
+| | RAW(size) | 1-2000 byte | Dữ liệu nhị phân nhỏ |
 | | BLOB | Đến 128TB | Đối tượng nhị phân lớn |
-| **Văn Bản Lớn** | CLOB | Đến 128TB | Văn bản lớn |
+| **Văn Bản Lớn** 
+| | CLOB | Đến 128TB | Văn bản lớn |
 | | NCLOB | Đến 128TB | Unicode văn bản lớn |
-| **Đặc Biệt** | ROWID | 10 byte | Định danh hàng |
+| **Đặc Biệt** 
+| | ROWID | 10 byte | Định danh hàng |
 | | JSON | Biến đổi | Dữ liệu JSON (21c+) |
 
 ### Lựa Chọn Nhanh Theo Mục Đích
