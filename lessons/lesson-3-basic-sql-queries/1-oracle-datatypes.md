@@ -15,10 +15,12 @@ Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để 
 | | NCHAR(size) | 1-2000 byte | Unicode văn bản cố định |
 | **Số** 
 | | NUMBER(p,s) | 1-22 byte | Số thập phân với độ chính xác |
-| | INTEGER | Biến đổi | Số nguyên |
+| | INTEGER | Biến đổi | Số nguyên 32-bit (-2^31 đến 2^31-1) |
+| | SMALLINT | Biến đổi | Số nguyên nhỏ (tối ưu) |
 | | FLOAT | 1-22 byte | Số dấu phẩy động |
-| | BINARY_FLOAT | 4 byte | Số thực 32-bit |
-| | BINARY_DOUBLE | 8 byte | Số thực 64-bit |
+| | BINARY_FLOAT | 4 byte | Số thực 32-bit IEEE 754 |
+| | BINARY_DOUBLE | 8 byte | Số thực 64-bit IEEE 754 |
+| | DECIMAL/DEC | 1-22 byte | Đồng nghĩa NUMBER (chuẩn SQL) |
 | **Ngày/Giờ** 
 | | DATE | 7 byte | Ngày và giờ |
 | | TIMESTAMP | 7-11 byte | Ngày giờ với độ chính xác cao |
@@ -82,22 +84,29 @@ Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để 
 - **Lưu trữ**: 1 đến 22 byte
 - **Độ chính xác**: Tổng số chữ số có nghĩa (1-38)
 - **Thang đo**: Số chữ số bên phải dấu thập phân (-84 đến 127)
+- **Phạm vi**: 
+  - Số dương: 1.0 x 10^-130 đến 9.99...99 x 10^125 (với 38 chữ số)
+  - Số âm: -9.99...99 x 10^125 đến -1.0 x 10^-130 (với 38 chữ số)
+  - Số 0
 - **Trường hợp sử dụng**: Tiền tệ, tính toán, đo lường
 - **Ví dụ**: 
   - `NUMBER(10,2)` cho tiền tệ (tối đa 99,999,999.99)
   - `NUMBER(5)` cho giá trị nguyên lên đến 99,999
-  - `NUMBER` cho độ chính xác không giới hạn
+  - `NUMBER` cho độ chính xác không giới hạn (trong phạm vi hỗ trợ)
 
 ### INTEGER
-- **Mô tả**: Đồng nghĩa với NUMBER(38)
+- **Mô tả**: Kiểu số nguyên 32-bit có dấu
 - **Lưu trữ**: Biến đổi (1 đến 22 byte)
-- **Trường hợp sử dụng**: Số nguyên, bộ đếm, ID
-- **Ví dụ**: `INTEGER` cho khóa chính
-- **Thực hành tốt**: Sử dụng để rõ ràng khi xử lý số nguyên
+- **Phạm vi**: -2,147,483,648 đến 2,147,483,647 (-(2^31) đến (2^31)-1)
+- **Trường hợp sử dụng**: Số nguyên, bộ đếm, ID trong phạm vi giới hạn
+- **Ví dụ**: `INTEGER` cho khóa chính, số lượng sản phẩm
+- **Thực hành tốt**: Sử dụng cho số nguyên trong phạm vi 32-bit; dùng NUMBER cho phạm vi lớn hơn
 
 ### FLOAT(binary_precision)
 - **Mô tả**: Số dấu phẩy động với độ chính xác nhị phân
 - **Lưu trữ**: 1 đến 22 byte
+- **Độ chính xác nhị phân**: 1 đến 126 bit (mặc định 126)
+- **Phạm vi**: Tương tự NUMBER nhưng với biểu diễn nhị phân
 - **Trường hợp sử dụng**: Tính toán khoa học cần số học dấu phẩy động
 - **Ví dụ**: `FLOAT(24)` cho độ chính xác đơn, `FLOAT(53)` cho độ chính xác kép
 - **Thực hành tốt**: Sử dụng NUMBER cho hầu hết ứng dụng kinh doanh
@@ -112,9 +121,64 @@ Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để 
 ### BINARY_DOUBLE
 - **Mô tả**: Số dấu phẩy động 64-bit (IEEE 754)
 - **Lưu trữ**: 8 byte
-- **Trường hợp sử dụng**: Tính toán khoa học độ chính xác cao
 - **Phạm vi**: ±2.22507485850720E-308 đến ±1.79769313486231E+308
+- **Độ chính xác**: Khoảng 15-17 chữ số thập phân
+- **Trường hợp sử dụng**: Tính toán khoa học độ chính xác cao
 - **Thực hành tốt**: Sử dụng cho tính toán dấu phẩy động độ chính xác cao
+
+### SMALLINT
+- **Mô tả**: Đồng nghĩa với NUMBER(38), nhưng được tối ưu cho số nguyên nhỏ
+- **Lưu trữ**: Biến đổi (1 đến 22 byte)
+- **Phạm vi**: Tương tự NUMBER, nhưng thường dùng cho giá trị nhỏ
+- **Trường hợp sử dụng**: Số tuổi, số tháng, cờ trạng thái số
+- **Ví dụ**: `SMALLINT` cho trường age, status_code
+- **Thực hành tốt**: Sử dụng cho số nguyên có giá trị nhỏ để tối ưu hiệu suất
+
+### DECIMAL(precision, scale) / DEC(precision, scale)
+- **Mô tả**: Đồng nghĩa với NUMBER(precision, scale)
+- **Lưu trữ**: 1 đến 22 byte
+- **Phạm vi**: Tương tự NUMBER với cùng precision và scale
+- **Trường hợp sử dụng**: Tương thích với chuẩn SQL
+- **Ví dụ**: `DECIMAL(10,2)` tương đương `NUMBER(10,2)`
+- **Thực hành tốt**: Sử dụng khi cần tương thích với chuẩn SQL ANSI
+
+### So Sánh Các Kiểu Số Oracle
+
+| **Kiểu** | **Phạm vi** | **Độ chính xác** | **Khi nào sử dụng** |
+|-----------|-------------|------------------|---------------------|
+| **INTEGER** | -2,147,483,648 đến 2,147,483,647 | Số nguyên | ID, đếm trong phạm vi 32-bit |
+| **SMALLINT** | Tương tự NUMBER(38) | Số nguyên | Số nhỏ (tuổi, tháng, trạng thái) |
+| **NUMBER** | 1.0×10^-130 đến 9.99×10^125 | Lên đến 38 chữ số | Tiền tệ, tính toán chính xác |
+| **NUMBER(p,s)** | Theo precision/scale | p chữ số, s thập phân | Tiền tệ với định dạng cố định |
+| **FLOAT** | Tương tự NUMBER | Nhị phân | Tính toán khoa học |
+| **BINARY_FLOAT** | ±1.17549E-38 đến ±3.40282E+38 | ~7 chữ số | Hiệu suất cao, IEEE 754 |
+| **BINARY_DOUBLE** | ±2.22507E-308 đến ±1.79769E+308 | ~15-17 chữ số | Độ chính xác cao, IEEE 754 |
+
+### Lưu Ý Quan Trọng Về Kiểu Số
+
+#### INTEGER vs NUMBER
+- **INTEGER** không phải là NUMBER(38) như nhiều người nghĩ
+- **INTEGER** có giới hạn 32-bit: -2,147,483,648 đến 2,147,483,647
+- **NUMBER(38)** có thể lưu trữ số lên đến 38 chữ số (rất lớn)
+- **Khuyến nghị**: Dùng INTEGER cho ID và đếm nhỏ, NUMBER cho giá trị lớn
+
+#### Chọn Kiểu Số Phù Hợp
+```sql
+-- Cho ID sản phẩm (thường < 2 tỷ)
+product_id INTEGER
+
+-- Cho doanh số (cần chính xác thập phân)
+revenue NUMBER(15,2)
+
+-- Cho tỷ lệ phần trăm
+percentage NUMBER(5,2)  -- 999.99%
+
+-- Cho tính toán khoa học
+calculation_result BINARY_DOUBLE
+
+-- Cho đếm số lượng lớn
+total_records NUMBER(12)  -- Lên đến 999,999,999,999
+```
 
 ## Kiểu Dữ Liệu Ngày và Thời Gian
 
