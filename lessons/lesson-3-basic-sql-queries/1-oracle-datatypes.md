@@ -2,6 +2,9 @@
 
 Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để thiết kế và phát triển cơ sở dữ liệu hiệu quả. Oracle cung cấp một bộ kiểu dữ liệu tích hợp sẵn toàn diện để lưu trữ các loại thông tin khác nhau một cách hiệu quả. Hướng dẫn này bao gồm tất cả các kiểu dữ liệu chính có sẵn trong Oracle Database.
 
+
+
+
 ## Tóm Tắt Kiểu Dữ Liệu Oracle
 
 ### Bảng Tóm Tắt Nhanh
@@ -16,11 +19,10 @@ Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để 
 | **Số** 
 | | NUMBER(p,s) | 1-22 byte | Số thập phân với độ chính xác |
 | | INTEGER | Biến đổi | Số nguyên 32-bit (-2^31 đến 2^31-1) |
-| | SMALLINT | Biến đổi | Số nguyên nhỏ (tối ưu) |
+| | SMALLINT | Biến đổi | Số nguyên nhỏ (tối ưu) (-32768 đến 32767) |
 | | FLOAT | 1-22 byte | Số dấu phẩy động |
 | | BINARY_FLOAT | 4 byte | Số thực 32-bit IEEE 754 |
 | | BINARY_DOUBLE | 8 byte | Số thực 64-bit IEEE 754 |
-| | DECIMAL/DEC | 1-22 byte | Đồng nghĩa NUMBER (chuẩn SQL) |
 | **Ngày/Giờ** 
 | | DATE | 7 byte | Ngày và giờ |
 | | TIMESTAMP | 7-11 byte | Ngày giờ với độ chính xác cao |
@@ -35,6 +37,7 @@ Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để 
 | **Đặc Biệt** 
 | | ROWID | 10 byte | Định danh hàng |
 | | JSON | Biến đổi | Dữ liệu JSON (21c+) |
+| | VECTOR (oracle 23ai)
 
 ### Lựa Chọn Nhanh Theo Mục Đích
 
@@ -82,8 +85,8 @@ Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để 
 ### NUMBER(precision, scale)
 - **Mô tả**: Dữ liệu số độ dài biến đổi với độ chính xác và thang đo tùy chọn
 - **Lưu trữ**: 1 đến 22 byte
-- **Độ chính xác**: Tổng số chữ số có nghĩa (1-38)
-- **Thang đo**: Số chữ số bên phải dấu thập phân (-84 đến 127)
+- **precision**: Tổng số chữ số có nghĩa (1-38)
+- **scale**: Số chữ số bên phải dấu thập phân (-84 đến 127)
 - **Phạm vi**: 
   - Số dương: 1.0 x 10^-130 đến 9.99...99 x 10^125 (với 38 chữ số)
   - Số âm: -9.99...99 x 10^125 đến -1.0 x 10^-130 (với 38 chữ số)
@@ -91,8 +94,13 @@ Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để 
 - **Trường hợp sử dụng**: Tiền tệ, tính toán, đo lường
 - **Ví dụ**: 
   - `NUMBER(10,2)` cho tiền tệ (tối đa 99,999,999.99)
+  - `NUMBER(5,-2)` cho tiền tệ làm tròn đến hàng trăm (11510 -> )
   - `NUMBER(5)` cho giá trị nguyên lên đến 99,999
   - `NUMBER` cho độ chính xác không giới hạn (trong phạm vi hỗ trợ)
+  **Trường hợp đặc biệt**: `NUMBER(5, 10)`: có phần scale > precision, khi đó oracle chỉ lưu trữ 5 chữ số có nghĩa đầu tiên, 5 chữ số phía sau sẽ hiển thị 0.
+    **Ví dụ**:
+      - **Với giá trị: 0.123456789123456** khi lưu trữ trong oracle sẽ thành 0.1234500000 (số 0 phần nguyên sẽ không được xem là một số có nghĩa theo định nghĩa oracle)
+      - **với giá trị: 66,666,666** là số nguyên có 8 chữ số trước dấu phẩy (tất cả đều là số có nghĩa), nhưng `NUMBER(5, 10)` chỉ chứa 5 số có nghĩa nên khi lưu trữ trong oracle sẽ bị lỗi **ORA-06502: PL/SQL: numeric or value error: number precision too larg**
 
 ### INTEGER
 - **Mô tả**: Kiểu số nguyên 32-bit có dấu
@@ -134,13 +142,6 @@ Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để 
 - **Ví dụ**: `SMALLINT` cho trường age, status_code
 - **Thực hành tốt**: Sử dụng cho số nguyên có giá trị nhỏ để tối ưu hiệu suất
 
-### DECIMAL(precision, scale) / DEC(precision, scale)
-- **Mô tả**: Đồng nghĩa với NUMBER(precision, scale)
-- **Lưu trữ**: 1 đến 22 byte
-- **Phạm vi**: Tương tự NUMBER với cùng precision và scale
-- **Trường hợp sử dụng**: Tương thích với chuẩn SQL
-- **Ví dụ**: `DECIMAL(10,2)` tương đương `NUMBER(10,2)`
-- **Thực hành tốt**: Sử dụng khi cần tương thích với chuẩn SQL ANSI
 
 ### So Sánh Các Kiểu Số Oracle
 
@@ -353,6 +354,7 @@ TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')
 - **NULL**: Không có giá trị, hiển thị là `NULL`
 - **BLOB/CLOB**: Hiển thị như `<BLOB>` hoặc text rất dài
 - **ROWID**: Dạng `AAAEPAAGAAAAACAAA`
+
 
 ### 2. Dấu Hiệu Trực Quan Trong SQL Developer/Tools
 
