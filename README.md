@@ -43,7 +43,14 @@ Chào mừng bạn đến với dự án Học Oracle Database! Lộ trình này
 - **Đường Dẫn Bài Học:** `lessons/lesson-4-intermediate-sql/`
 - **Tệp Thực Hành:** `src/intermediate/`
 - Học về:
-  - Mối quan hệ bảng và tính toàn vẹn tham chiếu
+  - **Tạo Bảng, Mối Quan Hệ và Ràng Buộc** - Hướng dẫn toàn diện về quản lý cấu trúc cơ sở dữ liệu:
+    - Tạo bảng với CREATE TABLE và các tùy chọn nâng cao
+    - Chỉnh sửa cấu trúc bảng với ALTER TABLE (thêm, sửa, xóa cột)
+    - Quản lý bảng (xóa, khôi phục từ Recycle Bin)
+    - Khóa chính, khóa ngoại và tính toàn vẹn tham chiếu
+    - Các loại ràng buộc (CHECK, UNIQUE, NOT NULL, DEFAULT)
+    - Thiết kế schema thực tế cho hệ thống HR Management
+    - Sequences, indexes và tối ưu hóa hiệu suất
   - Phép JOIN (INNER, LEFT, RIGHT, FULL OUTER, CROSS)
   - Kỹ thuật join nâng cao (self-joins, anti-joins, semi-joins)
   - Truy vấn con (scalar, multi-row, correlated)

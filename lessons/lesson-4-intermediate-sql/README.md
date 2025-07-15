@@ -1,11 +1,14 @@
 # Bài 4: Các Khái Niệm SQL Trung Cấp
 
-Chào mừng đến với Bài 4! Bài học này bao gồm các khái niệm SQL trung cấp sẽ mở rộng đáng kể khả năng làm việc của bạn với cơ sở dữ liệu quan hệ. Bạn sẽ học cách kết hợp dữ liệu từ nhiều bảng bằng cách sử dụng joins và cách viết các truy vấn phức tạp sử dụng subqueries.
+Chào mừng đến với Bài 4! Bài học này bao gồm các khái niệm SQL trung cấp quan trọng từ việc tạo và quản lý cấu trúc cơ sở dữ liệu đến việc kết hợp dữ liệu từ nhiều bảng. Bạn sẽ học cách tạo bảng, thiết lập mối quan hệ, áp dụng ràng buộc, và viết các truy vấn phức tạp sử dụng joins và subqueries.
 
 ## Mục Tiêu Học Tập
 
 Khi kết thúc bài học này, bạn sẽ có thể:
-- Hiểu các nguyên tắc cơ sở dữ liệu quan hệ và mối quan hệ giữa các bảng
+- Tạo, chỉnh sửa và quản lý cấu trúc bảng trong Oracle Database
+- Thiết lập khóa chính, khóa ngoại và các ràng buộc tính toàn vẹn
+- Hiểu và áp dụng các loại mối quan hệ cơ sở dữ liệu
+- Thiết kế schema cơ sở dữ liệu hoàn chỉnh cho ứng dụng thực tế
 - Viết INNER JOINs để kết hợp dữ liệu liên quan từ nhiều bảng
 - Sử dụng OUTER JOINs (LEFT, RIGHT, FULL) để bao gồm các bản ghi không khớp
 - Áp dụng CROSS JOINs và SELF JOINs cho các tình huống đặc biệt
@@ -18,19 +21,23 @@ Khi kết thúc bài học này, bạn sẽ có thể:
 
 Trước khi bắt đầu bài học này, hãy đảm bảo bạn đã:
 - Hoàn thành Bài 1-3 (Kiến thức cơ bản về cơ sở dữ liệu và SQL cơ bản)
-- Hiểu vững về SELECT, WHERE, ORDER BY, và các hàm tổng hợp
+- Hiểu vững về các kiểu dữ liệu Oracle và SELECT, WHERE, ORDER BY
+- Nắm vững các hàm tổng hợp và cú pháp SQL cơ bản
 - Có quyền truy cập Oracle Database với các schema mẫu HR và SALES
-- Quen thuộc với khóa chính và mối quan hệ khóa ngoại
+- Hiểu khái niệm cơ bản về cơ sở dữ liệu quan hệ
 
 ## Cấu Trúc Bài Học
 
-### 1. Mối Quan Hệ Bảng và Kiến Thức Cơ Bản về Join (`1-table-relationships.md`)
-- Hiểu về khóa chính và khóa ngoại
-- Mối quan hệ một-nhiều, nhiều-nhiều, và một-một
-- Các khái niệm về tính toàn vẹn tham chiếu
-- Giới thiệu cú pháp JOIN
+### 1. Tạo Bảng, Mối Quan Hệ và Ràng Buộc (`1-table-relationships-constraints.md`)
+- **Tạo Bảng Cơ Bản**: CREATE TABLE, CTAS, tablespace và storage options
+- **Chỉnh Sửa Cấu Trúc**: ALTER TABLE để thêm/sửa/xóa cột, đổi tên
+- **Quản Lý Bảng**: DROP TABLE, TRUNCATE, Recycle Bin và khôi phục
+- **Khóa Chính và Khóa Ngoại**: Thiết lập mối quan hệ và tính toàn vẹn
+- **Ràng Buộc Tích Hợp**: CHECK, UNIQUE, NOT NULL, DEFAULT constraints
+- **Thiết Kế Schema Thực Tế**: Xây dựng hệ thống HR Management hoàn chỉnh
+- **Tối Ưu Hóa**: Sequences, indexes và performance considerations
 
-**Tệp Thực Hành**: `src/intermediate/table-relationships.sql`
+**Tệp Thực Hành**: `src/intermediate/table-relationships-constraints.sql`
 
 ### 2. INNER JOINs (`2-inner-joins.md`)
 - Cú pháp và cơ chế INNER JOIN cơ bản
@@ -95,13 +102,22 @@ Bài học này sử dụng rộng rãi các mối quan hệ giữa các bảng 
 
 ## Lộ Trình Học Tập
 
-1. **Bắt đầu với Lý thuyết**: Đọc từng tệp markdown để hiểu các khái niệm
-2. **Thực hành Từng bước**: Làm việc với các tệp thực hành theo thứ tự
-3. **Xây dựng Độ phức tạp**: Bắt đầu với joins 2 bảng đơn giản, tiến tới các truy vấn nhiều bảng phức tạp
-4. **Ứng dụng Thực tế**: Áp dụng các khái niệm vào các tình huống nghiệp vụ
-5. **Nhận thức về Hiệu suất**: Học cách viết các truy vấn hiệu quả
+1. **Bắt đầu với Thiết Kế Cơ Sở Dữ Liệu**: Học cách tạo và quản lý cấu trúc bảng
+2. **Thực hành Tạo Schema**: Xây dựng hệ thống HR Management từ đầu
+3. **Áp dụng Ràng Buộc**: Thiết lập tính toàn vẹn và mối quan hệ dữ liệu
+4. **Chuyển sang Truy Vấn**: Học các loại JOIN để kết hợp dữ liệu
+5. **Nâng cao với Subqueries**: Viết các truy vấn phức tạp và tối ưu hóa
+6. **Tích hợp Toàn Diện**: Kết hợp tất cả kỹ năng trong các dự án thực tế
 
 ## Các Khái Niệm Chính Cần Thành Thạo
+
+### Quản Lý Cấu Trúc Cơ Sở Dữ Liệu:
+- **CREATE TABLE**: Tạo bảng với các kiểu dữ liệu và ràng buộc phù hợp
+- **ALTER TABLE**: Thêm, sửa, xóa cột và ràng buộc
+- **DROP/TRUNCATE**: Quản lý xóa bảng và dữ liệu
+- **Constraints**: PRIMARY KEY, FOREIGN KEY, CHECK, UNIQUE, NOT NULL
+- **Indexes**: Tối ưu hóa hiệu suất truy vấn
+- **Sequences**: Tạo giá trị tự động tăng
 
 ### Các Loại Join:
 - **INNER JOIN**: Chỉ trả về các bản ghi khớp
@@ -120,6 +136,13 @@ Bài học này sử dụng rộng rãi các mối quan hệ giữa các bảng 
 
 ## Các Trường Hợp Sử Dụng Phổ Biến
 
+### Tình Huống Thiết Kế Schema:
+- Xây dựng hệ thống quản lý nhân sự (HR Management)
+- Thiết kế cơ sở dữ liệu thương mại điện tử
+- Tạo schema quản lý dự án và assignment
+- Thiết lập hệ thống audit và log
+- Xây dựng cấu trúc dữ liệu phân cấp
+
 ### Tình Huống Nghiệp Vụ cho Joins:
 - Báo cáo thông tin nhân viên và phòng ban
 - Phân tích lịch sử đặt hàng khách hàng
@@ -136,6 +159,13 @@ Bài học này sử dụng rộng rãi các mối quan hệ giữa các bảng 
 
 ## Mẹo Về Hiệu Suất
 
+### Thiết Kế Schema:
+1. **Lựa chọn kiểu dữ liệu phù hợp** để tối ưu storage
+2. **Tạo indexes hợp lý** trên Foreign Keys và cột thường query
+3. **Sử dụng constraints** để đảm bảo tính toàn vẹn dữ liệu
+4. **Normalize schema** để tránh redundancy nhưng không over-normalize
+
+### Truy Vấn:
 1. **Sử dụng các index phù hợp** trên các cột join
 2. **Lọc sớm** với các mệnh đề WHERE trước khi join
 3. **Chọn loại join phù hợp** cho logic nghiệp vụ của bạn
@@ -145,6 +175,15 @@ Bài học này sử dụng rộng rãi các mối quan hệ giữa các bảng 
 
 ## Lỗi Phổ Biến Cần Tránh
 
+### Thiết Kế Schema:
+- Không đặt Primary Key cho bảng
+- Thiết kế Foreign Key không đúng dẫn đến orphaned records
+- Chọn kiểu dữ liệu không phù hợp (quá lớn hoặc quá nhỏ)
+- Quên tạo indexes cho Foreign Keys
+- Thiết lập constraints quá nghiêm ngặt hoặc quá lỏng lẻo
+- Không xem xét performance khi thiết kế schema
+
+### Truy Vấn:
 - Quên điều kiện join (dẫn đến tích Cartesian)
 - Sử dụng sai loại join cho yêu cầu nghiệp vụ
 - Không xử lý giá trị NULL trong outer joins
@@ -154,7 +193,9 @@ Bài học này sử dụng rộng rãi các mối quan hệ giữa các bảng 
 
 ## Công Cụ và Kỹ Thuật
 
+- **Oracle SQL Developer** để thiết kế và quản lý schema
 - **EXPLAIN PLAN** để phân tích hiệu suất truy vấn
+- **Data Modeler** để thiết kế ERD và schema
 - **Bí danh bảng** để dễ đọc và tránh nhầm lẫn
 - **Thụt lề phù hợp** cho khả năng đọc truy vấn phức tạp
 - **Chú thích** để ghi chép logic nghiệp vụ phức tạp
@@ -162,14 +203,19 @@ Bài học này sử dụng rộng rãi các mối quan hệ giữa các bảng 
 
 ## Thời Gian Ước Tính
 
-Tổng cộng 4-6 giờ:
-- Đọc lý thuyết: 1.5 giờ
-- Bài tập thực hành: 2.5 giờ
-- Tình huống phức tạp: 1-2 giờ
+Tổng cộng 6-8 giờ:
+- Thiết kế schema và DDL: 2-2.5 giờ
+- Đọc lý thuyết JOIN và Subquery: 1.5 giờ  
+- Bài tập thực hành: 2.5-3 giờ
+- Tình huống phức tạp và tích hợp: 1-2 giờ
 
 ## Đánh Giá
 
 Sau khi hoàn thành bài học này, bạn nên có thể:
+- Tạo và quản lý schema cơ sở dữ liệu hoàn chỉnh từ đầu
+- Thiết lập các ràng buộc và mối quan hệ đảm bảo tính toàn vẹn dữ liệu
+- Sử dụng ALTER TABLE để chỉnh sửa cấu trúc bảng một cách linh hoạt
+- Tạo indexes và sequences để tối ưu hóa hiệu suất
 - Viết joins để kết hợp dữ liệu từ 3+ bảng
 - Chọn loại join phù hợp cho các tình huống nghiệp vụ
 - Sử dụng subqueries để giải quyết các vấn đề lọc phức tạp
@@ -180,10 +226,10 @@ Sau khi hoàn thành bài học này, bạn nên có thể:
 ## Bước Tiếp Theo
 
 Sau khi thành thạo bài học này, bạn sẽ sẵn sàng cho:
-- **Bài 5**: Kỹ Thuật SQL Nâng Cao (Stored Procedures, Functions, Triggers)
-- **Bài 6**: Thiết Kế và Tối Ưu Hóa Cơ Sở Dữ Liệu
-- **Dự Án Thực Tế**: Xây dựng các ứng dụng cơ sở dữ liệu hoàn chỉnh
+- **Bài 5**: Kỹ Thuật SQL Nâng Cao (Views, Stored Procedures, Functions, Triggers)
+- **Bài 6**: Thực Hành và Ứng Dụng (Performance Tuning, Dự Án Thực Tế)
+- **Dự Án Capstone**: Xây dựng các ứng dụng cơ sở dữ liệu hoàn chỉnh
 
 ---
 
-**Lưu Ý Quan Trọng**: Bài học này tăng đáng kể về độ phức tạp. Hãy dành thời gian với từng khái niệm và thực hành nhiều trước khi chuyển sang chủ đề tiếp theo. Các khái niệm học được ở đây tạo nền tảng cho phát triển cơ sở dữ liệu nâng cao.
+**Lưu Ý Quan Trọng**: Bài học này bao gồm cả thiết kế cơ sở dữ liệu và truy vấn dữ liệu, tăng đáng kể về độ phức tạp. Hãy dành thời gian với từng khái niệm, đặc biệt là phần thiết kế schema, vì đây là nền tảng cho tất cả công việc với cơ sở dữ liệu. Thực hành nhiều với việc tạo bảng và thiết lập mối quan hệ trước khi chuyển sang các truy vấn phức tạp.
