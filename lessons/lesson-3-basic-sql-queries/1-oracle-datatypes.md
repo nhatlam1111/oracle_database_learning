@@ -2,6 +2,10 @@
 
 Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để thiết kế và phát triển cơ sở dữ liệu hiệu quả. Oracle cung cấp một bộ kiểu dữ liệu tích hợp sẵn toàn diện để lưu trữ các loại thông tin khác nhau một cách hiệu quả. Hướng dẫn này bao gồm tất cả các kiểu dữ liệu chính có sẵn trong Oracle Database.
 
+# Reference:
+https://g.co/gemini/share/1767eef8f265
+https://www.databasestar.com/oracle-data-types/
+https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Data-Types.html#GUID-1E278F1C-0EC1-4626-8D93-80D8230AB8F1
 
 
 
@@ -53,32 +57,122 @@ Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để 
 ## Kiểu Dữ Liệu Ký Tự
 
 ### VARCHAR2(size)
-- **Mô tả**: Dữ liệu ký tự độ dài biến đổi với kích thước tối đa được chỉ định
-- **Lưu trữ**: 1 đến 4000 byte (32767 trong PL/SQL)
-- **Trường hợp sử dụng**: Tên, mô tả, địa chỉ, dữ liệu văn bản chung
-- **Ví dụ**: `VARCHAR2(100)` để lưu trữ tên lên đến 100 ký tự
-- **Thực hành tốt**: Luôn chỉ định kích thước; sử dụng cho văn bản độ dài biến đổi
+- **Mô tả**: Kiểu dữ liệu ký tự có độ dài biến đổi, chỉ sử dụng đúng bằng số byte cần thiết để lưu trữ dữ liệu thực tế. Đây là kiểu dữ liệu phổ biến nhất cho văn bản trong Oracle.
+- **Lưu trữ**: 
+  - Trong bảng: 1 đến 4000 byte
+  - Trong PL/SQL: 1 đến 32767 byte
+  - Sử dụng encoding UTF-8, mỗi ký tự tiếng Việt có thể chiếm 2-3 byte
+- **Đặc điểm kỹ thuật**:
+  - Không đệm khoảng trắng (space-efficient)
+  - Hỗ trợ bộ ký tự database charset (thường AL32UTF8)
+  - So sánh theo quy tắc case-sensitive
+- **Trường hợp sử dụng**: 
+  - Tên người, địa chỉ, email, số điện thoại
+  - Mô tả sản phẩm, ghi chú
+  - URL, username, password hash
+- **Ví dụ thực tế**: 
+  ```sql
+  customer_name VARCHAR2(100)    -- 'Nguyễn Văn A'
+  email VARCHAR2(150)           -- 'user@example.com'  
+  description VARCHAR2(500)     -- Mô tả chi tiết sản phẩm
+  ```
+- **Thực hành tốt**: 
+  - Luôn chỉ định kích thước phù hợp (không quá lớn)
+  - Lựa chọn mặc định cho hầu hết dữ liệu văn bản
+  - Cân nhắc tăng kích thước 20-30% để dự phòng mở rộng
 
 ### CHAR(size)
-- **Mô tả**: Dữ liệu ký tự độ dài cố định, được đệm bằng khoảng trắng
-- **Lưu trữ**: 1 đến 2000 byte
-- **Trường hợp sử dụng**: Mã định dạng cố định, cờ trạng thái, mã quốc gia
-- **Ví dụ**: `CHAR(2)` để lưu trữ viết tắt bang như 'CA', 'NY'
-- **Thực hành tốt**: Chỉ sử dụng khi tất cả giá trị có cùng độ dài
+- **Mô tả**: Kiểu dữ liệu ký tự có độ dài cố định, luôn sử dụng đúng số byte được khai báo và tự động đệm khoảng trắng bên phải nếu dữ liệu ngắn hơn.
+- **Lưu trữ**: 1 đến 2000 byte (luôn chiếm đủ size được khai báo)
+- **Đặc điểm kỹ thuật**:
+  - Tự động đệm khoảng trắng (space-padded)
+  - Hiệu suất so sánh nhanh hơn VARCHAR2 một chút
+  - Phù hợp cho dữ liệu có format cố định
+- **Trường hợp sử dụng**: 
+  - Mã quốc gia: VN, US, JP (luôn 2 ký tự)
+  - Trạng thái: Y/N, A/I (Active/Inactive)
+  - Mã phân loại có độ dài cố định
+- **Ví dụ thực tế**: 
+  ```sql
+  country_code CHAR(2)      -- 'VN', 'US' (lưu thành 'VN ', 'US ')
+  gender CHAR(1)           -- 'M', 'F', 'O'
+  status CHAR(1)           -- 'A' (Active), 'I' (Inactive)
+  currency_code CHAR(3)    -- 'USD', 'VND', 'EUR'
+  ```
+- **Lưu ý quan trọng**:
+  ```sql
+  -- CHAR tự động đệm khoảng trắng
+  INSERT INTO countries VALUES ('VN');  -- Thực tế lưu 'VN '
+  
+  -- So sánh vẫn hoạt động bình thường
+  WHERE country_code = 'VN'   -- ✅ Tìm thấy
+  WHERE country_code = 'VN '  -- ✅ Cũng tìm thấy
+  
+  -- Nhưng LENGTH trả về kích thước không đệm
+  SELECT LENGTH(country_code) FROM countries; -- Trả về 2, không phải 3
+  ```
+- **Thực hành tốt**: 
+  - Chỉ dùng khi dữ liệu thực sự có độ dài cố định
+  - Tránh dùng cho dữ liệu có thể thay đổi độ dài
+  - Tiết kiệm cho việc indexing và joining
 
 ### NVARCHAR2(size)
-- **Mô tả**: Dữ liệu ký tự Unicode độ dài biến đổi
-- **Lưu trữ**: 1 đến 4000 byte
-- **Trường hợp sử dụng**: Ứng dụng đa ngôn ngữ, văn bản quốc tế
-- **Ví dụ**: `NVARCHAR2(200)` để lưu trữ tên bằng nhiều ngôn ngữ khác nhau
-- **Thực hành tốt**: Sử dụng khi hỗ trợ nhiều bộ ký tự
+- **Mô tả**: Kiểu dữ liệu ký tự Unicode độ dài biến đổi, được thiết kế đặc biệt để hỗ trợ đa ngôn ngữ và các bộ ký tự đặc biệt. Sử dụng National Character Set của database.
+- **Lưu trữ**: 
+  - 1 đến 4000 byte (có thể ít ký tự hơn do Unicode)
+  - Mỗi ký tự có thể chiếm 1-4 byte tùy theo bộ ký tự
+- **Đặc điểm kỹ thuật**:
+  - Sử dụng National Character Set (thường UTF-16 hoặc UTF-8)
+  - Hỗ trợ tốt nhất cho đa ngôn ngữ
+  - Tự động chuyển đổi encoding khi cần
+- **Trường hợp sử dụng**: 
+  - Ứng dụng đa ngôn ngữ (tiếng Việt, Trung, Nhật, Ả Rập...)
+  - Tên người dùng có ký tự đặc biệt
+  - Nội dung cần hiển thị trên nhiều locale khác nhau
+- **Ví dụ thực tế**: 
+  ```sql
+  -- Ứng dụng đa ngôn ngữ
+  product_name_intl NVARCHAR2(200)  -- 'Điện thoại', '电话', 'टेलीफोन'
+  user_display_name NVARCHAR2(100)  -- 'Nguyễn Văn A', '王小明', 'أحمد علي'
+  
+  -- Website đa quốc gia
+  page_title NVARCHAR2(150)         -- Tiêu đề trang bằng nhiều ngôn ngữ
+  meta_description NVARCHAR2(300)   -- SEO description đa ngôn ngữ
+  ```
+- **So sánh với VARCHAR2**:
+  ```sql
+  -- VARCHAR2: Dùng database charset
+  name_local VARCHAR2(100)     -- Tốt cho tiếng Việt đơn thuần
+  
+  -- NVARCHAR2: Dùng national charset  
+  name_global NVARCHAR2(100)   -- Tốt cho hỗ trợ nhiều ngôn ngữ
+  ```
+- **Thực hành tốt**: 
+  - Sử dụng khi ứng dụng cần hỗ trợ nhiều ngôn ngữ
+  - Cân nhắc hiệu suất: NVARCHAR2 chậm hơn VARCHAR2 một chút
+  - Đảm bảo National Character Set được cấu hình đúng
 
 ### NCHAR(size)
-- **Mô tả**: Dữ liệu ký tự Unicode độ dài cố định
-- **Lưu trữ**: 1 đến 2000 byte
-- **Trường hợp sử dụng**: Mã Unicode độ dài cố định
-- **Ví dụ**: `NCHAR(10)` cho mã sản phẩm Unicode
-- **Thực hành tốt**: Hiếm khi sử dụng; ưu tiên NVARCHAR2 cho dữ liệu Unicode
+- **Mô tả**: Kiểu dữ liệu ký tự Unicode độ dài cố định, tương tự CHAR nhưng sử dụng National Character Set để hỗ trợ đa ngôn ngữ.
+- **Lưu trữ**: 1 đến 2000 byte (luôn chiếm đủ size, đệm khoảng trắng)
+- **Đặc điểm kỹ thuật**:
+  - Kết hợp đặc điểm của CHAR (fixed-length) và Unicode support
+  - Tự động đệm khoảng trắng như CHAR
+  - Sử dụng National Character Set
+- **Trường hợp sử dụng**: 
+  - Mã định danh cố định trong môi trường đa ngôn ngữ  
+  - Trạng thái/flag cần hiển thị bằng nhiều ngôn ngữ
+  - Hiếm khi sử dụng trong thực tế
+- **Ví dụ thực tế**: 
+  ```sql
+  -- Rất hiếm dùng, chỉ trong trường hợp đặc biệt
+  language_code NCHAR(5)     -- 'vi-VN', 'en-US', 'zh-CN'
+  status_unicode NCHAR(2)    -- Trạng thái hiển thị đa ngôn ngữ
+  ```
+- **Thực hành tốt**: 
+  - Hiếm khi sử dụng; ưu tiên NVARCHAR2 cho dữ liệu Unicode
+  - Chỉ dùng khi thực sự cần fixed-length Unicode
+  - Cân nhắc VARCHAR2 hoặc CHAR trước khi dùng NCHAR
 
 ## Kiểu Dữ Liệu Số
 
@@ -103,83 +197,239 @@ Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để 
       - **với giá trị: 66,666,666** là số nguyên có 8 chữ số trước dấu phẩy (tất cả đều là số có nghĩa), nhưng `NUMBER(5, 10)` chỉ chứa 5 số có nghĩa nên khi lưu trữ trong oracle sẽ bị lỗi **ORA-06502: PL/SQL: numeric or value error: number precision too larg**
 
 ### INTEGER
-- **Mô tả**: Kiểu số nguyên 32-bit có dấu
-- **Lưu trữ**: Biến đổi (1 đến 22 byte)
+- **Mô tả**: Kiểu số nguyên 32-bit có dấu, được Oracle tối ưu hóa cho các phép toán số nguyên cơ bản. Đây là subtype của NUMBER với một số ràng buộc về phạm vi giá trị.
+- **Lưu trữ**: Biến đổi (1 đến 22 byte, tùy thuộc vào giá trị)
 - **Phạm vi**: -2,147,483,648 đến 2,147,483,647 (-(2^31) đến (2^31)-1)
-- **Trường hợp sử dụng**: Số nguyên, bộ đếm, ID trong phạm vi giới hạn
-- **Ví dụ**: `INTEGER` cho khóa chính, số lượng sản phẩm
-- **Thực hành tốt**: Sử dụng cho số nguyên trong phạm vi 32-bit; dùng NUMBER cho phạm vi lớn hơn
+- **Đặc điểm kỹ thuật**:
+  - Không cho phép số thập phân
+  - Tự động làm tròn nếu gán số thập phân
+  - Hiệu suất tốt cho indexing và sorting
+- **Trường hợp sử dụng**: 
+  - ID bản ghi, khóa chính (trong phạm vi 2 tỷ)
+  - Số lượng sản phẩm, số thứ tự
+  - Bộ đếm, số trang, số thứ tự
+- **Ví dụ thực tế**: 
+  ```sql
+  customer_id INTEGER               -- ID khách hàng
+  quantity INTEGER                  -- Số lượng sản phẩm (1, 100, 500)
+  page_number INTEGER              -- Số trang (1, 2, 3...)
+  year_established INTEGER        -- Năm thành lập (2020, 2021...)
+  ```
+- **Lưu ý quan trọng**:
+  ```sql
+  -- INTEGER tự động làm tròn số thập phân
+  INSERT INTO products (quantity) VALUES (10.7);  -- Lưu thành 11
+  INSERT INTO products (quantity) VALUES (10.3);  -- Lưu thành 10
+  
+  -- Vượt quá phạm vi sẽ lỗi
+  INSERT INTO products (quantity) VALUES (3000000000);  -- ORA-01438
+  ```
+- **Thực hành tốt**: 
+  - Dùng cho ID và đếm trong phạm vi 32-bit
+  - Chuyển sang NUMBER khi cần phạm vi lớn hơn
+  - Phù hợp cho foreign key và primary key nhỏ
 
 ### FLOAT(binary_precision)
-- **Mô tả**: Số dấu phẩy động với độ chính xác nhị phân
-- **Lưu trữ**: 1 đến 22 byte
-- **Độ chính xác nhị phân**: 1 đến 126 bit (mặc định 126)
+- **Mô tả**: Kiểu số dấu phẩy động với độ chính xác nhị phân có thể tùy chỉnh. Được thiết kế cho tính toán khoa học và kỹ thuật cần độ chính xác linh hoạt.
+- **Lưu trữ**: 1 đến 22 byte (tùy thuộc vào binary_precision)
+- **Độ chính xác nhị phân**: 1 đến 126 bit (mặc định 126 nếu không chỉ định)
 - **Phạm vi**: Tương tự NUMBER nhưng với biểu diễn nhị phân
-- **Trường hợp sử dụng**: Tính toán khoa học cần số học dấu phẩy động
-- **Ví dụ**: `FLOAT(24)` cho độ chính xác đơn, `FLOAT(53)` cho độ chính xác kép
-- **Thực hành tốt**: Sử dụng NUMBER cho hầu hết ứng dụng kinh doanh
+- **Đặc điểm kỹ thuật**:
+  - Độ chính xác được định nghĩa theo bit, không phải chữ số thập phân
+  - FLOAT(24) ≈ 7 chữ số thập phân (single precision)
+  - FLOAT(53) ≈ 15 chữ số thập phân (double precision)
+- **Trường hợp sử dụng**: 
+  - Tính toán khoa học, kỹ thuật
+  - Xử lý dữ liệu cần độ chính xác linh hoạt
+  - Tương thích với hệ thống legacy sử dụng float
+- **Ví dụ thực tế**: 
+  ```sql
+  scientific_calculation FLOAT(53)    -- Tính toán khoa học độ chính xác cao
+  sensor_reading FLOAT(24)           -- Đọc sensor (độ chính xác vừa phải)
+  gps_coordinate FLOAT(53)           -- Tọa độ GPS (cần độ chính xác cao)
+  ```
+- **So sánh độ chính xác**:
+  ```sql
+  FLOAT(24)   -- ~7 chữ số thập phân  (tương đương BINARY_FLOAT)
+  FLOAT(53)   -- ~15 chữ số thập phân (tương đương BINARY_DOUBLE)  
+  FLOAT(126)  -- ~38 chữ số thập phân (độ chính xác tối đa)
+  ```
+- **Thực hành tốt**: 
+  - Dùng NUMBER cho ứng dụng kinh doanh (tránh rounding error)
+  - Dùng FLOAT cho tính toán khoa học cần hiệu suất
+  - Xem xét BINARY_FLOAT/BINARY_DOUBLE cho chuẩn IEEE 754
 
 ### BINARY_FLOAT
-- **Mô tả**: Số dấu phẩy động 32-bit (IEEE 754)
-- **Lưu trữ**: 4 byte
-- **Trường hợp sử dụng**: Điện toán khoa học, tính toán quan trọng về hiệu suất
-- **Phạm vi**: ±1.17549E-38 đến ±3.40282E+38
-- **Thực hành tốt**: Sử dụng để tương thích với các hệ thống khác sử dụng chuẩn IEEE
+- **Mô tả**: Kiểu số dấu phẩy động 32-bit tuân theo chuẩn IEEE 754, được tối ưu hóa cho hiệu suất tính toán và tương thích với các ngôn ngữ lập trình khác.
+- **Lưu trữ**: 4 byte (cố định)
+- **Phạm vi**: 
+  - Dương: 1.17549E-38 đến 3.40282E+38
+  - Âm: -3.40282E+38 đến -1.17549E-38
+  - Giá trị đặc biệt: +INF, -INF, NaN
+- **Độ chính xác**: Khoảng 7 chữ số thập phân có nghĩa
+- **Đặc điểm kỹ thuật**:
+  - Tuân theo chuẩn IEEE 754 Single Precision
+  - Hỗ trợ giá trị đặc biệt: Infinity, NaN (Not a Number)
+  - Hiệu suất tính toán cao nhất trong Oracle
+- **Trường hợp sử dụng**: 
+  - Ứng dụng gaming, graphics
+  - Tính toán khoa học cần hiệu suất cao
+  - Tương thích với Java float, C# float
+  - Machine learning, AI calculations
+- **Ví dụ thực tế**: 
+  ```sql
+  price_usd BINARY_FLOAT              -- Giá USD (không cần độ chính xác cao)
+  temperature BINARY_FLOAT            -- Nhiệt độ sensor
+  score BINARY_FLOAT                  -- Điểm số game
+  probability BINARY_FLOAT            -- Xác suất (0.0 to 1.0)
+  
+  -- Xử lý giá trị đặc biệt
+  calculation_result BINARY_FLOAT     -- Có thể là NaN hoặc Infinity
+  ```
+- **Giá trị đặc biệt**:
+  ```sql
+  SELECT BINARY_FLOAT_INFINITY FROM dual;     -- +INF
+  SELECT BINARY_FLOAT_NAN FROM dual;          -- NaN
+  
+  -- Kiểm tra giá trị đặc biệt
+  WHERE IS_INFINITE(column_name) = 1          -- Là Infinity
+  WHERE IS_NAN(column_name) = 1               -- Là NaN
+  ```
+- **Thực hành tốt**: 
+  - Dùng cho tính toán cần hiệu suất cao
+  - Tránh dùng cho tiền tệ (dùng NUMBER thay thế)
+  - Xử lý các giá trị đặc biệt (NaN, Infinity) trong application logic
 
 ### BINARY_DOUBLE
-- **Mô tả**: Số dấu phẩy động 64-bit (IEEE 754)
-- **Lưu trữ**: 8 byte
-- **Phạm vi**: ±2.22507485850720E-308 đến ±1.79769313486231E+308
-- **Độ chính xác**: Khoảng 15-17 chữ số thập phân
-- **Trường hợp sử dụng**: Tính toán khoa học độ chính xác cao
-- **Thực hành tốt**: Sử dụng cho tính toán dấu phẩy động độ chính xác cao
+- **Mô tả**: Kiểu số dấu phẩy động 64-bit tuân theo chuẩn IEEE 754, cung cấp độ chính xác cao nhất cho tính toán dấu phẩy động trong Oracle.
+- **Lưu trữ**: 8 byte (cố định)
+- **Phạm vi**: 
+  - Dương: 2.22507485850720E-308 đến 1.79769313486231E+308
+  - Âm: -1.79769313486231E+308 đến -2.22507485850720E-308
+  - Giá trị đặc biệt: +INF, -INF, NaN
+- **Độ chính xác**: Khoảng 15-17 chữ số thập phân có nghĩa
+- **Đặc điểm kỹ thuật**:
+  - Tuân theo chuẩn IEEE 754 Double Precision
+  - Tương thích hoàn toàn với Java double, C# double
+  - Hiệu suất tính toán rất cao, chỉ chậm hơn BINARY_FLOAT một chút
+- **Trường hợp sử dụng**: 
+  - Tính toán khoa học độ chính xác cao
+  - Financial modeling (không phải currency storage)
+  - Statistical analysis, data science
+  - Geographic calculations (coordinates, distances)
+- **Ví dụ thực tế**: 
+  ```sql
+  latitude BINARY_DOUBLE              -- Tọa độ địa lý (cần độ chính xác cao)
+  longitude BINARY_DOUBLE             -- Tọa độ địa lý
+  statistical_result BINARY_DOUBLE    -- Kết quả tính toán thống kê
+  exchange_rate BINARY_DOUBLE         -- Tỷ giá (cho tính toán, không lưu trữ)
+  
+  -- Scientific calculations
+  physics_constant BINARY_DOUBLE      -- Hằng số vật lý
+  measurement_value BINARY_DOUBLE     -- Giá trị đo lường khoa học
+  ```
+- **So sánh với NUMBER**:
+  ```sql
+  -- NUMBER: Exact decimal arithmetic
+  salary NUMBER(10,2)                 -- 99999999.99 (exact)
+  
+  -- BINARY_DOUBLE: Approximate arithmetic  
+  calculation BINARY_DOUBLE           -- Nhanh hơn nhưng có rounding error
+  ```
+- **Thực hành tốt**: 
+  - Lựa chọn tốt nhất cho tính toán khoa học độ chính xác cao
+  - Tránh dùng cho tiền tệ (dùng NUMBER để tránh rounding error)
+  - Xử lý các edge case (overflow, underflow, NaN)
 
 ### SMALLINT
-- **Mô tả**: Đồng nghĩa với NUMBER(38), nhưng được tối ưu cho số nguyên nhỏ
-- **Lưu trữ**: Biến đổi (1 đến 22 byte)
-- **Phạm vi**: Tương tự NUMBER, nhưng thường dùng cho giá trị nhỏ
-- **Trường hợp sử dụng**: Số tuổi, số tháng, cờ trạng thái số
-- **Ví dụ**: `SMALLINT` cho trường age, status_code
-- **Thực hành tốt**: Sử dụng cho số nguyên có giá trị nhỏ để tối ưu hiệu suất
+- **Mô tả**: Kiểu số nguyên được tối ưu cho các giá trị nhỏ, thực chất là một alias của NUMBER(38) nhưng được Oracle tối ưu hóa cho các số nguyên có giá trị nhỏ.
+- **Lưu trữ**: Biến đổi (1 đến 22 byte, nhưng thường ít hơn cho giá trị nhỏ)
+- **Phạm vi**: Tương tự NUMBER(38), nhưng được khuyến nghị dùng cho giá trị nhỏ
+- **Đặc điểm kỹ thuật**:
+  - Không có giới hạn chặt chẽ như INTEGER
+  - Được tối ưu hóa cho storage và performance với số nhỏ
+  - Có thể chứa số thập phân (khác với INTEGER)
+- **Trường hợp sử dụng**: 
+  - Tuổi, tháng, ngày trong tháng
+  - Mức độ ưu tiên (1-10)
+  - Trạng thái số (status code)
+  - Đánh giá, rating (1-5 sao)
+- **Ví dụ thực tế**: 
+  ```sql
+  age SMALLINT                        -- Tuổi (0-150)
+  month_number SMALLINT              -- Tháng (1-12)
+  priority_level SMALLINT            -- Mức ưu tiên (1-10)
+  rating SMALLINT                    -- Đánh giá (1-5)
+  status_code SMALLINT               -- Mã trạng thái (100, 200, 404, 500)
+  ```
+- **So sánh với INTEGER**:
+  ```sql
+  -- SMALLINT: Không có giới hạn chặt, tối ưu cho số nhỏ
+  age SMALLINT                       -- Có thể lưu 25.5 (tuổi theo tháng)
+  
+  -- INTEGER: Có giới hạn 32-bit, chỉ số nguyên
+  customer_id INTEGER                -- Chỉ lưu được số nguyên, có giới hạn
+  ```
+- **Thực hành tốt**: 
+  - Dùng cho số nguyên nhỏ để tối ưu storage
+  - Xem xét NUMBER(3) hoặc NUMBER(2) nếu muốn giới hạn cụ thể
+  - Phù hợp cho lookup table, enum values
 
 
 ### So Sánh Các Kiểu Số Oracle
 
-| **Kiểu** | **Phạm vi** | **Độ chính xác** | **Khi nào sử dụng** |
-|-----------|-------------|------------------|---------------------|
-| **INTEGER** | -2,147,483,648 đến 2,147,483,647 | Số nguyên | ID, đếm trong phạm vi 32-bit |
-| **SMALLINT** | Tương tự NUMBER(38) | Số nguyên | Số nhỏ (tuổi, tháng, trạng thái) |
-| **NUMBER** | 1.0×10^-130 đến 9.99×10^125 | Lên đến 38 chữ số | Tiền tệ, tính toán chính xác |
-| **NUMBER(p,s)** | Theo precision/scale | p chữ số, s thập phân | Tiền tệ với định dạng cố định |
-| **FLOAT** | Tương tự NUMBER | Nhị phân | Tính toán khoa học |
-| **BINARY_FLOAT** | ±1.17549E-38 đến ±3.40282E+38 | ~7 chữ số | Hiệu suất cao, IEEE 754 |
-| **BINARY_DOUBLE** | ±2.22507E-308 đến ±1.79769E+308 | ~15-17 chữ số | Độ chính xác cao, IEEE 754 |
+| **Kiểu** | **Phạm vi** | **Độ chính xác** | **Lưu trữ** | **Khi nào sử dụng** |
+|-----------|-------------|------------------|-------------|---------------------|
+| **INTEGER** | -2,147,483,648 đến 2,147,483,647 | Số nguyên (32-bit) | 1-22 byte | ID, đếm, khóa chính nhỏ |
+| **SMALLINT** | Tương tự NUMBER(38) | Số nguyên/thập phân | 1-22 byte | Tuổi, tháng, rating, status |
+| **NUMBER** | 1.0×10^-130 đến 9.99×10^125 | Lên đến 38 chữ số | 1-22 byte | Tiền tệ, tính toán chính xác |
+| **NUMBER(p,s)** | Theo precision/scale | p chữ số, s thập phân | 1-22 byte | Tiền tệ, đo lường có format |
+| **FLOAT** | Tương tự NUMBER | Nhị phân (1-126 bit) | 1-22 byte | Tính toán khoa học linh hoạt |
+| **BINARY_FLOAT** | ±1.17549E-38 đến ±3.40282E+38 | ~7 chữ số (IEEE 754) | 4 byte | Hiệu suất cao, gaming, AI |
+| **BINARY_DOUBLE** | ±2.22507E-308 đến ±1.79769E+308 | ~15-17 chữ số (IEEE 754) | 8 byte | Khoa học, tọa độ, thống kê |
 
-### Lưu Ý Quan Trọng Về Kiểu Số
+### Hướng Dẫn Lựa Chọn Kiểu Số
 
-#### INTEGER vs NUMBER
-- **INTEGER** không phải là NUMBER(38) như nhiều người nghĩ
-- **INTEGER** có giới hạn 32-bit: -2,147,483,648 đến 2,147,483,647
-- **NUMBER(38)** có thể lưu trữ số lên đến 38 chữ số (rất lớn)
-- **Khuyến nghị**: Dùng INTEGER cho ID và đếm nhỏ, NUMBER cho giá trị lớn
+#### **Theo Mục Đích Sử Dụng:**
 
-#### Chọn Kiểu Số Phù Hợp
+**🏦 Tài Chính & Kinh Doanh:**
 ```sql
--- Cho ID sản phẩm (thường < 2 tỷ)
-product_id INTEGER
+-- Tiền tệ, giá cả (cần chính xác tuyệt đối)
+salary NUMBER(10,2)           -- Lương: 99,999,999.99
+product_price NUMBER(8,2)     -- Giá sản phẩm: 999,999.99
+tax_rate NUMBER(5,4)          -- Thuế suất: 0.1234 (12.34%)
 
--- Cho doanh số (cần chính xác thập phân)
-revenue NUMBER(15,2)
-
--- Cho tỷ lệ phần trăm
-percentage NUMBER(5,2)  -- 999.99%
-
--- Cho tính toán khoa học
-calculation_result BINARY_DOUBLE
-
--- Cho đếm số lượng lớn
-total_records NUMBER(12)  -- Lên đến 999,999,999,999
+-- ID và đếm
+customer_id INTEGER           -- ID khách hàng (< 2 tỷ)
+product_id NUMBER(12)         -- ID sản phẩm (lớn hơn)
+order_count SMALLINT          -- Số đơn hàng (nhỏ)
 ```
+
+**🔬 Khoa Học & Kỹ Thuật:**
+```sql
+-- Tính toán độ chính xác cao
+latitude BINARY_DOUBLE        -- Tọa độ GPS
+sensor_reading BINARY_FLOAT   -- Đọc cảm biến
+physics_constant BINARY_DOUBLE -- Hằng số vật lý
+calculation_result FLOAT(53)  -- Kết quả tính toán
+```
+
+**📊 Quản Lý & Phân Loại:**
+```sql
+-- Trạng thái và phân loại
+age SMALLINT                  -- Tuổi (0-150)
+rating SMALLINT               -- Đánh giá (1-5)
+priority INTEGER              -- Ưu tiên (1-10)
+status_code INTEGER           -- HTTP status (200, 404...)
+```
+
+#### **Theo Yêu Cầu Kỹ Thuật:**
+
+- **Cần chính xác tuyệt đối**: NUMBER (tiền tệ, kế toán)
+- **Cần hiệu suất cao**: BINARY_FLOAT, BINARY_DOUBLE
+- **Tương thích với ngôn ngữ khác**: BINARY_FLOAT/DOUBLE (Java, C#)
+- **Tiết kiệm storage**: INTEGER cho ID nhỏ, SMALLINT cho giá trị nhỏ
+- **Linh hoạt độ chính xác**: FLOAT với binary_precision tùy chỉnh
 
 ## Kiểu Dữ Liệu Ngày và Thời Gian
 
