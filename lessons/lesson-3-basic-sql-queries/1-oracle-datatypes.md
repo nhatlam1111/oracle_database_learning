@@ -188,7 +188,7 @@ https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Data-Types.h
 - **Trường hợp sử dụng**: Tiền tệ, tính toán, đo lường
 - **Ví dụ**: 
   - `NUMBER(10,2)` cho tiền tệ (tối đa 99,999,999.99)
-  - `NUMBER(5,-2)` cho tiền tệ làm tròn đến hàng trăm (11510 -> )
+  - `NUMBER(5,-2)` cho tiền tệ làm tròn đến hàng trăm (11510 -> 11500)
   - `NUMBER(5)` cho giá trị nguyên lên đến 99,999
   - `NUMBER` cho độ chính xác không giới hạn (trong phạm vi hỗ trợ)
   **Trường hợp đặc biệt**: `NUMBER(5, 10)`: có phần scale > precision, khi đó oracle chỉ lưu trữ 5 chữ số có nghĩa đầu tiên, 5 chữ số phía sau sẽ hiển thị 0.
