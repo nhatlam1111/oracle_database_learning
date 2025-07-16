@@ -4,7 +4,9 @@ Hiểu về các kiểu dữ liệu Oracle Database là điều cơ bản để 
 
 # Reference:
 https://g.co/gemini/share/1767eef8f265
+
 https://www.databasestar.com/oracle-data-types/
+
 https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Data-Types.html#GUID-1E278F1C-0EC1-4626-8D93-80D8230AB8F1
 
 
