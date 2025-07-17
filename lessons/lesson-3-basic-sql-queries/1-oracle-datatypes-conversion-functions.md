@@ -4,6 +4,12 @@
 >
 > Hướng dẫn chi tiết về tất cả các hàm chuyển đổi built-in functions có sẵn trong Oracle Database, bao gồm cách sử dụng, tham số, trường hợp sử dụng và xử lý lỗi.
 
+# Reference:
+
+https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Single-Row-Functions.html
+
+https://www.techonthenet.com/oracle/functions/
+
 ## 📋 Bảng Tham Khảo Nhanh - Hàm Chuyển Đổi Oracle
 
 > **💡 Tip**: Ctrl+F để tìm kiếm nhanh hàm cần dùng
