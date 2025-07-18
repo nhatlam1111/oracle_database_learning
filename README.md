@@ -38,6 +38,7 @@ Chào mừng bạn đến với dự án Học Oracle Database! Lộ trình này
   - Lọc dữ liệu với mệnh đề WHERE
   - Sắp xếp kết quả với ORDER BY
   - Sử dụng các hàm tập hợp (COUNT, SUM, AVG, MIN, MAX)
+  - **Toán Tử Tập Hợp** ⭐ **MỚI** - Kết hợp và thao tác dữ liệu với UNION, INTERSECT, MINUS
 
 ### 4. Khái Niệm SQL Trung Cấp
 - **Đường Dẫn Bài Học:** `lessons/lesson-4-intermediate-sql/`

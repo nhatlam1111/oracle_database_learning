@@ -2,6 +2,25 @@
 
 Câu lệnh SELECT là lệnh SQL cơ bản và được sử dụng thường xuyên nhất. Nó cho phép bạn truy xuất dữ liệu từ một hoặc nhiều bảng trong cơ sở dữ liệu của bạn.
 
+## Chỉ Mục Bài Học
+
+1. [Cú Pháp SELECT Cơ Bản](#cú-pháp-select-cơ-bản)
+2. [Bảng DUAL trong Oracle](#bảng-dual-trong-oracle)
+3. [Các Thao Tác SELECT Cơ Bản](#các-thao-tác-select-cơ-bản)
+4. [Bí Danh Cột và Phân Biệt Dấu Nháy](#bí-danh-cột-và-phân-biệt-dấu-nháy)
+5. [Thao Tác Chuỗi và Nối Chuỗi](#thao-tác-chuỗi-và-nối-chuỗi)
+6. [Phép Toán Số Học](#phép-toán-số-học)
+7. [Làm Việc với Ngày Tháng](#làm-việc-với-ngày-tháng)
+8. [Chuyển Đổi Kiểu Dữ Liệu](#chuyển-đổi-kiểu-dữ-liệu)
+9. [Từ Khóa DISTINCT](#từ-khóa-distinct)
+10. [Toán Tử Tập Hợp (UNION, INTERSECT, MINUS)](#toán-tử-tập-hợp-union-intersect-minus)
+11. [Logic Điều Kiện với CASE](#logic-điều-kiện-với-case)
+12. [Làm Việc với Nhiều Bảng (Xem Trước)](#làm-việc-với-nhiều-bảng-xem-trước)
+13. [Tham Khảo Hàm Phổ Biến](#tham-khảo-hàm-phổ-biến)
+14. [Cân Nhắc Hiệu Suất](#cân-nhắc-hiệu-suất)
+15. [Ví Dụ Thực Hành](#ví-dụ-thực-hành)
+16. [Bài Tập](#bài-tập)
+
 ## Cú Pháp SELECT Cơ Bản
 
 ### Cấu Trúc SELECT Đơn Giản
@@ -18,6 +37,58 @@ FROM table_name
 [ORDER BY column_list]
 [GROUP BY column_list]
 [HAVING condition];
+```
+
+## Bảng DUAL trong Oracle
+
+### Giới Thiệu về DUAL
+Bảng DUAL là một bảng đặc biệt trong Oracle Database với những đặc điểm sau:
+
+- **Mục đích**: Dùng để thực hiện phép tính, gọi hàm, hoặc lấy giá trị hằng số khi không cần dữ liệu từ bảng thực
+- **Cấu trúc**: Chỉ có 1 cột tên `DUMMY` kiểu VARCHAR2(1) và 1 dòng dữ liệu có giá trị 'X'
+- **Sở hữu**: Thuộc về schema SYS nhưng có thể truy cập từ bất kỳ user nào
+
+### Khi Nào Sử Dụng DUAL?
+```sql
+-- 1. Thực hiện phép tính số học
+SELECT 2 + 3 AS result FROM dual;
+SELECT 10 * 5 AS multiplication FROM dual;
+
+-- 2. Gọi hàm hệ thống
+SELECT SYSDATE AS current_date FROM dual;
+SELECT USER AS current_user FROM dual;
+
+-- 3. Chuyển đổi kiểu dữ liệu
+SELECT TO_DATE('2023-12-25', 'YYYY-MM-DD') AS christmas FROM dual;
+SELECT TO_CHAR(12345.67, '$999,999.99') AS formatted_number FROM dual;
+
+-- 4. Kiểm tra hàm chuỗi
+SELECT UPPER('oracle database') AS upper_text FROM dual;
+SELECT LENGTH('Hello World') AS text_length FROM dual;
+
+-- 5. Tạo dữ liệu test/constant
+SELECT 'Xin chào Oracle!' AS greeting FROM dual;
+SELECT 100 AS constant_value FROM dual;
+```
+
+### Ví Dụ Thực Tế với DUAL
+```sql
+-- Kiểm tra kết nối database
+SELECT 'Kết nối thành công!' AS status FROM dual;
+
+-- Lấy thông tin hệ thống
+SELECT 
+    SYSDATE AS current_datetime,
+    USER AS logged_in_user,
+    'Oracle Database' AS database_type
+FROM dual;
+
+-- Test công thức trước khi áp dụng vào bảng thực
+SELECT 
+    ROUND(1234.5678, 2) AS rounded_number,
+    TRUNC(SYSDATE) AS today_no_time,
+    ADD_MONTHS(SYSDATE, 6) AS six_months_later
+FROM dual;
 ```
 
 ## Các Thao Tác SELECT Cơ Bản
@@ -48,7 +119,9 @@ SELECT department_id, department_name
 FROM hr.departments;
 ```
 
-### 3. Bí Danh Cột
+## Bí Danh Cột và Phân Biệt Dấu Nháy
+
+### 1. Bí Danh Cột (Column Alias)
 Sử dụng bí danh để cung cấp tên có ý nghĩa cho các cột:
 
 ```sql
@@ -76,6 +149,50 @@ SELECT
     salary monthly_salary
 FROM hr.employees;
 ```
+
+### 2. Phân Biệt Dấu Nháy Đơn và Nháy Kép
+
+**Quan trọng**: Sau khi làm quen với SELECT cơ bản, bạn cần hiểu sự khác nhau giữa dấu nháy:
+
+#### Dấu Nháy Đơn (' ')
+- **Mục đích**: Dùng để định nghĩa **giá trị chuỗi (string literals)**
+- **Sử dụng**: Trong mệnh đề WHERE, VALUES, và bất kỳ nơi nào cần giá trị chuỗi
+```sql
+-- Ví dụ dấu nháy đơn
+SELECT * FROM employees WHERE first_name = 'John';
+SELECT 'Xin chào' AS greeting FROM dual;
+INSERT INTO employees (first_name) VALUES ('Jane');
+```
+
+#### Dấu Nháy Kép (" ")
+- **Mục đích**: Dùng để định nghĩa **tên định danh (identifiers)** như tên cột, tên bảng, bí danh
+- **Sử dụng**: Khi tên có khoảng trắng, ký tự đặc biệt, hoặc muốn giữ nguyên chữ hoa/thường
+```sql
+-- Ví dụ dấu nháy kép (như các ví dụ bí danh ở trên)
+SELECT employee_id AS "Mã Nhân Viên" FROM employees;
+SELECT first_name AS "Tên Đầu" FROM employees;
+CREATE TABLE "Bảng Nhân Viên" (id NUMBER);
+```
+
+#### So Sánh Trực Quan
+```sql
+-- SAI: Sử dụng dấu nháy kép cho giá trị chuỗi
+SELECT * FROM employees WHERE first_name = "John";  -- LỖI!
+
+-- ĐÚNG: Sử dụng dấu nháy đơn cho giá trị chuỗi
+SELECT * FROM employees WHERE first_name = 'John';  -- ĐÚNG
+
+-- SAI: Sử dụng dấu nháy đơn cho bí danh có khoảng trắng
+SELECT employee_id AS 'Mã Nhân Viên' FROM employees;  -- LỖI!
+
+-- ĐÚNG: Sử dụng dấu nháy kép cho bí danh có khoảng trắng
+SELECT employee_id AS "Mã Nhân Viên" FROM employees;  -- ĐÚNG
+```
+
+#### Quy Tắc Ghi Nhớ
+1. **Dấu nháy đơn** = **Dữ liệu** (giá trị chuỗi, ngày tháng)
+2. **Dấu nháy kép** = **Tên** (bí danh, tên cột, tên bảng)
+3. **Không có dấu nháy** = Tên đơn giản không có khoảng trắng
 
 ## Thao Tác Chuỗi và Nối Chuỗi
 
@@ -238,6 +355,213 @@ SELECT
     COUNT(DISTINCT manager_id) AS unique_managers
 FROM hr.employees;
 ```
+
+## Toán Tử Tập Hợp (UNION, INTERSECT, MINUS)
+
+Toán tử tập hợp cho phép bạn kết hợp kết quả từ hai hoặc nhiều truy vấn SELECT. Đây là các công cụ mạnh mẽ để thao tác với dữ liệu từ nhiều nguồn khác nhau.
+
+### Quy Tắc Chung cho Toán Tử Tập Hợp
+
+**Điều kiện tiên quyết:**
+1. **Số cột phải giống nhau** trong tất cả các truy vấn SELECT
+2. **Kiểu dữ liệu tương ứng phải tương thích**
+3. **Thứ tự cột phải nhất quán**
+4. **ORDER BY chỉ có thể sử dụng ở cuối** truy vấn cuối cùng
+
+### 1. UNION - Hợp Tập Hợp
+
+**UNION**: Kết hợp kết quả từ hai truy vấn và **loại bỏ trùng lặp**
+**UNION ALL**: Kết hợp kết quả từ hai truy vấn và **giữ tất cả dòng** (bao gồm trùng lặp)
+
+```sql
+-- UNION: Loại bỏ trùng lặp (chậm hơn do phải sắp xếp)
+SELECT first_name, last_name, 'Employee' AS source_type
+FROM hr.employees
+WHERE department_id = 10
+UNION
+SELECT first_name, last_name, 'Manager' AS source_type  
+FROM hr.employees
+WHERE employee_id IN (SELECT DISTINCT manager_id FROM hr.employees WHERE manager_id IS NOT NULL);
+
+-- UNION ALL: Giữ tất cả dòng (nhanh hơn)
+SELECT first_name, last_name, 'IT Department' AS department_type
+FROM hr.employees
+WHERE department_id = 60
+UNION ALL
+SELECT first_name, last_name, 'Sales Department' AS department_type
+FROM hr.employees  
+WHERE department_id = 80;
+```
+
+### 2. INTERSECT - Giao Tập Hợp
+
+**INTERSECT**: Trả về các dòng **chung** có trong cả hai truy vấn
+
+```sql
+-- Tìm nhân viên vừa là manager vừa có lương > 10000
+SELECT first_name, last_name, employee_id
+FROM hr.employees
+WHERE employee_id IN (SELECT DISTINCT manager_id FROM hr.employees WHERE manager_id IS NOT NULL)
+INTERSECT
+SELECT first_name, last_name, employee_id
+FROM hr.employees
+WHERE salary > 10000;
+
+-- Tìm các phòng ban có cả nhân viên và manager
+SELECT department_id, department_name
+FROM hr.departments
+WHERE department_id IN (SELECT department_id FROM hr.employees)
+INTERSECT
+SELECT department_id, department_name  
+FROM hr.departments
+WHERE department_id IN (SELECT DISTINCT department_id FROM hr.employees WHERE manager_id IS NOT NULL);
+```
+
+### 3. MINUS - Hiệu Tập Hợp
+
+**MINUS**: Trả về các dòng có trong truy vấn đầu tiên nhưng **không có** trong truy vấn thứ hai
+
+```sql
+-- Tìm nhân viên không phải là manager
+SELECT first_name, last_name, employee_id
+FROM hr.employees
+MINUS
+SELECT first_name, last_name, employee_id
+FROM hr.employees
+WHERE employee_id IN (SELECT DISTINCT manager_id FROM hr.employees WHERE manager_id IS NOT NULL);
+
+-- Tìm các phòng ban không có nhân viên nào
+SELECT department_id, department_name
+FROM hr.departments
+MINUS
+SELECT d.department_id, d.department_name
+FROM hr.departments d
+JOIN hr.employees e ON d.department_id = e.department_id;
+```
+
+### 4. Ví Dụ Thực Tế Phức Tạp
+
+```sql
+-- Báo cáo tổng hợp: Danh sách tất cả người liên quan đến IT
+SELECT 
+    employee_id AS id,
+    first_name || ' ' || last_name AS full_name,
+    'IT Employee' AS role_type,
+    salary,
+    hire_date
+FROM hr.employees
+WHERE department_id = 60  -- IT Department
+
+UNION
+
+SELECT 
+    employee_id AS id,
+    first_name || ' ' || last_name AS full_name,
+    'IT Manager' AS role_type,
+    salary,
+    hire_date
+FROM hr.employees
+WHERE employee_id IN (
+    SELECT DISTINCT manager_id 
+    FROM hr.employees 
+    WHERE department_id = 60 AND manager_id IS NOT NULL
+)
+
+ORDER BY role_type, full_name;
+```
+
+### 5. Sử Dụng với Subquery và CTE
+
+```sql
+-- Sử dụng UNION với subquery để tạo báo cáo phân tích
+WITH high_earners AS (
+    SELECT employee_id, first_name, last_name, salary, 'High Earner' AS category
+    FROM hr.employees
+    WHERE salary >= 15000
+),
+long_tenure AS (
+    SELECT employee_id, first_name, last_name, salary, 'Long Tenure' AS category  
+    FROM hr.employees
+    WHERE ROUND((SYSDATE - hire_date) / 365.25) >= 10
+)
+SELECT * FROM high_earners
+UNION
+SELECT * FROM long_tenure
+ORDER BY salary DESC;
+```
+
+### 6. Hiệu Suất và Thực Hành Tốt
+
+```sql
+-- TỐT: Sử dụng UNION ALL khi không cần loại bỏ trùng lặp
+SELECT 'Current Year' AS period, COUNT(*) AS employee_count
+FROM hr.employees  
+WHERE EXTRACT(YEAR FROM hire_date) = EXTRACT(YEAR FROM SYSDATE)
+UNION ALL
+SELECT 'Previous Year' AS period, COUNT(*) AS employee_count
+FROM hr.employees
+WHERE EXTRACT(YEAR FROM hire_date) = EXTRACT(YEAR FROM SYSDATE) - 1;
+
+-- TRÁNH: Sử dụng UNION không cần thiết khi UNION ALL đủ
+-- SELECT ... UNION SELECT ... (khi không cần loại bỏ trùng lặp)
+```
+
+### 7. Xử Lý Kiểu Dữ Liệu Khác Nhau
+
+```sql
+-- Chuyển đổi kiểu dữ liệu để tương thích
+SELECT 
+    TO_CHAR(employee_id) AS identifier,
+    first_name || ' ' || last_name AS name,
+    'Employee' AS type
+FROM hr.employees
+WHERE department_id = 10
+
+UNION
+
+SELECT 
+    'DEPT-' || TO_CHAR(department_id) AS identifier,
+    department_name AS name,
+    'Department' AS type
+FROM hr.departments
+WHERE department_id = 10;
+```
+
+### 8. Debugging và Phân Tích
+
+```sql
+-- Kiểm tra số lượng kết quả trước và sau UNION
+-- Truy vấn 1
+SELECT COUNT(*) AS query1_count 
+FROM hr.employees WHERE department_id IN (10, 20);
+
+-- Truy vấn 2  
+SELECT COUNT(*) AS query2_count
+FROM hr.employees WHERE salary > 5000;
+
+-- UNION (sẽ ít hơn tổng của 2 truy vấn nếu có trùng lặp)
+SELECT COUNT(*) AS union_count FROM (
+    SELECT employee_id FROM hr.employees WHERE department_id IN (10, 20)
+    UNION  
+    SELECT employee_id FROM hr.employees WHERE salary > 5000
+);
+
+-- UNION ALL (sẽ bằng tổng của 2 truy vấn)
+SELECT COUNT(*) AS union_all_count FROM (
+    SELECT employee_id FROM hr.employees WHERE department_id IN (10, 20)
+    UNION ALL
+    SELECT employee_id FROM hr.employees WHERE salary > 5000
+);
+```
+
+### So Sánh Toán Tử Tập Hợp
+
+| Toán Tử | Mục Đích | Trùng Lặp | Hiệu Suất | Khi Nào Dùng |
+|----------|----------|-----------|------------|-------------|
+| UNION | Hợp tập hợp | Loại bỏ | Chậm hơn | Cần kết quả duy nhất |
+| UNION ALL | Hợp tập hợp | Giữ nguyên | Nhanh hơn | Chấp nhận trùng lặp |
+| INTERSECT | Giao tập hợp | Loại bỏ | Trung bình | Tìm phần tử chung |
+| MINUS | Hiệu tập hợp | Loại bỏ | Trung bình | Tìm phần tử khác biệt |
 
 ## Logic Điều Kiện với CASE
 
@@ -433,25 +757,60 @@ ORDER BY category_id, product_name;
 -- Truy vấn của bạn ở đây:
 ```
 
+### Bài Tập 4: Toán Tử Tập Hợp
+```sql
+-- Sử dụng UNION để tạo danh sách tất cả nhân viên và manager,
+-- với cột bổ sung chỉ ra vai trò của họ
+-- Truy vấn của bạn ở đây:
+```
+
+### Bài Tập 5: Phân Tích Dữ Liệu với INTERSECT
+```sql
+-- Tìm các nhân viên vừa có lương cao (>= 10000) 
+-- vừa làm việc lâu năm (>= 5 năm) sử dụng INTERSECT
+-- Truy vấn của bạn ở đây:
+```
+
+### Bài Tập 6: Sử Dụng MINUS
+```sql
+-- Tìm các phòng ban có trong bảng departments 
+-- nhưng chưa có nhân viên nào được gán vào
+-- Truy vấn của bạn ở đây:
+```
+
 ## Tóm Tắt Thực Hành Tốt
 
 1. **Luôn chỉ định tên cột** thay vì sử dụng SELECT *
 2. **Sử dụng bí danh có ý nghĩa** để dễ đọc hơn
-3. **Xử lý giá trị NULL** phù hợp với NVL/NVL2
-4. **Định dạng đầu ra** để trình bày tốt hơn bằng TO_CHAR
-5. **Sử dụng câu lệnh CASE** cho logic điều kiện
-6. **Ghi chú truy vấn** để tài liệu hóa
-7. **Kiểm tra với tập dữ liệu nhỏ** trước
-8. **Cân nhắc hiệu suất** khi sử dụng hàm
+3. **Phân biệt rõ dấu nháy đơn và kép**:
+   - Nháy đơn cho dữ liệu/giá trị
+   - Nháy kép cho tên/bí danh có khoảng trắng
+4. **Sử dụng DUAL** cho phép tính và test hàm đơn giản
+5. **Hiểu rõ toán tử tập hợp**:
+   - UNION/UNION ALL cho hợp tập hợp  
+   - INTERSECT cho giao tập hợp
+   - MINUS cho hiệu tập hợp
+6. **Xử lý giá trị NULL** phù hợp với NVL/NVL2
+7. **Định dạng đầu ra** để trình bày tốt hơn bằng TO_CHAR
+8. **Sử dụng câu lệnh CASE** cho logic điều kiện
+9. **Ghi chú truy vấn** để tài liệu hóa
+10. **Kiểm tra với tập dữ liệu nhỏ** trước
+11. **Cân nhắc hiệu suất** khi sử dụng hàm
 
 ## Lỗi Phổ Biến Cần Tránh
 
 1. **Quên dấu chấm phẩy** ở cuối câu lệnh
-2. **Dấu ngoặc kép sai** cho bí danh (sử dụng dấu ngoặc kép cho khoảng trắng)
+2. **Nhầm lẫn dấu nháy đơn và kép**:
+   - Dùng nháy kép cho giá trị chuỗi: `WHERE name = "John"` ❌
+   - Dùng nháy đơn cho bí danh có khoảng trắng: `AS 'Mã NV'` ❌
 3. **Không xử lý giá trị NULL** trong tính toán
 4. **Sử dụng hàm không cần thiết** trong mệnh đề WHERE
-5. **Trộn lẫn dấu ngoặc đơn và kép** không đúng cách
-6. **Quên bí danh bảng** khi tên cột không rõ ràng
+5. **Quên bí danh bảng** khi tên cột không rõ ràng
+6. **Không hiểu khi nào dùng DUAL** cho các phép tính đơn giản
+7. **Sai cấu trúc toán tử tập hợp**:
+   - Số cột không khớp trong UNION: `SELECT a, b UNION SELECT c` ❌
+   - Kiểu dữ liệu không tương thích: `SELECT 1 UNION SELECT 'text'` ❌
+   - ORDER BY ở vị trí sai: `SELECT a UNION ORDER BY a SELECT b` ❌
 
 ## Bước Tiếp Theo
 

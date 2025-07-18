@@ -12,6 +12,7 @@ Sau khi hoàn thành bài học này, bạn sẽ có thể:
 - Sử dụng các hàm tổng hợp để tóm tắt dữ liệu
 - Áp dụng các hàm tích hợp sẵn để thao tác dữ liệu
 - Hiểu về các hàm chuyển đổi kiểu dữ liệu
+- Sử dụng toán tử tập hợp (UNION, INTERSECT, MINUS) để kết hợp và so sánh dữ liệu
 - Viết các truy vấn hiệu quả theo các thực hành tốt nhất
 
 ## Cấu Trúc Bài Học
@@ -20,6 +21,7 @@ Sau khi hoàn thành bài học này, bạn sẽ có thể:
 3. **Mệnh Đề WHERE và Lọc Dữ Liệu** - Học cách lọc dữ liệu với các điều kiện khác nhau
 4. **Sắp Xếp với ORDER BY** - Kiểm soát thứ tự trình bày kết quả
 5. **Hàm Tổng Hợp** - Tóm tắt dữ liệu với COUNT, SUM, AVG, v.v.
+6. **Toán Tử Tập Hợp** ⭐ **MỚI** - UNION, INTERSECT, MINUS cho thao tác tập hợp
 
 ## Điều Kiện Tiên Quyết
 - Đã hoàn thành Bài 1 (Giới thiệu về Cơ sở dữ liệu)
