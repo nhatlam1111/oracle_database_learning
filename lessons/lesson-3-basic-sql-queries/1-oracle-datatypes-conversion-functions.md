@@ -6,9 +6,11 @@
 
 # Reference:
 
-https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Format-Models.html
+https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/Functions.html
 
 https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Single-Row-Functions.html
+
+https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Format-Models.html
 
 https://www.techonthenet.com/oracle/functions/
 
