@@ -4,7 +4,7 @@
 
 1. [Mục Tiêu Học Tập](#mục-tiêu-học-tập)
 2. [Giới Thiệu về Outer Joins](#giới-thiệu-về-outer-joins)
-3. [Biểu Diễn Trực Quan](#biểu-diễn-trực-quan)
+3. [Dữ Liệu Mẫu cho Các Ví Dụ](#dữ-liệu-mẫu-cho-các-ví-dụ)
 4. [Các Loại Outer Joins](#các-loại-outer-joins)
 5. [Cú Pháp Truyền Thống (+) của Oracle](#cú-pháp-truyền-thống--của-oracle)
 6. [Ví Dụ Thực Tế](#ví-dụ-thực-tế)
@@ -34,11 +34,10 @@ Outer joins trả về tất cả các hàng từ một hoặc cả hai bảng, 
 3. **Phân Tích Dữ Liệu**: Phân tích khoảng trống và mối quan hệ thiếu
 4. **Business Intelligence**: Tạo báo cáo toàn diện
 
-## Biểu Diễn Trực Quan
+## Dữ Liệu Mẫu cho Các Ví Dụ
 
-Để hiểu rõ hơn về Outer Joins, hãy xem các biểu đồ minh họa sau với dữ liệu mẫu:
+Để hiểu rõ các loại Outer Joins, chúng ta sẽ sử dụng dữ liệu mẫu sau trong tất cả các ví dụ:
 
-### Dữ Liệu Mẫu
 **Bảng EMPLOYEES (E)**
 ```
 employee_id | first_name | department_id
@@ -59,8 +58,33 @@ department_id | department_name
       50      |   Finance
 ```
 
-### LEFT OUTER JOIN Visualization
+**Lưu ý:** 
+- Nhân viên Bob (102) không có phòng ban (NULL)
+- Nhân viên Alice (103) thuộc phòng ban 30 (không tồn tại)
+- Phòng ban HR (40) và Finance (50) không có nhân viên
+
+## Các Loại Outer Joins
+
+### 1. LEFT OUTER JOIN (hoặc LEFT JOIN)
+
+Trả về TẤT CẢ các hàng từ bảng bên trái và các hàng khớp từ bảng bên phải. Nếu không có khớp, giá trị NULL được trả về cho các cột bảng bên phải.
+
+**Cú pháp:**
+```sql
+SELECT columns
+FROM table1 LEFT OUTER JOIN table2
+ON table1.column = table2.column;
+
+-- Cú pháp ngắn hơn
+SELECT columns
+FROM table1 LEFT JOIN table2
+ON table1.column = table2.column;
 ```
+
+#### Biểu Diễn Trực Quan - LEFT JOIN
+
+**Truy vấn:**
+```sql
 SELECT e.first_name, d.department_name
 FROM employees e LEFT JOIN departments d
 ON e.department_id = d.department_id;
@@ -81,172 +105,19 @@ first_name | department_name
   Alice    |     NULL       ← Không khớp (emp 103, dept 30 không tồn tại)
 
 📊 Biểu đồ minh họa:
-[EMPLOYEES]     [DEPARTMENTS]
-┌─────────┐     ┌─────────┐
-│   100   │────▶│   10    │  ✓ Khớp
-│   101   │────▶│   20    │  ✓ Khớp  
-│   102   │  ✗  │   40    │  
-│   103   │     │   50    │  
-└─────────┘     └─────────┘
-    ▲               ▲
-    │               │
- Tất cả bao gồm  Chỉ khớp
-```
+[EMPLOYEES] ←── GIỮ TẤT CẢ     [DEPARTMENTS]
+┌─────────┐                   ┌─────────┐
+│   100   │────────────────▶  │   10    │  ✓ Khớp
+│   101   │────────────────▶  │   20    │  ✓ Khớp  
+│   102   │  ✗ (NULL dept)    │   40    │  ⚪ Bỏ qua
+│   103   │  ✗ (dept 30 N/A)  │   50    │  ⚪ Bỏ qua
+└─────────┘                   └─────────┘
+    ▲                             ▲
+    │                             │
+ TẤT CẢ BAO GỒM               CHỈ CÁC KHỚP
 
-### RIGHT OUTER JOIN Visualization
-```
-SELECT e.first_name, d.department_name
-FROM employees e RIGHT JOIN departments d
-ON e.department_id = d.department_id;
-```
-
-**Kết quả RIGHT JOIN:**
-```
-┌─────────────────────────────────────────────┐
-│          RIGHT OUTER JOIN                   │
-│   (Khớp từ bảng TRÁI + tất cả từ bảng PHẢI) │
-└─────────────────────────────────────────────┘
-
-first_name | department_name
------------|----------------
-   John    |       IT       ← Khớp (emp 100, dept 10)
-   Jane    |     Sales      ← Khớp (emp 101, dept 20)
-   NULL    |       HR       ← Không khớp (dept 40, không có emp)
-   NULL    |    Finance     ← Không khớp (dept 50, không có emp)
-
-📊 Biểu đồ minh họa:
-[EMPLOYEES]     [DEPARTMENTS]
-┌─────────┐     ┌─────────┐
-│   100   │────▶│   10    │  ✓ Khớp
-│   101   │────▶│   20    │  ✓ Khớp  
-│   102   │     │   40    │  ✗ Không khớp
-│   103   │     │   50    │  ✗ Không khớp
-└─────────┘     └─────────┘
-    ▲               ▲
-    │               │
-  Chỉ khớp      Tất cả bao gồm
-```
-
-### FULL OUTER JOIN Visualization
-```
-SELECT e.first_name, d.department_name
-FROM employees e FULL OUTER JOIN departments d
-ON e.department_id = d.department_id;
-```
-
-**Kết quả FULL OUTER JOIN:**
-```
-┌─────────────────────────────────────────────┐
-│           FULL OUTER JOIN                   │
-│      (Tất cả từ CẢ HAI bảng)                │
-└─────────────────────────────────────────────┘
-
-first_name | department_name
------------|----------------
-   John    |       IT       ← Khớp (emp 100, dept 10)
-   Jane    |     Sales      ← Khớp (emp 101, dept 20)
-   Bob     |     NULL       ← Chỉ trong EMPLOYEES
-  Alice    |     NULL       ← Chỉ trong EMPLOYEES
-   NULL    |       HR       ← Chỉ trong DEPARTMENTS
-   NULL    |    Finance     ← Chỉ trong DEPARTMENTS
-
-📊 Biểu đồ minh họa:
-[EMPLOYEES]     [DEPARTMENTS]
-┌─────────┐     ┌─────────┐
-│   100   │────▶│   10    │  ✓ Khớp
-│   101   │────▶│   20    │  ✓ Khớp  
-│   102   │  ✗  │   40    │  ✗ Không khớp
-│   103   │  ✗  │   50    │  ✗ Không khớp
-└─────────┘     └─────────┘
-    ▲               ▲
-    │               │
-Tất cả bao gồm  Tất cả bao gồm
-```
-
-### So Sánh Các Loại JOIN
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    COMPARISON MATRIX                        │
-├─────────────────┬─────────────┬─────────────┬─────────────┤
-│   JOIN TYPE     │ LEFT TABLE  │ RIGHT TABLE │   RESULT    │
-├─────────────────┼─────────────┼─────────────┼─────────────┤
-│   INNER JOIN    │   Matched   │   Matched   │ Intersection│
-│   LEFT JOIN     │   All rows  │   Matched   │ Left + Match│
-│   RIGHT JOIN    │   Matched   │   All rows  │ Right+ Match│
-│   FULL JOIN     │   All rows  │   All rows  │ Union + NULL│
-└─────────────────┴─────────────┴─────────────┴─────────────┘
-
-🔄 Mối quan hệ:
-INNER ⊂ LEFT ⊂ FULL
-INNER ⊂ RIGHT ⊂ FULL
-```
-
-### Biểu Đồ Venn
-```
-LEFT JOIN:          RIGHT JOIN:         FULL OUTER JOIN:
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│█████████████│     │      ███████│     │█████████████│
-│█████████████│     │      ███████│     │█████████████│
-│█████████████│     │      ███████│     │█████████████│
-│████████████●│     │●████████████│     │████████████●│
-│████████████●│     │●████████████│     │████████████●│
-│████████████●│     │●████████████│     │████████████●│
-│█████████████│     │█████████████│     │█████████████│
-│█████████████│     │█████████████│     │█████████████│
-│█████████████│     │█████████████│     │█████████████│
-└─────────────┘     └─────────────┘     └─────────────┘
-   Table A              Table B           Table A ∪ B
-    + Match              + Match           + All NULLs
-
-● = Intersection (Inner Join)
-█ = Data included in result
-```
-
-### Workflow Decision Tree
-```
-🤔 Cần chọn loại JOIN nào?
-
-Bạn muốn:
-│
-├─ Tất cả dữ liệu từ bảng trái?
-│  │
-│  ├─ Có → LEFT OUTER JOIN
-│  │    "Tôi muốn tất cả employees, kể cả người chưa có phòng ban"
-│  │
-│  └─ Không ↓
-│
-├─ Tất cả dữ liệu từ bảng phải?
-│  │
-│  ├─ Có → RIGHT OUTER JOIN  
-│  │    "Tôi muốn tất cả departments, kể cả phòng ban trống"
-│  │
-│  └─ Không ↓
-│
-├─ Tất cả dữ liệu từ cả hai bảng?
-│  │
-│  ├─ Có → FULL OUTER JOIN
-│  │    "Tôi muốn tất cả employees VÀ tất cả departments"
-│  │
-│  └─ Không → INNER JOIN
-│       "Chỉ muốn dữ liệu khớp hoàn toàn"
-```
-
-## Các Loại Outer Joins
-
-### 1. LEFT OUTER JOIN (hoặc LEFT JOIN)
-
-Trả về TẤT CẢ các hàng từ bảng bên trái và các hàng khớp từ bảng bên phải. Nếu không có khớp, giá trị NULL được trả về cho các cột bảng bên phải.
-
-**Cú pháp:**
-```sql
-SELECT columns
-FROM table1 LEFT OUTER JOIN table2
-ON table1.column = table2.column;
-
--- Cú pháp ngắn hơn
-SELECT columns
-FROM table1 LEFT JOIN table2
-ON table1.column = table2.column;
+🎯 Khi nào dùng LEFT JOIN?
+"Tôi muốn thấy TẤT CẢ nhân viên, kể cả người chưa có phòng ban"
 ```
 
 **Trường Hợp Sử Dụng:**
@@ -270,6 +141,45 @@ FROM table1 RIGHT JOIN table2
 ON table1.column = table2.column;
 ```
 
+#### Biểu Diễn Trực Quan - RIGHT JOIN
+
+**Truy vấn:**
+```sql
+SELECT e.first_name, d.department_name
+FROM employees e RIGHT JOIN departments d
+ON e.department_id = d.department_id;
+```
+
+**Kết quả RIGHT JOIN:**
+```
+┌─────────────────────────────────────────────┐
+│          RIGHT OUTER JOIN                   │
+│   (Khớp từ bảng TRÁI + tất cả từ bảng PHẢI) │
+└─────────────────────────────────────────────┘
+
+first_name | department_name
+-----------|----------------
+   John    |       IT       ← Khớp (emp 100, dept 10)
+   Jane    |     Sales      ← Khớp (emp 101, dept 20)
+   NULL    |       HR       ← Không khớp (dept 40, không có emp)
+   NULL    |    Finance     ← Không khớp (dept 50, không có emp)
+
+📊 Biểu đồ minh họa:
+[EMPLOYEES]                [DEPARTMENTS] ←── GIỮ TẤT CẢ
+┌─────────┐                ┌─────────┐
+│   100   │ ─────────────▶ │   10    │  ✓ Khớp
+│   101   │ ─────────────▶ │   20    │  ✓ Khớp  
+│   102   │ ⚪ Bỏ qua       │   40    │  ✗ Không có emp
+│   103   │ ⚪ Bỏ qua       │   50    │  ✗ Không có emp
+└─────────┘                └─────────┘
+    ▲                          ▲
+    │                          │
+  CHỈ CÁC KHỚP             TẤT CẢ BAO GỒM
+
+🎯 Khi nào dùng RIGHT JOIN?
+"Tôi muốn thấy TẤT CẢ phòng ban, kể cả phòng ban trống"
+```
+
 **Trường Hợp Sử Dụng:**
 - Liệt kê tất cả phòng ban và nhân viên của họ (bao gồm phòng ban trống)
 - Hiển thị tất cả danh mục và sản phẩm của chúng (bao gồm danh mục trống)
@@ -289,6 +199,85 @@ ON table1.column = table2.column;
 SELECT columns
 FROM table1 FULL JOIN table2
 ON table1.column = table2.column;
+```
+
+#### Biểu Diễn Trực Quan - FULL OUTER JOIN
+
+**Truy vấn:**
+```sql
+SELECT e.first_name, d.department_name
+FROM employees e FULL OUTER JOIN departments d
+ON e.department_id = d.department_id;
+```
+
+**Kết quả FULL OUTER JOIN:**
+```
+┌─────────────────────────────────────────────┐
+│           FULL OUTER JOIN                   │
+│      (Tất cả từ CẢ HAI bảng)                │
+└─────────────────────────────────────────────┘
+
+first_name | department_name
+-----------|----------------
+   John    |       IT       ← Khớp (emp 100, dept 10)
+   Jane    |     Sales      ← Khớp (emp 101, dept 20)
+   Bob     |     NULL       ← Chỉ trong EMPLOYEES
+  Alice    |     NULL       ← Chỉ trong EMPLOYEES  
+   NULL    |       HR       ← Chỉ trong DEPARTMENTS
+   NULL    |    Finance     ← Chỉ trong DEPARTMENTS
+
+📊 Biểu đồ minh họa:
+[EMPLOYEES] ←── GIỮ TẤT CẢ     [DEPARTMENTS] ←── GIỮ TẤT CẢ
+┌─────────┐                   ┌─────────┐
+│   100   │ ◄────────────────▶│   10    │  ✓ Khớp
+│   101   │ ◄────────────────▶│   20    │  ✓ Khớp  
+│   102   │ ✗ (NULL dept)     │   40    │  ✗ Không có emp
+│   103   │ ✗ (dept 30 N/A)   │   50    │  ✗ Không có emp
+└─────────┘                   └─────────┘
+    ▲                             ▲
+    │                             │
+ TẤT CẢ BAO GỒM              TẤT CẢ BAO GỒM
+
+🎯 Khi nào dùng FULL OUTER JOIN?
+"Tôi muốn thấy TẤT CẢ nhân viên VÀ TẤT CẢ phòng ban"
+
+┌─────────────────────────────────────────────┐
+│            UNION CONCEPT                    │
+│   LEFT ONLY + MATCHES + RIGHT ONLY         │
+└─────────────────────────────────────────────┘
+```
+
+#### So Sánh Các Loại JOIN với Biểu Đồ Venn
+```
+INNER JOIN:         LEFT JOIN:          RIGHT JOIN:         FULL OUTER JOIN:
+┌─────────┐         ┌─────────┐         ┌─────────┐         ┌─────────┐
+│    A    │         │█████████│         │    A    │         │█████████│
+│    ●    │         │████●████│         │    ●████│         │████●████│
+│    B    │         │    B    │         │█████████│         │█████████│
+└─────────┘         └─────────┘         └─────────┘         └─────────┘
+A ∩ B only          A + (A ∩ B)         (A ∩ B) + B         A ∪ B
+
+● = Matching records (Inner Join portion)
+█ = Data included in result
+```
+
+#### Workflow Decision Tree
+```
+🤔 Cần chọn loại JOIN nào?
+
+TÌNH HUỐNG CỤ THỂ:
+│
+├─ "Tôi muốn TẤT CẢ nhân viên, kể cả người chưa có phòng ban"
+│  └─► LEFT OUTER JOIN
+│
+├─ "Tôi muốn TẤT CẢ phòng ban, kể cả phòng ban trống"  
+│  └─► RIGHT OUTER JOIN
+│
+├─ "Tôi muốn TẤT CẢ nhân viên VÀ TẤT CẢ phòng ban"
+│  └─► FULL OUTER JOIN
+│
+└─ "Chỉ muốn nhân viên có phòng ban rõ ràng"
+   └─► INNER JOIN
 ```
 
 **Trường Hợp Sử Dụng:**
