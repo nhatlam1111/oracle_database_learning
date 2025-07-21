@@ -2,6 +2,30 @@
 
 Câu lệnh SELECT là lệnh SQL cơ bản và được sử dụng thường xuyên nhất. Nó cho phép bạn truy xuất dữ liệu từ một hoặc nhiều bảng trong cơ sở dữ liệu của bạn.
 
+### Biểu Diễn Trực Quan - Tổng Quan SELECT
+```
+                    Luồng Hoạt Động Câu Lệnh SELECT
+    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+    │   DATABASE  │───▶│    TABLE    │───▶│   FILTER    │───▶│   RESULT    │
+    │  (Cơ sở DL) │    │   (Bảng)    │    │  (WHERE)    │    │  (Kết quả)  │
+    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+           │                   │                   │                   │
+           │                   │                   │                   │
+    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+    │ Nhiều Bảng  │    │ Chọn Cột    │    │ Áp Dụng     │    │ Hiển Thị    │
+    │ Quan Hệ     │    │ Cần Thiết   │    │ Điều Kiện   │    │ Dữ Liệu     │
+    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+
+                        Cấp Độ Phức Tạp SELECT
+                ┌─────────────────────────────────────────┐
+                │  SELECT * FROM table                    │ ← Đơn giản
+                │  SELECT col1, col2 FROM table           │
+                │  SELECT col1 FROM table WHERE condition │
+                │  SELECT col1, func(col2) FROM table     │
+                │  SELECT ... FROM table1 JOIN table2    │ ← Phức tạp
+                └─────────────────────────────────────────┘
+```
+
 ## Chỉ Mục Bài Học
 
 1. [Cú Pháp SELECT Cơ Bản](#cú-pháp-select-cơ-bản)
@@ -23,10 +47,81 @@ Câu lệnh SELECT là lệnh SQL cơ bản và được sử dụng thường x
 
 ## Cú Pháp SELECT Cơ Bản
 
+### Biểu Diễn Trực Quan - Cấu Trúc SELECT
+```
+                        Cú Pháp SELECT Đầy Đủ
+    ┌─────────────────────────────────────────────────────────────────┐
+    │ SELECT [DISTINCT] column_list                                   │
+    │ FROM table_name                                                 │
+    │ [WHERE condition]                  ← Lọc dữ liệu               │
+    │ [GROUP BY column_list]             ← Nhóm dữ liệu              │
+    │ [HAVING condition]                 ← Lọc nhóm                  │
+    │ [ORDER BY column_list [ASC|DESC]]  ← Sắp xếp                   │
+    └─────────────────────────────────────────────────────────────────┘
+
+                    Thứ Tự Thực Hiện (Logical Order)
+              ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+              │ 1. FROM     │───▶│ 2. WHERE    │───▶│ 3. GROUP BY │
+              └─────────────┘    └─────────────┘    └─────────────┘
+                     │                   │                   │
+              ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+              │ 6. ORDER BY │◀───│ 5. SELECT   │◀───│ 4. HAVING   │
+              └─────────────┘    └─────────────┘    └─────────────┘
+
+                      Ví Dụ Đơn Giản vs Phức Tạp
+Đơn Giản:                          Phức Tạp:
+┌─────────────────────────┐       ┌─────────────────────────────────┐
+│ SELECT *                │       │ SELECT DISTINCT                 │
+│ FROM employees;         │       │   department_id,                │
+└─────────────────────────┘       │   AVG(salary) as avg_sal       │
+                                  │ FROM employees                  │
+                                  │ WHERE hire_date > '2020-01-01'  │
+                                  │ GROUP BY department_id          │
+                                  │ HAVING AVG(salary) > 5000       │
+                                  │ ORDER BY avg_sal DESC;          │
+                                  └─────────────────────────────────┘
+```
+
 ### Cấu Trúc SELECT Đơn Giản
 ```sql
 SELECT column1, column2, ...
 FROM table_name;
+```
+
+#### Biểu Diễn Trực Quan - SELECT Cơ Bản
+```
+                    Chọn Cột Từ Bảng
+     Bảng EMPLOYEES:                    SELECT first_name, salary
+     ┌────┬────────────┬─────────┬────────┐    FROM employees;
+     │ ID │ FIRST_NAME │LAST_NAME│ SALARY │
+     ├────┼────────────┼─────────┼────────┤         ↓
+     │100 │ Steven     │ King    │ 24000  │    ┌────────────┬────────┐
+     │101 │ Neena      │ Kochhar │ 17000  │    │ FIRST_NAME │ SALARY │
+     │102 │ Lex        │ De Haan │ 17000  │    ├────────────┼────────┤
+     │103 │ Alexander  │ Hunold  │  9000  │───▶│ Steven     │ 24000  │
+     │104 │ Bruce      │ Ernst   │  6000  │    │ Neena      │ 17000  │
+     │105 │ David      │ Austin  │  4800  │    │ Lex        │ 17000  │
+     └────┴────────────┴─────────┴────────┘    │ Alexander  │  9000  │
+                                               │ Bruce      │  6000  │
+                SELECT *                       │ David      │  4800  │
+                FROM employees;                └────────────┴────────┘
+                      ↓
+              ┌────┬────────────┬─────────┬────────┐
+              │ ID │ FIRST_NAME │LAST_NAME│ SALARY │ ← Tất cả cột
+              ├────┼────────────┼─────────┼────────┤
+              │100 │ Steven     │ King    │ 24000  │
+              │101 │ Neena      │ Kochhar │ 17000  │
+              │... │    ...     │   ...   │  ...   │
+              └────┴────────────┴─────────┴────────┘
+
+                    Lưu Ý Quan Trọng
+         ┌─────────────────────────────────────────┐
+         │ • SELECT * : Chọn tất cả cột            │
+         │ • SELECT col1, col2 : Chọn cột cụ thể   │
+         │ • Thứ tự cột trong SELECT định thứ tự   │
+         │   hiển thị trong kết quả                │
+         │ • Dấu phẩy (,) để ngăn cách các cột     │
+         └─────────────────────────────────────────┘
 ```
 
 ### Mẫu Truy Vấn Chung
@@ -39,6 +134,37 @@ FROM table_name
 [HAVING condition];
 ```
 
+#### Biểu Diễn Trực Quan - Mẫu Truy Vấn Chung
+```
+              Các Thành Phần Tùy Chọn trong SELECT
+    ┌─────────────────────────────────────────────────────────────┐
+    │ SELECT [DISTINCT] column_list          ← BẮT BUỘC          │
+    │ FROM table_name                        ← BẮT BUỘC          │
+    │ [WHERE condition]                      ← Tùy chọn          │
+    │ [GROUP BY column_list]                 ← Tùy chọn          │
+    │ [HAVING condition]                     ← Tùy chọn          │
+    │ [ORDER BY column_list [ASC|DESC]]      ← Tùy chọn          │
+    └─────────────────────────────────────────────────────────────┘
+
+                    Ví Dụ Từng Bước Xây Dựng
+Bước 1 - Cơ bản:         Bước 2 - Thêm điều kiện:   Bước 3 - Thêm sắp xếp:
+┌─────────────────┐      ┌─────────────────────┐    ┌─────────────────────────┐
+│ SELECT name     │      │ SELECT name         │    │ SELECT name             │
+│ FROM employees; │  ──▶ │ FROM employees      │──▶ │ FROM employees          │
+└─────────────────┘      │ WHERE salary > 5000;│    │ WHERE salary > 5000     │
+                         └─────────────────────┘    │ ORDER BY name;          │
+                                                    └─────────────────────────┘
+
+                        Mức Độ Phức Tạp
+              ┌─────────────────────────────────────────┐
+              │ Level 1: SELECT + FROM                  │ ← Cơ bản
+              │ Level 2: + WHERE                        │
+              │ Level 3: + ORDER BY                     │ 
+              │ Level 4: + GROUP BY + HAVING            │
+              │ Level 5: + DISTINCT + Functions         │ ← Nâng cao
+              └─────────────────────────────────────────┘
+```
+
 ## Bảng DUAL trong Oracle
 
 ### Giới Thiệu về DUAL
@@ -47,6 +173,59 @@ Bảng DUAL là một bảng đặc biệt trong Oracle Database với những �
 - **Mục đích**: Dùng để thực hiện phép tính, gọi hàm, hoặc lấy giá trị hằng số khi không cần dữ liệu từ bảng thực
 - **Cấu trúc**: Chỉ có 1 cột tên `DUMMY` kiểu VARCHAR2(1) và 1 dòng dữ liệu có giá trị 'X'
 - **Sở hữu**: Thuộc về schema SYS nhưng có thể truy cập từ bất kỳ user nào
+
+#### Biểu Diễn Trực Quan - Bảng DUAL
+```
+                           Bảng DUAL
+                     ┌─────────────────┐
+                     │     DUMMY       │ ← Cột duy nhất
+                     ├─────────────────┤
+                     │       X         │ ← Hàng duy nhất
+                     └─────────────────┘
+
+              Mục Đích Sử Dụng DUAL
+    ┌─────────────────────────────────────────────────────────┐
+    │ 1. Tính Toán Số Học                                    │
+    │    SELECT 2 + 3 FROM DUAL;                             │
+    │                                                        │
+    │ 2. Gọi Hàm Hệ Thống                                    │
+    │    SELECT SYSDATE FROM DUAL;                           │
+    │                                                        │
+    │ 3. Chuyển Đổi Dữ Liệu                                  │
+    │    SELECT TO_CHAR(SYSDATE, 'DD/MM/YYYY') FROM DUAL;    │
+    │                                                        │
+    │ 4. Tạo Giá Trị Hằng Số                                 │
+    │    SELECT 'Hello World' FROM DUAL;                     │
+    └─────────────────────────────────────────────────────────┘
+
+                  So Sánh Với/Không DUAL
+Không có DUAL (Sai):              Có DUAL (Đúng):
+┌─────────────────────┐           ┌─────────────────────┐
+│ SELECT 2 + 3;       │     ✗     │ SELECT 2 + 3        │   ✓
+│ -- Lỗi cú pháp      │           │ FROM DUAL;          │
+└─────────────────────┘           └─────────────────────┘
+
+              Kết Quả Điển Hình
+    ┌─────────────────────────────────────────────────────────┐
+    │ SQL> SELECT 'Hello' AS greeting,                        │
+    │           SYSDATE AS current_date,                      │
+    │           5 * 4 AS calculation                          │
+    │      FROM DUAL;                                         │
+    │                                                         │
+    │ GREETING  CURRENT_DATE         CALCULATION              │
+    │ --------  -----------------    -----------              │
+    │ Hello     2024-01-15 14:30:25  20                      │
+    └─────────────────────────────────────────────────────────┘
+
+                      Đặc Điểm DUAL
+         ┌─────────────────────────────────────────┐
+         │ ✓ Luôn có sẵn trong Oracle              │
+         │ ✓ Chỉ 1 hàng → Kết quả không lặp lại    │
+         │ ✓ Nhanh → Không cần đọc dữ liệu thực     │
+         │ ✓ Thuận tiện cho testing và demo        │
+         │ ✗ Chỉ có trong Oracle (không chuẩn SQL) │
+         └─────────────────────────────────────────┘
+```
 
 ### Khi Nào Sử Dụng DUAL?
 ```sql

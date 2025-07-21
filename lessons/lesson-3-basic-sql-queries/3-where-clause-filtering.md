@@ -1,6 +1,46 @@
 # Mệnh Đề WHERE và Lọc Dữ Liệu
 
+## Mục Lục
+1. [Cú Pháp Mệnh Đề WHERE Cơ Bản](#cú-pháp-mệnh-đề-where-cơ-bản)
+2. [Toán Tử So Sánh](#toán-tử-so-sánh)
+3. [Khớp Mẫu Chuỗi](#khớp-mẫu-chuỗi)
+4. [Lọc Theo Phạm Vi và Danh Sách](#lọc-theo-phạm-vi-và-danh-sách)
+5. [Xử Lý Giá Trị NULL](#xử-lý-giá-trị-null)
+6. [Toán Tử Logic](#toán-tử-logic)
+7. [Ưu Tiên Toán Tử và Dấu Ngoặc Đơn](#ưu-tiên-toán-tử-và-dấu-ngoặc-đơn)
+8. [Kỹ Thuật Lọc Nâng Cao](#kỹ-thuật-lọc-nâng-cao)
+9. [Lọc Với Hàm](#lọc-với-hàm)
+10. [Cân Nhắc Về Hiệu Suất](#cân-nhắc-về-hiệu-suất)
+11. [Ví Dụ Thực Tế](#ví-dụ-thực-tế)
+12. [Mẫu Mệnh Đề WHERE Phổ Biến](#mẫu-mệnh-đề-where-phổ-biến)
+
 Mệnh đề WHERE được sử dụng để lọc các bản ghi và chỉ truy xuất những bản ghi đáp ứng các điều kiện cụ thể. Đây là một trong những phần quan trọng nhất của SQL cho việc phân tích và báo cáo dữ liệu.
+
+### Biểu Diễn Trực Quan - Hoạt Động WHERE
+```
+Bảng gốc (ALL ROWS)          Mệnh đề WHERE         Kết quả (FILTERED ROWS)
+┌─────────────────────┐     ┌─────────────────┐    ┌─────────────────────┐
+│ ID │Name  │Salary   │     │  WHERE salary   │    │ ID │Name  │Salary   │
+│ 1  │Alice │ 5000    │────▶│    > 4000       │───▶│ 1  │Alice │ 5000    │
+│ 2  │Bob   │ 3000    │     │                 │    │ 4  │Diana │ 6000    │
+│ 3  │Carol │ 2000    │     └─────────────────┘    │ 5  │Eve   │ 7000    │
+│ 4  │Diana │ 6000    │                            └─────────────────────┘
+│ 5  │Eve   │ 7000    │
+└─────────────────────┘
+
+                    Luồng Xử Lý WHERE
+              ┌─────────────────────────────┐
+              │  1. Đọc từng hàng           │
+              └─────────────────────────────┘
+                          │
+              ┌─────────────────────────────┐
+              │  2. Áp dụng điều kiện WHERE │
+              └─────────────────────────────┘
+                          │
+              ┌─────────────────────────────┐
+              │  3. Trả về hàng thỏa mãn    │
+              └─────────────────────────────┘
+```
 
 ## Cú Pháp Mệnh Đề WHERE Cơ Bản
 
@@ -10,7 +50,66 @@ FROM table_name
 WHERE condition;
 ```
 
+### Biểu Diễn Trực Quan - Cú Pháp WHERE
+```
+                   Cấu Trúc Câu Lệnh SQL
+┌──────────────────────────────────────────────────────────────┐
+│ SELECT column1, column2, ...    ← Chọn cột cần hiển thị      │
+│ FROM table_name                 ← Chỉ định bảng nguồn       │
+│ WHERE condition;                ← Điều kiện lọc              │
+└──────────────────────────────────────────────────────────────┘
+
+        Thứ Tự Thực Hiện (Execution Order)
+   ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+   │ 1. FROM     │───▶│ 2. WHERE    │───▶│ 3. SELECT   │
+   │ (Đọc bảng)  │    │ (Lọc dữ liệu)│    │ (Chọn cột)  │
+   └─────────────┘    └─────────────┘    └─────────────┘
+
+                    Ví Dụ Đơn Giản
+  Employees Table:      WHERE dept_id = 10      Kết Quả:
+  ┌────┬──────┬────┐    ┌─────────────────┐    ┌────┬──────┬────┐
+  │ ID │ Name │Dept│    │   Chỉ lấy hàng  │    │ 1  │Alice │ 10 │
+  │ 1  │Alice │ 10 │───▶│   có dept_id=10 │───▶│ 3  │Carol │ 10 │
+  │ 2  │Bob   │ 20 │    │                 │    └────┴──────┴────┘
+  │ 3  │Carol │ 10 │    └─────────────────┘
+  └────┴──────┴────┘
+```
+
 ## Toán Tử So Sánh
+
+### Biểu Diễn Trực Quan - Các Toán Tử So Sánh
+```
+                      Toán Tử So Sánh Oracle
+┌──────────────┬─────────────┬─────────────────────────────────┐
+│   Toán Tử    │   Ý Nghĩa   │            Ví Dụ               │
+├──────────────┼─────────────┼─────────────────────────────────┤
+│      =       │   Bằng      │ WHERE salary = 5000             │
+│     <> !=    │  Không bằng │ WHERE dept_id <> 10             │
+│      >       │   Lớn hơn   │ WHERE age > 25                  │
+│      <       │   Nhỏ hơn   │ WHERE price < 100               │
+│     >=       │ Lớn hơn =   │ WHERE experience >= 5           │
+│     <=       │ Nhỏ hơn =   │ WHERE rating <= 4.5             │
+└──────────────┴─────────────┴─────────────────────────────────┘
+
+            Minh Họa So Sánh Số (salary = 5000)
+      ┌─────────────────────────────────────────────┐
+      │        Dải Giá Trị Lương                    │
+      │   2000    3000    4000    5000    6000      │
+      │     │       │       │       ●       │       │
+      │     │       │       │      TRUE     │       │
+      │   FALSE   FALSE   FALSE             FALSE   │
+      └─────────────────────────────────────────────┘
+
+            Minh Họa So Sánh Phạm Vi (salary > 4000)
+      ┌─────────────────────────────────────────────┐
+      │        Dải Giá Trị Lương                    │
+      │   2000    3000    4000    5000    6000      │
+      │     │       │       │       │       │       │
+      │   FALSE   FALSE   FALSE   TRUE    TRUE      │
+      │                           ████████████      │
+      │                           Vùng TRUE         │
+      └─────────────────────────────────────────────┘
+```
 
 ### 1. Bằng và Không Bằng
 ```sql
@@ -57,6 +156,52 @@ FROM hr.employees
 WHERE salary <= 5000;
 ```
 
+#### Biểu Diễn Trực Quan - So Sánh Số
+```
+                 Phân Tích So Sánh Lương (salary > 10000)
+      ┌─────────────────────────────────────────────────────────┐
+      │           Dải Lương Nhân Viên                           │
+      │  2000   5000   8000   10000   12000   15000   20000     │
+      │    │     │      │       │       │       │       │       │
+      │  FALSE FALSE FALSE    FALSE   TRUE    TRUE    TRUE      │
+      │                        ▲       ████████████████████     │
+      │                    Điểm cắt    Vùng thỏa mãn (>10000)  │
+      └─────────────────────────────────────────────────────────┘
+
+              So Sánh >= vs > (Điểm cắt tại 10000)
+      ┌─────────────────────────────────────────────────────────┐
+      │  salary > 10000:   ●─────────────────────────▶          │
+      │                   FALSE    TRUE                         │
+      │                          (không bao gồm 10000)         │
+      │                                                         │
+      │  salary >= 10000:  ●─────────────────────────▶          │
+      │                   FALSE    TRUE                         │
+      │                          (bao gồm 10000)               │
+      └─────────────────────────────────────────────────────────┘
+
+                    Ví Dụ Thực Tế Với Dữ Liệu
+Employees Table:              WHERE salary > 10000:
+┌────┬──────┬────────┐        ┌────┬──────┬────────┐
+│ ID │ Name │ Salary │        │ ID │ Name │ Salary │
+│ 1  │Alice │  8000  │ ✗      │ 3  │Carol │ 12000  │ ✓
+│ 2  │Bob   │ 10000  │ ✗      │ 5  │Eve   │ 15000  │ ✓
+│ 3  │Carol │ 12000  │ ✓ ───▶ └────┴──────┴────────┘
+│ 4  │David │  6000  │ ✗
+│ 5  │Eve   │ 15000  │ ✓ ───▶
+└────┴──────┴────────┘
+
+                Ghi Chú Quan Trọng
+         ┌─────────────────────────────────────┐
+         │ • > : Lớn hơn nghiêm ngặt          │
+         │ • >= : Lớn hơn hoặc bằng           │
+         │ • < : Nhỏ hơn nghiêm ngặt          │
+         │ • <= : Nhỏ hơn hoặc bằng           │
+         │                                    │
+         │ Chú ý: 10000 > 10000 = FALSE      │
+         │        10000 >= 10000 = TRUE       │
+         └─────────────────────────────────────┘
+```
+
 ### 3. So Sánh Ngày Tháng
 ```sql
 -- Nhân viên được tuyển sau một ngày cụ thể
@@ -75,12 +220,115 @@ FROM hr.employees
 WHERE hire_date = DATE '1987-06-17';
 ```
 
+#### Biểu Diễn Trực Quan - So Sánh Ngày Tháng
+```
+                    Timeline So Sánh Ngày (hire_date > '1995-01-01')
+      ┌─────────────────────────────────────────────────────────────────┐
+      │  1990      1993      1995-01-01    1998      2001      2024     │
+      │    │         │           │          │         │         │       │
+      │  FALSE     FALSE      ●(FALSE)    TRUE      TRUE      TRUE      │
+      │                       ↑          ████████████████████████       │
+      │                   Điểm cắt       Vùng thỏa mãn                  │
+      └─────────────────────────────────────────────────────────────────┘
+
+            Định Dạng Ngày Trong Oracle (Các Cách Viết)
+      ┌─────────────────────────────────────────────────────────────────┐
+      │ • DATE '1995-01-01'                    ← Chuẩn ISO (khuyến khích)│
+      │ • TO_DATE('01/01/1995', 'MM/DD/YYYY')  ← Với format rõ ràng      │
+      │ • TO_DATE('1995-01-01', 'YYYY-MM-DD')  ← Format tường minh       │
+      │ • '01-JAN-95'                          ← Oracle default format   │
+      └─────────────────────────────────────────────────────────────────┘
+
+                    Ví Dụ Thực Tế Với Dữ Liệu Ngày
+Employees Table:                    WHERE hire_date > DATE '1995-01-01':
+┌────┬──────┬─────────────┐         ┌────┬──────┬─────────────┐
+│ ID │ Name │  Hire_Date  │         │ ID │ Name │  Hire_Date  │
+│ 1  │Alice │ 1993-05-15  │ ✗       │ 3  │Carol │ 1997-08-20  │ ✓
+│ 2  │Bob   │ 1995-01-01  │ ✗       │ 4  │David │ 2000-03-10  │ ✓
+│ 3  │Carol │ 1997-08-20  │ ✓ ────▶ └────┴──────┴─────────────┘
+│ 4  │David │ 2000-03-10  │ ✓ ────▶
+│ 5  │Eve   │ 1990-12-25  │ ✗
+└────┴──────┴─────────────┘
+
+                Phép Tính Ngày Động
+      ┌─────────────────────────────────────────────────────────────────┐
+      │ ADD_MONTHS(SYSDATE, -120)  ← 10 năm trước (120 tháng)           │
+      │                                                                 │
+      │ Nếu hôm nay là 2024-01-15:                                      │
+      │ ADD_MONTHS('2024-01-15', -120) = '2014-01-15'                   │
+      │                                                                 │
+      │ Kết Quả Timeline:                                               │
+      │ 2010 ──── 2014-01-15 ──── 2018 ──── 2022 ──── 2024             │
+      │                   ↑                          ↑                  │
+      │                10 năm trước              Hôm nay               │
+      │               ████████████████████████████████                  │
+      │               Nhân viên được tuyển trong 10 năm qua             │
+      └─────────────────────────────────────────────────────────────────┘
+```
+
 ## Khớp Mẫu Chuỗi
 
 ### 1. Toán Tử LIKE
 Toán tử LIKE được sử dụng để khớp mẫu với ký tự đại diện:
 - `%` - khớp với bất kỳ chuỗi ký tự nào (bao gồm không có ký tự)
 - `_` - khớp với chính xác một ký tự
+
+#### Biểu Diễn Trực Quan - Ký Tự Đại Diện LIKE
+```
+                    Ký Tự Đại Diện (Wildcards)
+         ┌─────────────────────────────────────────────────────┐
+         │ % = Khớp 0 hoặc nhiều ký tự bất kỳ                  │
+         │ _ = Khớp chính xác 1 ký tự                          │
+         └─────────────────────────────────────────────────────┘
+
+                Mẫu Khớp Phổ Biến
+    ┌──────────────┬─────────────────┬─────────────────────────┐
+    │   Mẫu LIKE   │    Ý Nghĩa     │         Ví Dụ           │
+    ├──────────────┼─────────────────┼─────────────────────────┤
+    │ 'S%'         │ Bắt đầu bằng S  │ 'Steven', 'Sarah'       │
+    │ '%n'         │ Kết thúc bằng n │ 'John', 'Steven'        │
+    │ '%an%'       │ Chứa 'an'       │ 'Diana', 'Brandon'      │
+    │ '____'       │ Chính xác 4 ký tự│ 'John', 'Mary'         │
+    │ 'S___n'      │ S + 3 ký tự + n │ 'Steven', 'Susan'       │
+    └──────────────┴─────────────────┴─────────────────────────┘
+
+                Minh Họa Cụ Thể: first_name LIKE 'S%'
+Names List:                           Kết Quả Khớp:
+┌─────────────┐                      ┌─────────────┐
+│ Steven      │ ✓ Bắt đầu bằng S ──▶ │ Steven      │
+│ Diana       │ ✗ Không bắt đầu S    │ Sarah       │
+│ Sarah       │ ✓ Bắt đầu bằng S ──▶ │ Sam         │
+│ John        │ ✗ Không bắt đầu S    └─────────────┘
+│ Sam         │ ✓ Bắt đầu bằng S ──▶
+│ Michael     │ ✗ Không bắt đầu S
+└─────────────┘
+
+                Minh Họa: first_name LIKE '____'
+Names List:                           Kết Quả Khớ​p:
+┌─────────────┐                      ┌─────────────┐
+│ John        │ ✓ (4 ký tự) ──────▶  │ John        │
+│ Diana       │ ✗ (5 ký tự)          │ Mary        │
+│ Mary        │ ✓ (4 ký tự) ──────▶  │ Lisa        │
+│ Michael     │ ✗ (7 ký tự)          └─────────────┘
+│ Lisa        │ ✓ (4 ký tự) ──────▶
+│ Alexander   │ ✗ (9 ký tự)
+└─────────────┘
+
+            Sự Khác Biệt % vs _
+  ┌───────────────────────────────────────────────────────────┐
+  │ Mẫu: 'A%'     → Khớp: 'A', 'Alice', 'Alexander'          │
+  │                        ↑     ↑        ↑                   │
+  │                     0 ký tự  4 ký tự  8 ký tự             │
+  │                                                           │
+  │ Mẫu: 'A_'     → Khớp: 'AB', 'Al' (chính xác 2 ký tự)    │
+  │                        ↑     ↑                            │
+  │                    A + 1 ký tự                            │
+  │                                                           │
+  │ Mẫu: 'A___'   → Khớp: 'Alex', 'Anna' (chính xác 4 ký tự) │
+  │                        ↑      ↑                           │
+  │                    A + 3 ký tự                            │
+  └───────────────────────────────────────────────────────────┘
+```
 
 ```sql
 -- Tên bắt đầu bằng 'S'
