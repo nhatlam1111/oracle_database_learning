@@ -1,6 +1,47 @@
 # Sắp Xếp Với ORDER BY
 
+## Mục Lục
+1. [Cú Pháp ORDER BY Cơ Bản](#cú-pháp-order-by-cơ-bản)
+2. [Sắp Xếp Một Cột](#sắp-xếp-một-cột)
+3. [Sắp Xếp Nhiều Cột](#sắp-xếp-nhiều-cột)
+4. [Sắp Xếp Theo Các Loại Dữ Liệu Khác Nhau](#sắp-xếp-theo-các-loại-dữ-liệu-khác-nhau)
+5. [Sắp Xếp Với Biểu Thức và Hàm](#sắp-xếp-với-biểu-thức-và-hàm)
+6. [Sắp Xếp Với Bí Danh](#sắp-xếp-với-bí-danh)
+7. [Xử Lý Giá Trị NULL Trong Sắp Xếp](#xử-lý-giá-trị-null-trong-sắp-xếp)
+8. [Sắp Xếp Dựa Trên CASE](#sắp-xếp-dựa-trên-case)
+9. [Kỹ Thuật Sắp Xếp Nâng Cao](#kỹ-thuật-sắp-xếp-nâng-cao)
+10. [Cân Nhắc Về Hiệu Suất](#cân-nhắc-về-hiệu-suất)
+11. [Ví Dụ Thực Tế](#ví-dụ-thực-tế)
+12. [Mẫu ORDER BY Phổ Biến](#mẫu-order-by-phổ-biến)
+
 Mệnh đề ORDER BY cho phép bạn sắp xếp kết quả truy vấn theo thứ tự tăng dần hoặc giảm dần dựa trên một hoặc nhiều cột. Sắp xếp phù hợp làm cho việc phân tích và trình bày dữ liệu hiệu quả hơn nhiều.
+
+### Biểu Diễn Trực Quan - Tổng Quan ORDER BY
+```
+                    Luồng Hoạt Động ORDER BY
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   TABLE     │──▶│   WHERE     │───▶│  ORDER BY   │───▶│   RESULT    │
+│ (Dữ liệu)   │    │ (Lọc)       │    │ (Sắp xếp)   │    │ (Đã sắp)    │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+
+                Before ORDER BY              After ORDER BY
+               ┌────┬──────┬────────┐       ┌────┬──────┬────────┐
+               │ ID │ Name │ Salary │       │ ID │ Name │ Salary │
+               │ 3  │Carol │ 12000  │       │ 5  │Alice │ 15000  │
+               │ 1  │Bob   │  8000  │  ───▶ │ 3  │Carol │ 12000  │
+               │ 5  │Alice │ 15000  │       │ 1  │Bob   │  8000  │
+               │ 2  │David │  6000  │       │ 2  │David │  6000  │
+               └────┴──────┴────────┘       └────┴──────┴────────┘
+                  (Không có thứ tự)            (Sắp xếp theo Salary DESC)
+
+                        Mức Độ Phức Tạp Sắp Xếp
+                ┌─────────────────────────────────────────┐
+                │ Level 1: ORDER BY column                │ ← Cơ bản
+                │ Level 2: ORDER BY col1, col2            │
+                │ Level 3: ORDER BY expr, function        │
+                │ Level 4: ORDER BY CASE, NULLS handling  │ ← Nâng cao
+                └─────────────────────────────────────────┘
+```
 
 ## Cú Pháp ORDER BY Cơ Bản
 
@@ -9,6 +50,40 @@ SELECT column1, column2, ...
 FROM table_name
 [WHERE condition]
 ORDER BY column1 [ASC|DESC], column2 [ASC|DESC], ...;
+```
+
+### Biểu Diễn Trực Quan - Cú Pháp ORDER BY
+```
+                     Cấu Trúc Câu Lệnh SQL Với ORDER BY
+    ┌─────────────────────────────────────────────────────────────────┐
+    │ SELECT column1, column2, ...        ← Chọn cột                  │
+    │ FROM table_name                     ← Bảng nguồn                │
+    │ [WHERE condition]                   ← Lọc (tùy chọn)            │
+    │ ORDER BY col1 [ASC|DESC], ...       ← Sắp xếp (cuối cùng)       │
+    └─────────────────────────────────────────────────────────────────┘
+
+              Hướng Sắp Xếp (Sort Direction)
+    ┌──────────────┬─────────────────┬──────────────────────┐
+    │  Từ Khóa     │   Ý Nghĩa       │      Ví Dụ           │
+    ├──────────────┼─────────────────┼──────────────────────┤
+    │ ASC (mặc định)│ Tăng dần       │ 1, 2, 3, 4, 5        │
+    │               │ A → Z           │ Alice, Bob, Carol    │
+    │               │ Cũ → Mới        │ 1990 → 2024          │
+    ├──────────────┼─────────────────┼──────────────────────┤
+    │ DESC          │ Giảm dần       │ 5, 4, 3, 2, 1        │
+    │               │ Z → A           │ Carol, Bob, Alice    │
+    │               │ Mới → Cũ        │ 2024 → 1990          │
+    └──────────────┴─────────────────┴──────────────────────┘
+
+                    Ví Dụ Thực Tế
+Data:                    ORDER BY salary ASC:     ORDER BY salary DESC:
+┌──────┬────────┐       ┌──────┬────────┐        ┌──────┬────────┐
+│ Name │ Salary │       │ Name │ Salary │        │ Name │ Salary │
+│Alice │ 15000  │       │David │  6000  │        │Alice │ 15000  │
+│Bob   │  8000  │  ───▶ │Bob   │  8000  │   ───▶ │Carol │ 12000  │
+│Carol │ 12000  │       │Carol │ 12000  │        │Bob   │  8000  │
+│David │  6000  │       │Alice │ 15000  │        │David │  6000  │
+└──────┴────────┘       └──────┴────────┘        └──────┴────────┘
 ```
 
 ## Sắp Xếp Một Cột
@@ -26,6 +101,27 @@ FROM hr.employees
 ORDER BY last_name ASC;
 ```
 
+#### Biểu Diễn Trực Quan - Sắp Xếp Tăng Dần
+```
+                    Sắp Xếp Theo Tên (ASC)
+Original Data:                        After ORDER BY last_name ASC:
+┌────┬───────┬─────────┬────────┐     ┌────┬───────┬─────────┬────────┐
+│ ID │ First │ Last    │ Salary │     │ ID │ First │ Last    │ Salary │
+│100 │Steven │ King    │ 24000  │     │104 │Bruce  │ Austin  │  4800  │
+│101 │Neena  │ Kochhar │ 17000  │ ──▶ │102 │Lex    │ De Haan │ 17000  │
+│102 │Lex    │ De Haan │ 17000  │     │103 │Alexander│ Hunold │  9000  │
+│103 │Alexander│ Hunold │  9000  │     │100 │Steven │ King    │ 24000  │
+│104 │Bruce  │ Austin  │  4800  │     │101 │Neena  │ Kochhar │ 17000  │
+└────┴───────┴─────────┴────────┘     └────┴───────┴─────────┴────────┘
+
+                    Thứ Tự Alphabet (A → Z)
+              A  Austin  De Haan  Hunold  King  Kochhar  Z
+              ├────┼────────┼────────┼──────┼──────┤
+              │    ✓        ✓        ✓      ✓      ✓
+              └────────────────────────────────────┘
+                          Tăng dần →
+```
+
 ### 2. Thứ Tự Giảm Dần
 ```sql
 -- Sắp xếp nhân viên theo lương (cao nhất đến thấp nhất)
@@ -37,6 +133,37 @@ ORDER BY salary DESC;
 SELECT employee_id, first_name, last_name, hire_date
 FROM hr.employees
 ORDER BY hire_date DESC;
+```
+
+#### Biểu Diễn Trực Quan - Sắp Xếp Giảm Dần
+```
+                    Sắp Xếp Theo Lương (DESC)
+Original Data:                        After ORDER BY salary DESC:
+┌────┬───────┬─────────┬────────┐     ┌────┬───────┬─────────┬────────┐
+│ ID │ First │ Last    │ Salary │     │ ID │ First │ Last    │ Salary │
+│100 │Steven │ King    │ 24000  │     │100 │Steven │ King    │ 24000  │ ← Cao nhất
+│101 │Neena  │ Kochhar │ 17000  │ ──▶ │101 │Neena  │ Kochhar │ 17000  │
+│102 │Lex    │ De Haan │ 17000  │     │102 │Lex    │ De Haan │ 17000  │
+│103 │Alexander│ Hunold │  9000  │     │103 │Alexander│ Hunold │  9000  │
+│104 │Bruce  │ Austin  │  4800  │     │104 │Bruce  │ Austin  │  4800  │ ← Thấp nhất
+└────┴───────┴─────────┴────────┘     └────┴───────┴─────────┴────────┘
+
+                    Dải Lương (Cao → Thấp)
+              24000   17000   17000    9000    4800
+                ├───────┼───────┼───────┼───────┤
+                │       │       │       │       │
+                ✓       ✓       ✓      ✓       ✓
+                └───────────────────────────────┘
+                           Giảm dần ←
+
+                    Sắp Xếp Theo Ngày (DESC)
+                2024-01-15  2020-05-10  2015-03-20  2010-12-01
+                    ├───────────┼───────────┼───────────┤
+                    │           │           │           │
+                   Mới ────────────────────────────── Cũ
+                    ✓           ✓          ✓           ✓
+                    └───────────────────────────────────┘
+                              Gần đây ← Xa xưa
 ```
 
 ## Sắp Xếp Nhiều Cột
@@ -52,6 +179,44 @@ ORDER BY department_id ASC, salary DESC;
 SELECT employee_id, first_name, last_name, job_id, salary
 FROM hr.employees
 ORDER BY job_id, last_name, first_name;
+```
+
+#### Biểu Diễn Trực Quan - Sắp Xếp Nhiều Cột
+```
+          Sắp Xếp Theo department_id ASC, salary DESC
+Original Data:                  After Multi-Column Sort:
+┌────┬──────┬──────┬────────┐   ┌────┬──────┬──────┬────────┐
+│ ID │ Name │ Dept │ Salary │   │ ID │ Name │ Dept │ Salary │
+│100 │Alice │  60  │ 15000  │   │103 │Carol │  10  │ 12000  │ ← Dept 10, highest salary
+│101 │Bob   │  90  │  8000  │   │104 │David │  10  │  8000  │ ← Dept 10, lower salary
+│102 │Carol │  10  │ 12000  │──▶│100 │Alice │  60  │ 15000  │ ← Dept 60, highest salary
+│103 │Carol │  10  │ 12000  │   │105 │Eve   │  60  │ 10000  │ ← Dept 60, lower salary
+│104 │David │  10  │  8000  │   │101 │Bob   │  90  │  8000  │ ← Dept 90
+│105 │Eve   │  60  │ 10000  │   └────┴──────┴──────┴────────┘
+└────┴──────┴──────┴────────┘
+
+                    Thứ Tự Ưu Tiên Sắp Xếp
+    ┌─────────────────────────────────────────────────────────┐
+    │ 1. department_id ASC    ← Ưu tiên cao nhất              │
+    │    │                                                    │
+    │    └─▶ 2. salary DESC  ← Ưu tiên thứ hai (trong cùng dept) │
+    └─────────────────────────────────────────────────────────┘
+
+                      Nhóm Theo Dept
+      Dept 10          Dept 60          Dept 90
+   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
+   │Carol │12000 │  │Alice│15000 │  │Bob  │ 8000 │
+   │David │ 8000 │  │Eve  │10000 │  └─────────────┘
+   └─────────────┘  └─────────────┘
+   Trong nhóm:      Trong nhóm:      Chỉ 1 người
+   Salary DESC      Salary DESC
+
+                 Quy Tắc "Tie-Breaking"
+    ┌─────────────────────────────────────────────────────────┐
+    │ Khi cột đầu tiên bằng nhau → sử dụng cột thứ hai        │
+    │ Khi cả 2 cột đầu bằng nhau → sử dụng cột thứ ba         │
+    │ ...và tiếp tục như vậy                                  │
+    └─────────────────────────────────────────────────────────┘
 ```
 
 ### 2. Thứ Tự Sắp Xếp Hỗn Hợp
@@ -219,6 +384,52 @@ FROM hr.employees
 ORDER BY commission_pct DESC; -- NULL xuất hiện đầu
 ```
 
+#### Biểu Diễn Trực Quan - Xử Lý NULL
+```
+                    Hành Vi NULL Mặc Định Trong Oracle
+Data with NULL:                ORDER BY commission_pct ASC:
+┌────┬──────┬─────────────┐   ┌────┬──────┬─────────────┐
+│ ID │ Name │Commission   │   │ ID │ Name │Commission   │
+│100 │Alice │ 0.15        │   │102 │Carol │ 0.10        │ ← Thấp nhất
+│101 │Bob   │ NULL        │   │100 │Alice │ 0.15        │
+│102 │Carol │ 0.10        │──▶│103 │David │ 0.25        │ ← Cao nhất
+│103 │David │ 0.25        │   │101 │Bob   │ NULL        │ ← NULL cuối
+│104 │Eve   │ NULL        │   │104 │Eve   │ NULL        │ ← NULL cuối
+└────┴──────┴─────────────┘   └────┴──────┴─────────────┘
+
+Data with NULL:                ORDER BY commission_pct DESC:
+┌────┬──────┬─────────────┐   ┌────┬──────┬─────────────┐
+│ ID │ Name │Commission   │   │ ID │ Name │Commission   │
+│100 │Alice │ 0.15        │   │101 │Bob   │ NULL        │ ← NULL đầu
+│101 │Bob   │ NULL        │   │104 │Eve   │ NULL        │ ← NULL đầu
+│102 │Carol │ 0.10        │──▶│103 │David │ 0.25        │ ← Cao nhất
+│103 │David │ 0.25        │   │100 │Alice │ 0.15        │
+│104 │Eve   │ NULL        │   │102 │Carol │ 0.10        │ ← Thấp nhất
+└────┴──────┴─────────────┘   └────┴──────┴─────────────┘
+
+                    Quy Tắc NULL Trong Oracle
+              ┌─────────────────────────────────────────┐
+              │ ASC (Tăng dần):  0.1  0.15  0.25  NULL  │
+              │                   ↑               ↑     │
+              │                 Thấp           NULL cuối│
+              │                                         │
+              │ DESC (Giảm dần): NULL  0.25  0.15  0.1  │
+              │                    ↑               ↑    │
+              │                 NULL đầu        Thấp   │
+              └─────────────────────────────────────────┘
+
+                    So Sánh Với Các DBMS Khác
+    ┌──────────────┬─────────────┬─────────────────────────┐
+    │   Database   │ NULL trong  │    NULL trong DESC      │
+    │              │    ASC      │                         │
+    ├──────────────┼─────────────┼─────────────────────────┤
+    │ Oracle       │ Cuối cùng   │ Đầu tiên                │
+    │ SQL Server   │ Đầu tiên    │ Đầu tiên                │
+    │ MySQL        │ Đầu tiên    │ Cuối cùng               │
+    │ PostgreSQL   │ Cuối cùng   │ Đầu tiên                │
+    └──────────────┴─────────────┴─────────────────────────┘
+```
+
 ### 2. Kiểm Soát Vị Trí NULL
 ```sql
 -- Buộc NULL xuất hiện đầu tiên trong sắp xếp tăng dần
@@ -238,6 +449,54 @@ ORDER BY
     manager_id NULLS LAST,
     commission_pct DESC NULLS LAST,
     last_name;
+```
+
+#### Biểu Diễn Trực Quan - Kiểm Soát NULL
+```
+                Control NULL Position với NULLS FIRST/LAST
+Original Data:                 ORDER BY commission_pct NULLS FIRST:
+┌────┬──────┬─────────────┐    ┌────┬──────┬─────────────┐
+│ ID │ Name │Commission   │    │ ID │ Name │Commission   │
+│100 │Alice │ 0.15        │    │101 │Bob   │ NULL        │ ← NULL đầu
+│101 │Bob   │ NULL        │    │104 │Eve   │ NULL        │ ← NULL đầu
+│102 │Carol │ 0.10        │──▶ │102 │Carol │ 0.10        │
+│103 │David │ 0.25        │    │100 │Alice │ 0.15        │
+│104 │Eve   │ NULL        │    │103 │David │ 0.25        │
+└────┴──────┴─────────────┘    └────┴──────┴─────────────┘
+
+Original Data:                 ORDER BY commission_pct DESC NULLS LAST:
+┌────┬──────┬─────────────┐    ┌────┬──────┬─────────────┐
+│ ID │ Name │Commission   │    │ ID │ Name │Commission   │
+│100 │Alice │ 0.15        │    │103 │David │ 0.25        │ ← Cao nhất
+│101 │Bob   │ NULL        │    │100 │Alice │ 0.15        │
+│102 │Carol │ 0.10        │──▶ │102 │Carol │ 0.10        │ ← Thấp nhất
+│103 │David │ 0.25        │    │101 │Bob   │ NULL        │ ← NULL cuối
+│104 │Eve   │ NULL        │    │104 │Eve   │ NULL        │ ← NULL cuối
+└────┴──────┴─────────────┘    └────┴──────┴─────────────┘
+
+              Bảng Tổng Hợp NULLS FIRST/LAST
+    ┌──────────────┬──────────────┬─────────────────────┐
+    │   Trường hợp │  NULL vị trí │      Kết quả        │
+    ├──────────────┼──────────────┼─────────────────────┤
+    │ ASC          │ Mặc định     │ value1, value2, NULL│
+    │ ASC NULLS FIRST│ Buộc đầu   │ NULL, value1, value2│
+    │ ASC NULLS LAST │ Buộc cuối  │ value1, value2, NULL│
+    ├──────────────┼──────────────┼─────────────────────┤
+    │ DESC         │ Mặc định     │ NULL, value2, value1│
+    │ DESC NULLS FIRST│ Buộc đầu  │ NULL, value2, value1│
+    │ DESC NULLS LAST│ Buộc cuối  │ value2, value1, NULL│
+    └──────────────┴──────────────┴─────────────────────┘
+
+                    Ví Dụ Thực Tế - Multi-Column
+    ORDER BY manager_id NULLS LAST, commission_pct DESC NULLS LAST:
+    ┌────┬──────┬──────────┬─────────────┐
+    │ ID │ Name │ Manager  │ Commission  │
+    │103 │David │   100    │    0.25     │ ← Manager 100, cao nhất commission
+    │100 │Alice │   100    │    0.15     │ ← Manager 100, thấp hơn
+    │102 │Carol │   101    │    0.10     │ ← Manager 101
+    │105 │Frank │   101    │    NULL     │ ← Manager 101, NULL commission cuối
+    │101 │Bob   │   NULL   │    NULL     │ ← NULL manager cuối cùng
+    └────┴──────┴──────────┴─────────────┘
 ```
 
 ### 3. Xử Lý NULL Thay Thế

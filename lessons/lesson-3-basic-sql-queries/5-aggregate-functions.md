@@ -1,6 +1,53 @@
 # Hàm Tổng Hợp - Tóm Tắt Dữ Liệu
 
+## Mục Lục
+1. [Tổng Quan Về Hàm Tổng Hợp](#tổng-quan-về-hàm-tổng-hợp)
+2. [Hàm COUNT](#hàm-count)
+3. [Hàm SUM](#hàm-sum)
+4. [Hàm AVG](#hàm-avg)
+5. [Hàm MIN và MAX](#hàm-min-và-max)
+6. [Hàm Thống Kê (STDDEV, VARIANCE)](#hàm-thống-kê-stddev-variance)
+7. [Kết Hợp Nhiều Hàm Tổng Hợp](#kết-hợp-nhiều-hàm-tổng-hợp)
+8. [GROUP BY với Hàm Tổng Hợp](#group-by-với-hàm-tổng-hợp)
+9. [HAVING - Lọc Kết Quả Nhóm](#having---lọc-kết-quả-nhóm)
+10. [Hàm Analytic](#hàm-analytic)
+11. [Xử Lý NULL trong Hàm Tổng Hợp](#xử-lý-null-trong-hàm-tổng-hợp)
+12. [Hiệu Suất và Tối Ưu](#hiệu-suất-và-tối-ưu)
+
 Hàm tổng hợp thực hiện các phép tính trên nhóm hàng và trả về một kết quả duy nhất. Chúng rất quan trọng cho việc phân tích dữ liệu, báo cáo và tính toán thống kê.
+
+### Biểu Diễn Trực Quan - Hoạt Động Hàm Tổng Hợp
+```
+                    Quá Trình Hàm Tổng Hợp
+Many Rows (Input)            Aggregate Function           Single Value (Output)
+┌─────────────────┐         ┌─────────────────┐         ┌─────────────────┐
+│ Salary: 5000    │         │                 │         │                 │
+│ Salary: 7000    │───────▶│   SUM(salary)   │────────▶│    25000        │
+│ Salary: 8000    │         │                 │         │                 │
+│ Salary: 5000    │         └─────────────────┘         └─────────────────┘
+└─────────────────┘
+
+                    Các Loại Hàm Tổng Hợp Chính
+    ┌─────────────────────────────────────────────────────────────────┐
+    │ COUNT(*) → Đếm hàng        │ SUM() → Tổng số học                │
+    │ COUNT(col) → Đếm non-NULL  │ AVG() → Trung bình                 │
+    │ COUNT(DISTINCT) → Đếm duy nhất │ MIN() → Giá trị nhỏ nhất       │
+    │ MAX() → Giá trị lớn nhất   │ STDDEV() → Độ lệch chuẩn           │
+    └─────────────────────────────────────────────────────────────────┘
+
+              Ví Dụ: Phân Tích Bảng Lương Nhân Viên
+Employee Data:                      Aggregate Results:
+┌────┬──────┬────────┬─────────┐   ┌──────────────┬─────────┐
+│ ID │ Name │ Salary │  Dept   │   │   Function   │ Result  │
+│100 │Alice │ 5000   │   10    │   ├──────────────┼─────────┤
+│101 │Bob   │ 7000   │   20    │   │ COUNT(*)     │    5    │
+│102 │Carol │ 8000   │   10    │─▶│ SUM(salary)  │ 25000   │
+│103 │David │ 5000   │   20    │   │ AVG(salary)  │ 5000    │
+│104 │Eve   │  NULL  │   10    │   │ MIN(salary)  │ 5000    │
+└────┴──────┴────────┴─────────┘   │ MAX(salary)  │ 8000    │
+                                   │ COUNT(salary)│    4    │ ← Loại trừ NULL
+                                   └──────────────┴─────────┘
+```
 
 ## Tổng Quan Về Hàm Tổng Hợp
 
@@ -15,6 +62,38 @@ Hàm tổng hợp hoạt động trên tập hợp các hàng và trả về m�
 - **STDDEV()** - Tính độ lệch chuẩn
 - **VARIANCE()** - Tính phương sai
 
+#### Biểu Diễn Trực Quan - Phân Loại Hàm Tổng Hợp
+```
+                    Phân Loại Theo Mục Đích
+┌─────────────────────────────────────────────────────────────────┐
+│                      HÀM TỔNG HỢP                               │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 THỐNG KÊ CƠ BẢN       │ 🔢 TOÁN HỌC         │ 📈 THỐNG KÊ NÂNG CAO│
+│ • COUNT() - Đếm          │ • SUM() - Tổng       │ • STDDEV() - Độ lệch│
+│ • MIN() - Nhỏ nhất       │ • AVG() - Trung bình │ • VARIANCE() - Phương sai│
+│ • MAX() - Lớn nhất       │                      │ • CORR() - Tương quan│
+└─────────────────────────────────────────────────────────────────┘
+
+                 Đặc Điểm Quan Trọng
+    ┌─────────────────────────────────────────────────────────┐
+    │ ✓ Nhiều hàng → 1 kết quả                               │
+    │ ✓ Tự động bỏ qua NULL (trừ COUNT(*))                   │
+    │ ✓ Có thể kết hợp với GROUP BY                          │
+    │ ✓ Có thể sử dụng với DISTINCT                          │
+    │ ✗ Không thể trộn lẫn với cột thường (trừ GROUP BY)     │
+    └─────────────────────────────────────────────────────────┘
+
+                  Ví Dụ Minh Họa Cơ Bản
+Raw Data (5 rows):          Aggregate Results (1 row):
+┌────────────────────┐     ┌─────────────────────────────┐
+│ Sales: 1000        │     │ COUNT(*) = 5                │
+│ Sales: 1500        │ ──▶ │ SUM(sales) = 6500           │
+│ Sales: 2000        │     │ AVG(sales) = 1300           │
+│ Sales: 1000        │     │ MIN(sales) = 1000           │
+│ Sales: 1000        │     │ MAX(sales) = 2000           │
+└────────────────────┘     └─────────────────────────────┘
+```
+
 ## Hàm COUNT
 
 ### 1. COUNT(*) - Đếm Tất Cả Hàng
@@ -27,6 +106,41 @@ FROM hr.employees;
 SELECT COUNT(*) AS it_employees
 FROM hr.employees
 WHERE department_id = 60;
+```
+
+#### Biểu Diễn Trực Quan - COUNT(*)
+```
+                        COUNT(*) - Đếm Tất Cả Hàng
+Employee Table:                         COUNT(*) Result:
+┌────┬──────┬────────┬─────────────┐   ┌─────────────────┐
+│ ID │ Name │ Salary │ Commission  │   │                 │
+│100 │Alice │ 5000   │    0.15     │   │                 │
+│101 │Bob   │ 7000   │    NULL     │   │   COUNT(*) = 5  │
+│102 │Carol │ 8000   │    0.20     │──▶│                 │
+│103 │David │ 5000   │    NULL     │   │   (Bao gồm tất  │
+│104 │Eve   │ 6000   │    0.10     │   │    cả hàng)     │
+└────┴──────┴────────┴─────────────┘   └─────────────────┘
+     ↑      ↑        ↑         ↑
+     ✓      ✓        ✓         ✓ ← COUNT(*) đếm tất cả, kể cả NULL
+
+                    Với Điều Kiện WHERE
+Employee Table:                    WHERE dept_id = 60:        COUNT Result:
+┌────┬──────┬────────┬──────┐    ┌────┬──────┬────────┬──────┐  ┌─────────────┐
+│ ID │ Name │ Salary │ Dept │    │ ID │ Name │ Salary │ Dept │  │ COUNT(*) = 3│
+│100 │Alice │ 5000   │  60  │    │100 │Alice │ 5000   │  60  │  │             │
+│101 │Bob   │ 7000   │  90  │ ──▶│103 │Carol │ 8000   │  60  │──▶│ (Chỉ dept 60)│
+│102 │Carol │ 8000   │  60  │    │104 │David │ 5000   │  60  │  │             │
+│103 │David │ 5000   │  60  │    └────┴──────┴────────┴──────┘  └─────────────┘
+│104 │Eve   │ 6000   │  90  │
+└────┴──────┴────────┴──────┘
+
+                      Đặc Điểm COUNT(*)
+    ┌─────────────────────────────────────────────────────────┐
+    │ ✓ Đếm TẤT CẢ hàng (bao gồm hàng có giá trị NULL)        │
+    │ ✓ Nhanh nhất trong các hàm COUNT                        │
+    │ ✓ Không quan tâm đến giá trị cột cụ thể                 │
+    │ ✓ Luôn trả về số nguyên >= 0                            │
+    └─────────────────────────────────────────────────────────┘
 ```
 
 ### 2. COUNT(column) - Đếm Giá Trị Không NULL
@@ -47,6 +161,50 @@ SELECT
 FROM hr.employees;
 ```
 
+#### Biểu Diễn Trực Quan - COUNT(column)
+```
+                COUNT(column) - Đếm Giá Trị Không NULL
+Employee Table:                         COUNT Results:
+┌────┬──────┬─────────────┬───────────┐ ┌────────────────────────────┐
+│ ID │ Name │ Commission  │ Phone     │ │ COUNT(*) = 5               │
+│100 │Alice │    0.15     │ 123-456   │ │ COUNT(commission_pct) = 3  │
+│101 │Bob   │    NULL     │ 234-567   │ │ COUNT(phone_number) = 4    │
+│102 │Carol │    0.20     │ 345-678   │─▶│                           │
+│103 │David │    NULL     │ NULL      │ │ Commission NULL: 2 hàng    │
+│104 │Eve   │    0.10     │ 567-890   │ │ Phone NULL: 1 hàng         │
+└────┴──────┴─────────────┴───────────┘ └────────────────────────────┘
+           ↑         ↑         ↑
+         ✓ Có      ✗ NULL    ✗ NULL ← COUNT(column) bỏ qua NULL
+
+                    So Sánh COUNT Variants
+    ┌─────────────────┬──────────────┬─────────────────────────┐
+    │   Hàm COUNT     │   Kết Quả    │        Giải Thích       │
+    ├─────────────────┼──────────────┼─────────────────────────┤
+    │ COUNT(*)        │      5       │ Tất cả hàng             │
+    │ COUNT(comm_pct) │      3       │ Loại trừ 2 NULL        │
+    │ COUNT(phone)    │      4       │ Loại trừ 1 NULL        │
+    └─────────────────┴──────────────┴─────────────────────────┘
+
+                    Minh Họa NULL Handling
+Commission Values:              COUNT Logic:
+┌─────────────────┐             ┌─────────────────┐
+│ 0.15 ← Được đếm │             │ 0.15 → Count++  │
+│ NULL ← Bỏ qua   │────────────▶│ NULL → Skip     │
+│ 0.20 ← Được đếm │             │ 0.20 → Count++  │
+│ NULL ← Bỏ qua   │             │ NULL → Skip     │
+│ 0.10 ← Được đếm │             │ 0.10 → Count++  │
+└─────────────────┘             └─────────────────┘
+Result: COUNT(commission_pct) = 3
+
+                      Ứng Dụng Thực Tế
+    ┌─────────────────────────────────────────────────────────┐
+    │ • Tính tỷ lệ hoàn thành: COUNT(column)/COUNT(*)         │
+    │ • Đếm dữ liệu hợp lệ: COUNT(email) với email valid     │
+    │ • Phát hiện missing data: COUNT(*) - COUNT(column)     │
+    │ • Quality check: COUNT(required_field)                 │
+    └─────────────────────────────────────────────────────────┘
+```
+
 ### 3. COUNT(DISTINCT) - Đếm Giá Trị Duy Nhất
 ```sql
 -- Đếm phòng ban duy nhất
@@ -60,6 +218,54 @@ FROM hr.employees;
 -- Đếm quản lý duy nhất
 SELECT COUNT(DISTINCT manager_id) AS unique_managers
 FROM hr.employees;
+```
+
+#### Biểu Diễn Trực Quan - COUNT(DISTINCT)
+```
+                COUNT(DISTINCT) - Đếm Giá Trị Duy Nhất
+Employee Table:                         COUNT DISTINCT Results:
+┌────┬──────┬────────┬──────┐          ┌─────────────────────────────────┐
+│ ID │ Name │ Salary │ Dept │          │ COUNT(*) = 8                    │
+│100 │Alice │ 5000   │  60  │          │ COUNT(DISTINCT dept_id) = 3     │
+│101 │Bob   │ 7000   │  90  │          │ COUNT(DISTINCT salary) = 4      │
+│102 │Carol │ 8000   │  60  │────────▶│                                │
+│103 │David │ 5000   │  90  │          │ Dept: 60, 90, 10 (3 unique)    │
+│104 │Eve   │ 6000   │  10  │          │ Salary: 5000,7000,8000,6000    │
+│105 │Frank │ 5000   │  60  │          │        (4 unique values)       │
+│106 │Grace │ 7000   │  10  │          └─────────────────────────────────┘
+│107 │Henry │ 5000   │  90  │
+└────┴──────┴────────┴──────┘
+
+                    Process: Eliminating Duplicates
+Salary Values:        Remove Duplicates:      COUNT DISTINCT:
+┌─────────────┐      ┌─────────────────┐     ┌──────────────┐
+│ 5000        │      │ 5000 (once)     │     │              │
+│ 7000        │      │ 7000 (once)     │     │     4        │
+│ 8000        │ ──▶ │ 8000 (once)     │ ──▶ │              │
+│ 5000 (dup)  │      │ 6000 (once)     │     │              │
+│ 6000        │      └─────────────────┘     └──────────────┘
+│ 5000 (dup)  │       Keep unique only       Final count
+│ 7000 (dup)  │
+│ 5000 (dup)  │
+└─────────────┘
+
+                      So Sánh COUNT Variants
+    ┌──────────────────────┬─────────────┬─────────────────────┐
+    │      Function        │   Result    │     Description     │
+    ├──────────────────────┼─────────────┼─────────────────────┤
+    │ COUNT(*)             │      8      │ All rows            │
+    │ COUNT(salary)        │      8      │ Non-NULL salaries   │
+    │ COUNT(DISTINCT salary)│     4      │ Unique salaries     │
+    │ COUNT(DISTINCT dept) │      3      │ Unique departments  │
+    └──────────────────────┴─────────────┴─────────────────────┘
+
+                    Use Cases for COUNT(DISTINCT)
+    ┌─────────────────────────────────────────────────────────┐
+    │ • Đếm khách hàng duy nhất: COUNT(DISTINCT customer_id) │
+    │ • Đếm sản phẩm khác nhau: COUNT(DISTINCT product_id)   │
+    │ • Đếm khu vực bán hàng: COUNT(DISTINCT region)         │
+    │ • Phân tích đa dạng dữ liệu (data diversity)           │
+    └─────────────────────────────────────────────────────────┘
 ```
 
 ## Hàm SUM
@@ -81,6 +287,51 @@ SELECT
     SUM(salary * NVL(commission_pct, 0)) AS total_commission,
     SUM(salary + (salary * NVL(commission_pct, 0))) AS total_compensation
 FROM hr.employees;
+```
+
+#### Biểu Diễn Trực Quan - Hàm SUM
+```
+                        SUM() - Tổng Các Giá Trị
+Employee Table:                         SUM Results:
+┌────┬──────┬────────┬─────────────┐   ┌─────────────────────────────┐
+│ ID │ Name │ Salary │ Commission  │   │                             │
+│100 │Alice │ 5000   │    0.10     │   │ SUM(salary) = 30000         │
+│101 │Bob   │ 8000   │    NULL     │   │                             │
+│102 │Carol │ 7000   │    0.15     │─▶│ Total: 5000+8000+7000+      │
+│103 │David │ 6000   │    NULL     │   │        6000+4000 = 30000    │
+│104 │Eve   │ 4000   │    0.20     │   │                             │
+└────┴──────┴────────┴─────────────┘   │ (NULL values ignored)       │
+                                       └─────────────────────────────┘
+
+                     SUM Calculation Process
+Individual Values:       Addition Process:         Final Result:
+┌─────────────────┐     ┌─────────────────┐      ┌──────────────┐
+│ 5000            │     │ 0 (start)       │      │              │
+│ 8000            │ ──▶ │ + 5000 = 5000   │ ──▶ │   30000      │
+│ 7000            │     │ + 8000 = 13000  │      │              │
+│ 6000            │     │ + 7000 = 20000  │      └──────────────┘
+│ 4000            │     │ + 6000 = 26000  │
+└─────────────────┘     │ + 4000 = 30000  │
+                        └─────────────────┘
+
+                    SUM với Điều Kiện WHERE
+All Employees:          WHERE dept_id = 60:       SUM Result:
+┌────┬────────┬──────┐  ┌────┬────────┬──────┐   ┌──────────────┐
+│Name│ Salary │ Dept │  │Name│ Salary │ Dept │   │              │
+│Alice│ 5000  │  60  │  │Alice│ 5000  │  60  │   │ SUM = 12000  │
+│Bob  │ 8000  │  90  │  │Carol│ 7000  │  60  │──▶│              │
+│Carol│ 7000  │  60  │─▶└────┴────────┴──────┘   │ (5000+7000)  │
+│David│ 6000  │  10  │                            └──────────────┘
+└────┴────────┴──────┘
+
+                      Đặc Điểm SUM Function
+    ┌─────────────────────────────────────────────────────────┐
+    │ ✓ Chỉ áp dụng cho kiểu số (NUMBER, INTEGER, DECIMAL)    │
+    │ ✓ Tự động bỏ qua giá trị NULL                          │
+    │ ✓ Trả về NULL nếu không có giá trị nào (all NULL)      │
+    │ ✓ Có thể overflow với số lớn                           │
+    │ ✗ Không áp dụng cho kiểu chuỗi, ngày tháng             │
+    └─────────────────────────────────────────────────────────┘
 ```
 
 ### 2. SUM Có Điều Kiện
@@ -125,6 +376,60 @@ GROUP BY department_id
 ORDER BY avg_dept_salary DESC;
 ```
 
+#### Biểu Diễn Trực Quan - Hàm AVG
+```
+                        AVG() - Tính Trung Bình
+Employee Table:                         AVG Calculation:
+┌────┬──────┬────────┐                 ┌─────────────────────────────┐
+│ ID │ Name │ Salary │                 │                             │
+│100 │Alice │ 8000   │                 │ SUM(salary) = 30000         │
+│101 │Bob   │ 6000   │                 │ COUNT(salary) = 5           │
+│102 │Carol │ 7000   │──────────────▶  │                             │
+│103 │David │ 5000   │                 │ AVG = 30000 ÷ 5 = 6000      │
+│104 │Eve   │ 4000   │                 │                             │
+└────┴──────┴────────┘                 └─────────────────────────────┘
+
+                     AVG Calculation Process
+Step 1: SUM             Step 2: COUNT           Step 3: DIVIDE
+┌─────────────────┐     ┌─────────────────┐     ┌──────────────┐
+│ 8000            │     │ 1 (Alice)       │     │              │
+│ 6000            │     │ 2 (Bob)         │     │ 30000 ÷ 5    │
+│ 7000            │ ──▶ │ 3 (Carol)       │ ──▶ │   = 6000     │
+│ 5000            │     │ 4 (David)       │     │              │
+│ 4000            │     │ 5 (Eve)         │     └──────────────┘
+│ Total: 30000    │     │ Count: 5        │
+└─────────────────┘     └─────────────────┘
+
+                    AVG với NULL Values
+Data with NULL:                         AVG Calculation:
+┌────┬──────┬────────┐                 ┌─────────────────────────────┐
+│ ID │ Name │ Salary │                 │                             │
+│100 │Alice │ 8000   │                 │ SUM(salary) = 25000         │
+│101 │Bob   │ 6000   │                 │ COUNT(salary) = 4 (not 5!)  │
+│102 │Carol │ 7000   │──────────────▶  │                             │
+│103 │David │ NULL   │                 │ AVG = 25000 ÷ 4 = 6250      │
+│104 │Eve   │ 4000   │                 │                             │
+└────┴──────┴────────┘                 │ (NULL excluded from calc)   │
+                                       └─────────────────────────────┘
+
+              AVG vs Manual Calculation Comparison
+    ┌────────────────────┬─────────────┬─────────────────────┐
+    │    Method          │   Result    │     Explanation     │
+    ├────────────────────┼─────────────┼─────────────────────┤
+    │ AVG(salary)        │    6250     │ Auto excludes NULL  │
+    │ SUM/COUNT(*)       │    5000     │ Includes NULL as 0  │
+    │ SUM/COUNT(salary)  │    6250     │ Same as AVG()       │
+    └────────────────────┴─────────────┴─────────────────────┘
+
+                      Use Cases for AVG
+    ┌─────────────────────────────────────────────────────────┐
+    │ • Benchmark salary: AVG(salary) by department          │
+    │ • Performance metrics: AVG(score) by team              │
+    │ • Financial analysis: AVG(revenue) by quarter          │
+    │ • Quality control: AVG(rating) by product              │
+    └─────────────────────────────────────────────────────────┘
+```
+
 ### 2. Trung Bình Có Trọng Số
 ```sql
 -- Giá sản phẩm trung bình có trọng số theo số lượng tồn kho
@@ -160,6 +465,69 @@ SELECT
     MAX(salary) - MIN(salary) AS salary_range,
     AVG(salary) AS average_salary
 FROM hr.employees;
+```
+
+#### Biểu Diễn Trực Quan - Hàm MIN và MAX
+```
+                        MIN() và MAX() - Tìm Cực Trị
+Employee Table:                         MIN/MAX Results:
+┌────┬──────┬────────┐                 ┌─────────────────────────────┐
+│ ID │ Name │ Salary │                 │                             │
+│100 │Alice │ 8000   │                 │ MIN(salary) = 4000          │
+│101 │Bob   │ 6000   │                 │ MAX(salary) = 8000          │
+│102 │Carol │ 7000   │──────────────▶  │ RANGE = 8000 - 4000 = 4000 │
+│103 │David │ 4000   │ ← MIN           │                             │
+│104 │Eve   │ 8000   │ ← MAX           │ AVG(salary) = 6600          │
+└────┴──────┴────────┘                 └─────────────────────────────┘
+
+                     MIN/MAX Identification Process
+Salary Values:          Comparison Process:       Results:
+┌─────────────────┐     ┌─────────────────┐      ┌──────────────┐
+│ 8000            │     │ Current MIN: ∞  │      │ MIN = 4000   │
+│ 6000            │ ──▶ │ Current MAX: -∞ │ ───▶ │ MAX = 8000   │
+│ 7000            │     │                 │      │              │
+│ 4000 ← MIN      │     │ Compare each    │      └──────────────┘
+│ 8000 ← MAX      │     │ value           │
+└─────────────────┘     └─────────────────┘
+
+                    MIN/MAX với Kiểu Dữ Liệu Khác Nhau
+Numbers:                 Dates:                   Strings:
+┌─────────────────┐     ┌─────────────────┐      ┌──────────────┐
+│ MIN: 4000       │     │ MIN: 1987-06-17 │      │ MIN: 'Adams' │
+│ MAX: 8000       │     │ MAX: 2023-01-15 │      │ MAX: 'Wilson'│
+│ (Giá trị số)    │     │ (Ngày sớm nhất) │      │ (Alphabet)   │
+└─────────────────┘     └─────────────────┘      └──────────────┘
+
+                    Visualization: Salary Distribution
+    4000    5000    6000    7000    8000
+      ●       │       ●       ●       ●
+     MIN      │              │      MAX
+              │              │
+         Below AVG      Above AVG
+              │              │
+              └──── AVG ─────┘
+                   6600
+
+                    Range Analysis
+    ┌─────────────────────────────────────────────────────────┐
+    │ Salary Range: 8000 - 4000 = 4000                       │
+    │ Range/AVG Ratio: 4000/6600 = 0.61 (60% variation)      │
+    │                                                         │
+    │ Interpretation:                                         │
+    │ • Large range → High salary disparity                  │
+    │ • Small range → Uniform compensation                    │
+    └─────────────────────────────────────────────────────────┘
+
+                    NULL Handling in MIN/MAX
+Data with NULL:                         MIN/MAX Results:
+┌────┬──────┬────────┐                 ┌─────────────────────────────┐
+│ ID │ Name │ Salary │                 │                             │
+│100 │Alice │ 8000   │                 │ MIN(salary) = 4000          │
+│101 │Bob   │ NULL   │                 │ MAX(salary) = 8000          │
+│102 │Carol │ 7000   │──────────────▶  │                             │
+│103 │David │ 4000   │                 │ NULL values ignored         │
+│104 │Eve   │ 6000   │                 │ (same as no NULL case)      │
+└────┴──────┴────────┘                 └─────────────────────────────┘
 ```
 
 ### 2. MIN/MAX Ngày Tháng
