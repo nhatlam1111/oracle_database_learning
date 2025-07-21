@@ -1,5 +1,20 @@
 # Outer Joins trong Oracle Database
 
+## Mục Lục
+
+1. [Mục Tiêu Học Tập](#mục-tiêu-học-tập)
+2. [Giới Thiệu về Outer Joins](#giới-thiệu-về-outer-joins)
+3. [Biểu Diễn Trực Quan](#biểu-diễn-trực-quan)
+4. [Các Loại Outer Joins](#các-loại-outer-joins)
+5. [Cú Pháp Truyền Thống (+) của Oracle](#cú-pháp-truyền-thống--của-oracle)
+6. [Ví Dụ Thực Tế](#ví-dụ-thực-tế)
+7. [Xử Lý NULL trong Outer Joins](#xử-lý-null-trong-outer-joins)
+8. [Cân Nhắc Về Hiệu Suất](#cân-nhắc-về-hiệu-suất)
+9. [Mẫu Phổ Biến và Thực Hành Tốt Nhất](#mẫu-phổ-biến-và-thực-hành-tốt-nhất)
+10. [Lỗi Thường Gặp Cần Tránh](#lỗi-thường-gặp-cần-tránh)
+11. [Bài Tập Thực Hành](#bài-tập-thực-hành)
+12. [Tóm Tắt](#tóm-tắt)
+
 ## Mục Tiêu Học Tập
 Đến cuối phần này, bạn sẽ hiểu:
 - Các loại outer join khác nhau (LEFT, RIGHT, FULL)
@@ -18,6 +33,203 @@ Outer joins trả về tất cả các hàng từ một hoặc cả hai bảng, 
 2. **Báo Cáo Hoàn Chỉnh**: Bao gồm tất cả thực thể ngay cả không có dữ liệu liên quan
 3. **Phân Tích Dữ Liệu**: Phân tích khoảng trống và mối quan hệ thiếu
 4. **Business Intelligence**: Tạo báo cáo toàn diện
+
+## Biểu Diễn Trực Quan
+
+Để hiểu rõ hơn về Outer Joins, hãy xem các biểu đồ minh họa sau với dữ liệu mẫu:
+
+### Dữ Liệu Mẫu
+**Bảng EMPLOYEES (E)**
+```
+employee_id | first_name | department_id
+------------|------------|-------------
+    100     |    John    |     10
+    101     |    Jane    |     20
+    102     |    Bob     |   NULL
+    103     |   Alice    |     30
+```
+
+**Bảng DEPARTMENTS (D)**
+```
+department_id | department_name
+--------------|----------------
+      10      |       IT
+      20      |    Sales
+      40      |      HR
+      50      |   Finance
+```
+
+### LEFT OUTER JOIN Visualization
+```
+SELECT e.first_name, d.department_name
+FROM employees e LEFT JOIN departments d
+ON e.department_id = d.department_id;
+```
+
+**Kết quả LEFT JOIN:**
+```
+┌─────────────────────────────────────────────┐
+│           LEFT OUTER JOIN                   │
+│   (Tất cả từ bảng TRÁI + khớp từ bảng PHẢI) │
+└─────────────────────────────────────────────┘
+
+first_name | department_name
+-----------|----------------
+   John    |       IT       ← Khớp (emp 100, dept 10)
+   Jane    |     Sales      ← Khớp (emp 101, dept 20)
+   Bob     |     NULL       ← Không khớp (emp 102, dept NULL)
+  Alice    |     NULL       ← Không khớp (emp 103, dept 30 không tồn tại)
+
+📊 Biểu đồ minh họa:
+[EMPLOYEES]     [DEPARTMENTS]
+┌─────────┐     ┌─────────┐
+│   100   │────▶│   10    │  ✓ Khớp
+│   101   │────▶│   20    │  ✓ Khớp  
+│   102   │  ✗  │   40    │  
+│   103   │     │   50    │  
+└─────────┘     └─────────┘
+    ▲               ▲
+    │               │
+ Tất cả bao gồm  Chỉ khớp
+```
+
+### RIGHT OUTER JOIN Visualization
+```
+SELECT e.first_name, d.department_name
+FROM employees e RIGHT JOIN departments d
+ON e.department_id = d.department_id;
+```
+
+**Kết quả RIGHT JOIN:**
+```
+┌─────────────────────────────────────────────┐
+│          RIGHT OUTER JOIN                   │
+│   (Khớp từ bảng TRÁI + tất cả từ bảng PHẢI) │
+└─────────────────────────────────────────────┘
+
+first_name | department_name
+-----------|----------------
+   John    |       IT       ← Khớp (emp 100, dept 10)
+   Jane    |     Sales      ← Khớp (emp 101, dept 20)
+   NULL    |       HR       ← Không khớp (dept 40, không có emp)
+   NULL    |    Finance     ← Không khớp (dept 50, không có emp)
+
+📊 Biểu đồ minh họa:
+[EMPLOYEES]     [DEPARTMENTS]
+┌─────────┐     ┌─────────┐
+│   100   │────▶│   10    │  ✓ Khớp
+│   101   │────▶│   20    │  ✓ Khớp  
+│   102   │     │   40    │  ✗ Không khớp
+│   103   │     │   50    │  ✗ Không khớp
+└─────────┘     └─────────┘
+    ▲               ▲
+    │               │
+  Chỉ khớp      Tất cả bao gồm
+```
+
+### FULL OUTER JOIN Visualization
+```
+SELECT e.first_name, d.department_name
+FROM employees e FULL OUTER JOIN departments d
+ON e.department_id = d.department_id;
+```
+
+**Kết quả FULL OUTER JOIN:**
+```
+┌─────────────────────────────────────────────┐
+│           FULL OUTER JOIN                   │
+│      (Tất cả từ CẢ HAI bảng)                │
+└─────────────────────────────────────────────┘
+
+first_name | department_name
+-----------|----------------
+   John    |       IT       ← Khớp (emp 100, dept 10)
+   Jane    |     Sales      ← Khớp (emp 101, dept 20)
+   Bob     |     NULL       ← Chỉ trong EMPLOYEES
+  Alice    |     NULL       ← Chỉ trong EMPLOYEES
+   NULL    |       HR       ← Chỉ trong DEPARTMENTS
+   NULL    |    Finance     ← Chỉ trong DEPARTMENTS
+
+📊 Biểu đồ minh họa:
+[EMPLOYEES]     [DEPARTMENTS]
+┌─────────┐     ┌─────────┐
+│   100   │────▶│   10    │  ✓ Khớp
+│   101   │────▶│   20    │  ✓ Khớp  
+│   102   │  ✗  │   40    │  ✗ Không khớp
+│   103   │  ✗  │   50    │  ✗ Không khớp
+└─────────┘     └─────────┘
+    ▲               ▲
+    │               │
+Tất cả bao gồm  Tất cả bao gồm
+```
+
+### So Sánh Các Loại JOIN
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    COMPARISON MATRIX                        │
+├─────────────────┬─────────────┬─────────────┬─────────────┤
+│   JOIN TYPE     │ LEFT TABLE  │ RIGHT TABLE │   RESULT    │
+├─────────────────┼─────────────┼─────────────┼─────────────┤
+│   INNER JOIN    │   Matched   │   Matched   │ Intersection│
+│   LEFT JOIN     │   All rows  │   Matched   │ Left + Match│
+│   RIGHT JOIN    │   Matched   │   All rows  │ Right+ Match│
+│   FULL JOIN     │   All rows  │   All rows  │ Union + NULL│
+└─────────────────┴─────────────┴─────────────┴─────────────┘
+
+🔄 Mối quan hệ:
+INNER ⊂ LEFT ⊂ FULL
+INNER ⊂ RIGHT ⊂ FULL
+```
+
+### Biểu Đồ Venn
+```
+LEFT JOIN:          RIGHT JOIN:         FULL OUTER JOIN:
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│█████████████│     │      ███████│     │█████████████│
+│█████████████│     │      ███████│     │█████████████│
+│█████████████│     │      ███████│     │█████████████│
+│████████████●│     │●████████████│     │████████████●│
+│████████████●│     │●████████████│     │████████████●│
+│████████████●│     │●████████████│     │████████████●│
+│█████████████│     │█████████████│     │█████████████│
+│█████████████│     │█████████████│     │█████████████│
+│█████████████│     │█████████████│     │█████████████│
+└─────────────┘     └─────────────┘     └─────────────┘
+   Table A              Table B           Table A ∪ B
+    + Match              + Match           + All NULLs
+
+● = Intersection (Inner Join)
+█ = Data included in result
+```
+
+### Workflow Decision Tree
+```
+🤔 Cần chọn loại JOIN nào?
+
+Bạn muốn:
+│
+├─ Tất cả dữ liệu từ bảng trái?
+│  │
+│  ├─ Có → LEFT OUTER JOIN
+│  │    "Tôi muốn tất cả employees, kể cả người chưa có phòng ban"
+│  │
+│  └─ Không ↓
+│
+├─ Tất cả dữ liệu từ bảng phải?
+│  │
+│  ├─ Có → RIGHT OUTER JOIN  
+│  │    "Tôi muốn tất cả departments, kể cả phòng ban trống"
+│  │
+│  └─ Không ↓
+│
+├─ Tất cả dữ liệu từ cả hai bảng?
+│  │
+│  ├─ Có → FULL OUTER JOIN
+│  │    "Tôi muốn tất cả employees VÀ tất cả departments"
+│  │
+│  └─ Không → INNER JOIN
+│       "Chỉ muốn dữ liệu khớp hoàn toàn"
+```
 
 ## Các Loại Outer Joins
 
@@ -261,89 +473,97 @@ LEFT JOIN employees m ON e.manager_id = m.employee_id
 ORDER BY d.department_name, e.last_name;
 ```
 
-## Common Mistakes to Avoid
+## Lỗi Thường Gặp Cần Tránh
 
-### 1. Confusing Left and Right Joins
+### 1. Nhầm Lẫn Left và Right Joins
 ```sql
--- WRONG: Trying to get all departments with employee info
+-- SAI: Cố gắng lấy tất cả phòng ban với thông tin nhân viên
 SELECT d.department_name, e.first_name
 FROM employees e
 LEFT JOIN departments d ON e.department_id = d.department_id;
 
--- CORRECT: All departments with optional employee info
+-- ĐÚNG: Tất cả phòng ban với thông tin nhân viên tùy chọn
 SELECT d.department_name, e.first_name
 FROM departments d
 LEFT JOIN employees e ON d.department_id = e.department_id;
 ```
 
-### 2. Incorrect NULL Filtering
+### 2. Lọc NULL Không Đúng Cách
 ```sql
--- WRONG: This defeats the purpose of outer join
+-- SAI: Điều này phá vỡ mục đích của outer join
 SELECT e.first_name, d.department_name
 FROM employees e
 LEFT JOIN departments d ON e.department_id = d.department_id
 WHERE d.department_name IS NOT NULL;
 
--- CORRECT: Use inner join if you don't want NULLs
+-- ĐÚNG: Sử dụng inner join nếu không muốn NULL
 SELECT e.first_name, d.department_name
 FROM employees e
 INNER JOIN departments d ON e.department_id = d.department_id;
 ```
 
-### 3. Mixing Traditional and ANSI Syntax
+### 3. Trộn Lẫn Cú Pháp Truyền Thống và ANSI
 ```sql
--- WRONG: Don't mix syntaxes
+-- SAI: Không nên trộn lẫn cú pháp
 SELECT e.first_name, d.department_name, l.city
 FROM employees e, departments d
 LEFT JOIN locations l ON d.location_id = l.location_id
 WHERE e.department_id = d.department_id(+);
 
--- CORRECT: Use consistent ANSI syntax
+-- ĐÚNG: Sử dụng cú pháp ANSI nhất quán
 SELECT e.first_name, d.department_name, l.city
 FROM employees e
 LEFT JOIN departments d ON e.department_id = d.department_id
 LEFT JOIN locations l ON d.location_id = l.location_id;
 ```
 
-## Practice Exercises
+## Bài Tập Thực Hành
 
-### Exercise 1: Basic Outer Joins
-Write queries to:
-1. List all employees with their department names (include employees without departments)
-2. List all departments with employee count (include empty departments)
-3. Find employees who are not assigned to any department
+### Bài Tập 1: Outer Joins Cơ Bản
+Viết truy vấn để:
+1. Liệt kê tất cả nhân viên với tên phòng ban của họ (bao gồm nhân viên không có phòng ban)
+2. Liệt kê tất cả phòng ban với số lượng nhân viên (bao gồm phòng ban trống)
+3. Tìm nhân viên không được phân công vào phòng ban nào
 
-### Exercise 2: Complex Scenarios
-Write queries to:
-1. Show all products and their total sales (include products never sold)
-2. List all customers and their most recent order date (include customers without orders)
-3. Generate a report showing all departments, their managers, and employee counts
+### Bài Tập 2: Tình Huống Phức Tạp
+Viết truy vấn để:
+1. Hiển thị tất cả sản phẩm và tổng doanh số của chúng (bao gồm sản phẩm chưa bao giờ được bán)
+2. Liệt kê tất cả khách hàng và ngày đặt hàng gần nhất của họ (bao gồm khách hàng không có đơn hàng)
+3. Tạo báo cáo hiển thị tất cả phòng ban, quản lý của họ, và số lượng nhân viên
 
-### Exercise 3: Performance Analysis
-1. Compare execution plans for equivalent inner joins vs outer joins
-2. Optimize a slow outer join query
-3. Rewrite an outer join using EXISTS/NOT EXISTS
+### Bài Tập 3: Phân Tích Hiệu Suất
+1. So sánh execution plans của inner joins và outer joins tương đương
+2. Tối ưu hóa một truy vấn outer join chậm
+3. Viết lại outer join sử dụng EXISTS/NOT EXISTS
 
-## Next Steps
+## Bước Tiếp Theo
 
-In the next section, we'll explore:
-- Advanced join techniques (CROSS JOIN, NATURAL JOIN)
-- Self-joins and hierarchical queries
-- Multiple table joins with complex conditions
-- Join optimization strategies
+Trong phần tiếp theo, chúng ta sẽ khám phá:
+- Kỹ thuật join nâng cao (CROSS JOIN, NATURAL JOIN)
+- Self-joins và truy vấn phân cấp
+- Joins nhiều bảng với điều kiện phức tạp
+- Chiến lược tối ưu hóa join
 
-## Summary
+## Tóm Tắt
 
-Outer joins are essential for:
-- Including all records from one or both tables
-- Finding missing or unmatched data
-- Generating comprehensive reports
-- Data analysis and reconciliation
+Outer joins là công cụ thiết yếu để:
+- Bao gồm tất cả bản ghi từ một hoặc cả hai bảng
+- Tìm dữ liệu thiếu hoặc không khớp
+- Tạo báo cáo toàn diện
+- Phân tích và đối soát dữ liệu
 
-Key takeaways:
-- LEFT JOIN: All records from left table
-- RIGHT JOIN: All records from right table  
-- FULL OUTER JOIN: All records from both tables
-- Handle NULLs appropriately with NVL, COALESCE, or CASE
-- Use ANSI SQL syntax for better readability and portability
-- Consider performance implications and optimize accordingly
+**Điểm chính cần nhớ:**
+- **LEFT JOIN**: Tất cả bản ghi từ bảng trái + khớp từ bảng phải
+- **RIGHT JOIN**: Khớp từ bảng trái + tất cả bản ghi từ bảng phải  
+- **FULL OUTER JOIN**: Tất cả bản ghi từ cả hai bảng
+- Xử lý NULL phù hợp với NVL, COALESCE, hoặc CASE
+- Sử dụng cú pháp ANSI SQL để dễ đọc và tương thích tốt hơn
+- Cân nhắc ảnh hưởng đến hiệu suất và tối ưu hóa phù hợp
+
+**📊 Quick Reference:**
+```
+INNER JOIN:  A ∩ B (Intersection)
+LEFT JOIN:   A + (A ∩ B) 
+RIGHT JOIN:  B + (A ∩ B)
+FULL JOIN:   A ∪ B (Union with NULLs)
+```
