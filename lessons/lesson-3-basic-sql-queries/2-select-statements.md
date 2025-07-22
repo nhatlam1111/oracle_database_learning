@@ -9,6 +9,9 @@ Câu lệnh SELECT là lệnh SQL cơ bản và được sử dụng thường x
 * Ngoại lệ: muốn đặc tên bảng hoặc tên cột phá vỡ mấy quy tắc trên: thì rào tên đó trong dấu ngoặc kép, ví dụ: cột SELECT trùng với từ khóa select trong select ...from..., nên phải để trong ngoặc kép: "SELECT",
 * tuy nhiên giá trị trong ngoặc kép sẽ phân biệt hoa thường
 
+# Lưu ý:
+- trên cùng một cột chỉ có một kiểu dữ liệu (trường hợp thường sai: case when, decode, union, intersect, minus)
+
 ## Chỉ Mục Bài Học
 
 1. [Cú Pháp SELECT Cơ Bản](#cú-pháp-select-cơ-bản)
