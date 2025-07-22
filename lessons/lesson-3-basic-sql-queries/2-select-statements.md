@@ -2,30 +2,6 @@
 
 Câu lệnh SELECT là lệnh SQL cơ bản và được sử dụng thường xuyên nhất. Nó cho phép bạn truy xuất dữ liệu từ một hoặc nhiều bảng trong cơ sở dữ liệu của bạn.
 
-### Biểu Diễn Trực Quan - Tổng Quan SELECT
-```
-                    Luồng Hoạt Động Câu Lệnh SELECT
-    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-    │   DATABASE  │───▶│    TABLE    │───▶│   FILTER    │───▶│   RESULT    │
-    │  (Cơ sở DL) │    │   (Bảng)    │    │  (WHERE)    │    │  (Kết quả)  │
-    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
-           │                   │                   │                   │
-           │                   │                   │                   │
-    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-    │ Nhiều Bảng  │    │ Chọn Cột    │    │ Áp Dụng     │    │ Hiển Thị    │
-    │ Quan Hệ     │    │ Cần Thiết   │    │ Điều Kiện   │    │ Dữ Liệu     │
-    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
-
-                        Cấp Độ Phức Tạp SELECT
-                ┌─────────────────────────────────────────┐
-                │  SELECT * FROM table                    │ ← Đơn giản
-                │  SELECT col1, col2 FROM table           │
-                │  SELECT col1 FROM table WHERE condition │
-                │  SELECT col1, func(col2) FROM table     │
-                │  SELECT ... FROM table1 JOIN table2    │ ← Phức tạp
-                └─────────────────────────────────────────┘
-```
-
 ## Chỉ Mục Bài Học
 
 1. [Cú Pháp SELECT Cơ Bản](#cú-pháp-select-cơ-bản)
