@@ -52,6 +52,7 @@
         - status = A thì hiển thị 'Đang làm việc', status = R thì hiển thị 'Đã nghỉ việc'
         - thâm niên hiển thị 3 cột theo số ngày, số tháng, số năm làm tròn 2 số thập phân
         - tiền thâm niên, tính theo tháng:
+        
           - >= 6 và < 12: 50k
           - >=12 và < 24: 100k
           - >=24 và < 36: 150k
