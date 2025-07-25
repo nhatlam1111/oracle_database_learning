@@ -16,18 +16,30 @@
 
 Mệnh đề WHERE được sử dụng để lọc các bản ghi và chỉ truy xuất những bản ghi đáp ứng các điều kiện cụ thể. Đây là một trong những phần quan trọng nhất của SQL cho việc phân tích và báo cáo dữ liệu.
 
+## Lưu Ý Quan Trọng Khi Sử Dụng WHERE:
+- Mệnh đề WHERE **luôn được thực thi trước SELECT**, vì vậy nó lọc dữ liệu từ bảng nguồn trước khi chọn cột
+- Các điều kiện WHERE được **so sánh từ trái qua phải** 
+- **Không thể sử dụng alias cột** trong WHERE vì nó được thực thi trước SELECT
+- Việc sử dụng **hàm trên cột** trong WHERE có thể làm giảm hiệu suất (không sử dụng được index)
+- **Giá trị NULL** cần xử lý đặc biệt với IS NULL/IS NOT NULL (không dùng = hoặc !=)
+- Sử dụng **dấu ngoặc đơn ()** để làm rõ thứ tự ưu tiên trong điều kiện phức tạp, ví dụ có điều kiên **OR**
+
+## So Sánh Kiểu Dữ Liệu trong WHERE:
+- **Cùng kiểu dữ liệu**: Luôn so sánh trực tiếp được (NUMBER với NUMBER, VARCHAR2 với VARCHAR2)
+- **Khác kiểu dữ liệu**: Oracle tự động chuyển đổi (implicit conversion) khi có thể
+- **Toán tử so sánh** (=, <>, <, >, <=, >=) áp dụng được cho:
+  - ✅ **Số** (NUMBER, INTEGER, FLOAT): So sánh theo giá trị số học
+  - ✅ **Ngày/Thời gian** (DATE, TIMESTAMP): So sánh theo thứ tự thời gian  
+  - ✅ **Chuỗi** (VARCHAR2, CHAR): So sánh theo thứ tự từ điển (lexicographic)
+  - ⚠️ **Lưu ý**: So sánh chuỗi phân biệt hoa thường ('A' < 'a')
+- **Chuyển đổi tự động** phổ biến:
+  - VARCHAR2 '123' → NUMBER 123 (khi so sánh với số)
+  - VARCHAR2 '2024-01-15' → DATE (khi so sánh với ngày, tùy thuộc format)
+* **Cẩn trọng**: Chuyển đổi không thành công sẽ gây lỗi ORA-01722 (invalid number)
+
+
 ### Biểu Diễn Trực Quan - Hoạt Động WHERE
 ```
-Bảng gốc (ALL ROWS)          Mệnh đề WHERE         Kết quả (FILTERED ROWS)
-┌─────────────────────┐     ┌─────────────────┐    ┌─────────────────────┐
-│ ID │Name  │Salary   │     │  WHERE salary   │    │ ID │Name  │Salary   │
-│ 1  │Alice │ 5000    │────▶│    > 4000       │───▶│ 1  │Alice │ 5000    │
-│ 2  │Bob   │ 3000    │     │                 │    │ 4  │Diana │ 6000    │
-│ 3  │Carol │ 2000    │     └─────────────────┘    │ 5  │Eve   │ 7000    │
-│ 4  │Diana │ 6000    │                            └─────────────────────┘
-│ 5  │Eve   │ 7000    │
-└─────────────────────┘
-
                     Luồng Xử Lý WHERE
               ┌─────────────────────────────┐
               │  1. Đọc từng hàng           │
@@ -40,6 +52,17 @@ Bảng gốc (ALL ROWS)          Mệnh đề WHERE         Kết quả (FILTERE
               ┌─────────────────────────────┐
               │  3. Trả về hàng thỏa mãn    │
               └─────────────────────────────┘
+
+Bảng gốc (ALL ROWS)          Mệnh đề WHERE         Kết quả (FILTERED ROWS)
+┌─────────────────────┐     ┌─────────────────┐    ┌─────────────────────┐
+│ ID │Name  │Salary   │     │  WHERE salary   │    │ ID │Name  │Salary   │
+│ 1  │Alice │ 5000    │────▶│    > 4000       │───▶│ 1  │Alice │ 5000    │
+│ 2  │Bob   │ 3000    │     │                 │    │ 4  │Diana │ 6000    │
+│ 3  │Carol │ 2000    │     └─────────────────┘    │ 5  │Eve   │ 7000    │
+│ 4  │Diana │ 6000    │                            └─────────────────────┘
+│ 5  │Eve   │ 7000    │
+└─────────────────────┘
+
 ```
 
 ## Cú Pháp Mệnh Đề WHERE Cơ Bản
