@@ -1,4 +1,5 @@
 **1) Hãy viết câu query lấy ra thông tin nhân viên của những nhân viên có join date từ năm 2010**
+
     Thông tin gồm:
     - Emp id
     - full name
@@ -11,6 +12,7 @@
         - status = A thì hiển thị 'Đang làm việc', status = R thì hiển thị 'Đã nghỉ việc'
 
 **2) Hãy viết câu query lấy ra thông tin nhân viên của những nhân viên có join date trong vòng 6 tháng gần nhất tính tại thời điểm hiện tại (sysdate) về trước 6 tháng**
+
     Thông tin gồm:
     - Emp id
     - full name
@@ -23,6 +25,7 @@
         - status = A thì hiển thị 'Đang làm việc', status = R thì hiển thị 'Đã nghỉ việc'
 
 **3) Hãy viết câu query lấy ra thông tin nhân viên và thâm niên của tất cả nhân viên**
+
     Thông tin gồm:
     - Emp id
     - full name
@@ -38,6 +41,7 @@
 
 
 **4) bổ sung thêm vào câu 3 cột tiền thâm niên**
+
     Thông tin gồm:
     - Emp id
     - full name
