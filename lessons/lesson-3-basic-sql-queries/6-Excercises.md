@@ -10,7 +10,7 @@
         - join date, left date format "dd/mm/yyyy"
         - status = A thì hiển thị 'Đang làm việc', status = R thì hiển thị 'Đã nghỉ việc'
 
-# 2) Hãy viết câu query lấy ra thông tin nhân viên của những nhân viên có join date trong vòng 6 tháng gần nhất tính tại thời điểm hiện tại (sysdate) về trước 6 tháng
+**2) Hãy viết câu query lấy ra thông tin nhân viên của những nhân viên có join date trong vòng 6 tháng gần nhất tính tại thời điểm hiện tại (sysdate) về trước 6 tháng**
     Thông tin gồm:
     - Emp id
     - full name
