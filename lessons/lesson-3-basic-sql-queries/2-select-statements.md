@@ -730,6 +730,206 @@ SELECT COUNT(*) AS union_all_count FROM (
 
 ## Logic Điều Kiện với CASE
 
+Biểu thức CASE trong Oracle SQL cho phép bạn thực hiện logic điều kiện trực tiếp trong câu lệnh SELECT. Đây là công cụ mạnh mẽ để tạo ra các cột tính toán dựa trên điều kiện, tương tự như câu lệnh if-else trong các ngôn ngữ lập trình.
+
+### Khái Niệm và Cú Pháp
+
+**CASE Expression** là một biểu thức SQL cho phép bạn:
+- **Kiểm tra điều kiện** và trả về giá trị khác nhau tùy theo kết quả
+- **Thay thế nhiều câu lệnh IF** phức tạp
+- **Tạo cột tính toán** với logic nghiệp vụ
+- **Phân loại dữ liệu** một cách linh hoạt
+
+#### Cấu Trúc Chung CASE WHEN
+```sql
+-- Cú pháp tổng quát
+CASE 
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    WHEN condition3 THEN result3
+    ...
+    [ELSE default_result]
+END
+
+-- Ví dụ cấu trúc cơ bản
+SELECT 
+    column1,
+    column2,
+    CASE 
+        WHEN column1 > 100 THEN 'Lớn'
+        WHEN column1 > 50 THEN 'Trung bình'
+        WHEN column1 > 0 THEN 'Nhỏ'
+        ELSE 'Không hợp lệ'
+    END AS category
+FROM table_name;
+```
+
+#### Các Thành Phần Chính
+- **CASE**: Từ khóa bắt đầu biểu thức điều kiện
+- **WHEN condition**: Điều kiện cần kiểm tra
+- **THEN result**: Giá trị trả về khi điều kiện đúng
+- **ELSE default**: Giá trị mặc định (tùy chọn)
+- **END**: Từ khóa kết thúc biểu thức CASE
+
+#### Biểu Diễn Trực Quan - Cách Hoạt Động CASE
+```
+                     Logic Điều Kiện CASE
+    ┌─────────────────────────────────────────────────────────┐
+    │ Đọc từng hàng → Kiểm tra điều kiện → Trả về giá trị     │
+    └─────────────────────────────────────────────────────────┘
+
+              Ví Dụ: Phân Loại Lương
+    Input (Salary):     CASE Logic:              Output:
+    ┌──────────────┐    ┌─────────────────┐      ┌──────────┐
+    │ 5000         │    │ >= 15000? NO    │      │ 'Thấp'   │
+    │ 12000        │───▶│ >= 8000?  YES   │ ───▶ │ 'Trung'  │
+    │ 20000        │    │ Return 'Trung'  │      │ 'Cao'    │
+    │ 3000         │    │ >= 4000?  NO    │      │ 'Mới'    │
+    └──────────────┘    │ ELSE 'Mới'     │      └──────────┘
+                        └─────────────────┘
+
+                  Thứ Tự Đánh Giá (Quan Trọng!)
+    ┌─────────────────────────────────────────────────────────┐
+    │ WHEN condition1 THEN result1  ← Kiểm tra đầu tiên       │
+    │ WHEN condition2 THEN result2  ← Chỉ kiểm tra nếu #1 sai │
+    │ WHEN condition3 THEN result3  ← Chỉ kiểm tra nếu #2 sai │
+    │ ELSE default_result          ← Nếu tất cả đều sai       │
+    └─────────────────────────────────────────────────────────┘
+```
+
+### Hai Dạng CASE Expression
+
+#### 1. Simple CASE (So sánh trực tiếp)
+```sql
+-- Cú pháp
+CASE expression
+    WHEN value1 THEN result1
+    WHEN value2 THEN result2
+    ...
+    ELSE default_result
+END
+
+-- Ví dụ thực tế
+SELECT 
+    employee_id,
+    first_name,
+    department_id,
+    CASE department_id
+        WHEN 10 THEN 'Administration'
+        WHEN 20 THEN 'Marketing'
+        WHEN 60 THEN 'IT'
+        WHEN 80 THEN 'Sales'
+        ELSE 'Other'
+    END AS department_name
+FROM hr.employees;
+```
+
+#### 2. Searched CASE (Điều kiện phức tạp)
+```sql
+-- Cú pháp
+CASE 
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    ...
+    ELSE default_result
+END
+
+-- Ví dụ thực tế (được khuyến nghị vì linh hoạt hơn)
+SELECT 
+    employee_id,
+    first_name,
+    salary,
+    CASE 
+        WHEN salary >= 15000 THEN 'Cao'
+        WHEN salary >= 8000 THEN 'Trung Bình'
+        WHEN salary >= 4000 THEN 'Thấp'
+        ELSE 'Mới Vào'
+    END AS salary_category
+FROM hr.employees;
+```
+
+### Quy Tắc và Lưu Ý Quan Trọng
+
+#### Quy Tắc Kiểu Dữ Liệu
+- **Tất cả kết quả phải có cùng kiểu dữ liệu** hoặc có thể chuyển đổi được
+- **Oracle tự động chuyển đổi** kiểu dữ liệu khi cần thiết
+- **NULL được phép** trong bất kỳ mệnh đề THEN hoặc ELSE nào
+
+```sql
+-- ĐÚNG: Tất cả kết quả đều là VARCHAR2
+CASE 
+    WHEN salary > 10000 THEN 'Cao'
+    WHEN salary > 5000 THEN 'Trung'
+    ELSE 'Thấp'
+END
+
+-- SAI: Trộn lẫn kiểu dữ liệu không tương thích
+CASE 
+    WHEN salary > 10000 THEN 'Cao'      -- VARCHAR2
+    WHEN salary > 5000 THEN salary      -- NUMBER
+    ELSE 0                              -- NUMBER
+END
+```
+
+#### Thứ Tự Đánh Giá
+- **Kiểm tra từ trên xuống dưới**: Điều kiện đầu tiên đúng sẽ được thực thi
+- **Dừng ngay khi tìm thấy**: Không kiểm tra các điều kiện sau
+- **ELSE là tùy chọn**: Nếu không có ELSE và không có điều kiện nào đúng → trả về NULL
+
+### Các Trường Hợp Sử Dụng Thực Tế
+
+#### 1. Phân Loại và Nhóm Dữ Liệu
+```sql
+-- Phân loại nhân viên theo nhiều tiêu chí
+SELECT 
+    employee_id,
+    first_name,
+    last_name,
+    salary,
+    ROUND((SYSDATE - hire_date) / 365.25) AS years_worked,
+    CASE 
+        WHEN salary >= 15000 AND ROUND((SYSDATE - hire_date) / 365.25) >= 10 THEN 'Senior High Earner'
+        WHEN salary >= 15000 THEN 'High Earner'
+        WHEN ROUND((SYSDATE - hire_date) / 365.25) >= 10 THEN 'Senior Staff'
+        WHEN salary >= 8000 THEN 'Mid Level'
+        ELSE 'Junior'
+    END AS employee_level
+FROM hr.employees;
+```
+
+#### 2. Tính Toán Có Điều Kiện
+```sql
+-- Tính thưởng dựa trên hiệu suất và thâm niên
+SELECT 
+    employee_id,
+    first_name,
+    salary,
+    CASE 
+        WHEN ROUND((SYSDATE - hire_date) / 365.25) >= 10 THEN salary * 0.15  -- 15% cho > 10 năm
+        WHEN ROUND((SYSDATE - hire_date) / 365.25) >= 5 THEN salary * 0.10   -- 10% cho > 5 năm
+        WHEN ROUND((SYSDATE - hire_date) / 365.25) >= 2 THEN salary * 0.05   -- 5% cho > 2 năm
+        ELSE 0  -- Không thưởng cho nhân viên mới
+    END AS annual_bonus
+FROM hr.employees;
+```
+
+#### 3. Xử Lý Giá Trị NULL
+```sql
+-- Hiển thị thông tin hoa hồng
+SELECT 
+    employee_id,
+    first_name,
+    commission_pct,
+    salary,
+    CASE 
+        WHEN commission_pct IS NULL THEN 'Không có hoa hồng'
+        WHEN commission_pct >= 0.3 THEN 'Hoa hồng cao (' || (commission_pct * 100) || '%)'
+        WHEN commission_pct >= 0.1 THEN 'Hoa hồng trung bình (' || (commission_pct * 100) || '%)'
+        ELSE 'Hoa hồng thấp (' || (commission_pct * 100) || '%)'
+    END AS commission_status
+FROM hr.employees;
+```
+
 ### 1. Biểu Thức CASE Đơn Giản
 ```sql
 -- Phân loại nhân viên theo lương
@@ -764,6 +964,86 @@ SELECT
         ELSE 'Nhân Viên Mới'
     END AS employee_category
 FROM hr.employees;
+```
+
+### 3. CASE trong Tính Toán Tổng Hợp
+```sql
+-- Sử dụng CASE với hàm tổng hợp để tạo báo cáo thống kê
+SELECT 
+    department_id,
+    COUNT(*) AS total_employees,
+    COUNT(CASE WHEN salary >= 10000 THEN 1 END) AS high_earners,
+    COUNT(CASE WHEN commission_pct IS NOT NULL THEN 1 END) AS employees_with_commission,
+    AVG(CASE WHEN salary >= 10000 THEN salary END) AS avg_high_salary,
+    SUM(CASE 
+        WHEN ROUND((SYSDATE - hire_date) / 365.25) >= 10 THEN salary * 0.15
+        WHEN ROUND((SYSDATE - hire_date) / 365.25) >= 5 THEN salary * 0.10
+        ELSE salary * 0.05
+    END) AS total_bonus_budget
+FROM hr.employees
+WHERE department_id IS NOT NULL
+GROUP BY department_id
+ORDER BY department_id;
+```
+
+### 4. CASE Lồng Nhau (Nested CASE)
+```sql
+-- Phân loại phức tạp với nhiều lớp điều kiện
+SELECT 
+    employee_id,
+    first_name,
+    job_id,
+    salary,
+    CASE 
+        WHEN job_id LIKE '%PRES%' THEN 'Executive'
+        WHEN job_id LIKE '%VP%' THEN 'Vice President'
+        WHEN job_id LIKE '%MGR%' OR job_id LIKE '%MAN%' THEN 
+            CASE 
+                WHEN salary >= 12000 THEN 'Senior Manager'
+                ELSE 'Manager'
+            END
+        ELSE 
+            CASE 
+                WHEN salary >= 8000 THEN 'Senior Staff'
+                WHEN salary >= 4000 THEN 'Regular Staff'
+                ELSE 'Junior Staff'
+            END
+    END AS position_level
+FROM hr.employees;
+```
+
+### Hiệu Suất và Thực Hành Tốt
+
+#### Thực Hành Tốt
+```sql
+-- TỐT: Điều kiện cụ thể trước, chung sau
+CASE 
+    WHEN salary >= 20000 THEN 'Executive'     -- Ít người thỏa mãn
+    WHEN salary >= 15000 THEN 'Senior'        -- Ít hơn
+    WHEN salary >= 8000 THEN 'Mid Level'      -- Nhiều hơn
+    ELSE 'Junior'                             -- Nhiều nhất
+END
+
+-- TỐT: Sử dụng điều kiện đơn giản khi có thể
+CASE department_id
+    WHEN 10 THEN 'Admin'
+    WHEN 20 THEN 'Marketing'
+    WHEN 60 THEN 'IT'
+    ELSE 'Other'
+END
+```
+
+#### Tránh
+```sql
+-- TRÁNH: Điều kiện phức tạp không cần thiết
+CASE 
+    WHEN UPPER(SUBSTR(job_id, 1, 2)) = 'IT' THEN 'Technology'
+    -- Thay vì
+    WHEN job_id LIKE 'IT%' THEN 'Technology'
+END
+
+-- TRÁNH: Quá nhiều điều kiện phức tạp trong một CASE
+-- Hãy chia thành nhiều CASE hoặc sử dụng bảng lookup
 ```
 
 ## Làm Việc với Nhiều Bảng (Xem Trước)

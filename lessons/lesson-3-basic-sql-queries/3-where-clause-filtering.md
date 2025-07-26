@@ -25,12 +25,19 @@ Mệnh đề WHERE được sử dụng để lọc các bản ghi và chỉ tru
 - Sử dụng **dấu ngoặc đơn ()** để làm rõ thứ tự ưu tiên trong điều kiện phức tạp, ví dụ có điều kiên **OR**
 
 ## So Sánh Kiểu Dữ Liệu trong WHERE:
-- **Cùng kiểu dữ liệu**: Luôn so sánh trực tiếp được (NUMBER với NUMBER, VARCHAR2 với VARCHAR2)
-- **Khác kiểu dữ liệu**: Oracle tự động chuyển đổi (implicit conversion) khi có thể
+- **Cùng kiểu dữ liệu**: dù oracle tự động chuyển đổi kiểu dữ liệu, tuy nhiên  nên đưa 2 vế so sánh về cùng một kiểu dữ liệu để so sánh (NUMBER với NUMBER, VARCHAR2 với VARCHAR2, DATE với DATE)
+- **Khác kiểu dữ liệu**: Oracle tự động chuyển đổi (implicit conversion) khi có thể, tuy nhiên nên tránh việc để oracle tự chuyển đổi kiểu do có thể làm chậm tốc độ truy vấn
 - **Toán tử so sánh** (=, <>, <, >, <=, >=) áp dụng được cho:
   - ✅ **Số** (NUMBER, INTEGER, FLOAT): So sánh theo giá trị số học
   - ✅ **Ngày/Thời gian** (DATE, TIMESTAMP): So sánh theo thứ tự thời gian  
-  - ✅ **Chuỗi** (VARCHAR2, CHAR): So sánh theo thứ tự từ điển (lexicographic)
+  - ✅ **Chuỗi** (VARCHAR2, CHAR): So sánh theo thứ tự từ điển (lexicographic), và so sánh từng vị trí thứ tự, nếu bằng sẽ so sánh ký tự ở vị trí tiếp theo, 
+  
+    **ví dụ:** so sánh 'abcdf' < 'abcef' 
+      
+      => oracle sẽ so sánh ký tự vị trí đầu là 'a' 
+      => so sánh ký tự vị trí 2 là 'b' 
+      => so sánh ký tự vị trí 3 là 'c' 
+      => so sánh ký tự vị trí 4 là 'd' và 'e', do 'd' xếp trước 'e' sẽ xem là nhỏ hơn nên kết quả 'abcdf' < 'abcef' là **đúng**
   - ⚠️ **Lưu ý**: So sánh chuỗi phân biệt hoa thường ('A' < 'a')
 - **Chuyển đổi tự động** phổ biến:
   - VARCHAR2 '123' → NUMBER 123 (khi so sánh với số)
