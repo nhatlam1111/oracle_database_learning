@@ -5,6 +5,8 @@
     - Các hàm convert kiểu dữ liệu có thể tham khảo bên bài tham khảo 1-oracle-datatypes-conversion-functions
     - tham khảo các hàm được sử dụng trong bài tập bên dưới cuối bài tập
 
+# QUERY CƠ BẢN (SELECT ... FROM ... WHERE ...)
+
 ## Câu 1 - 5 sử dụng table THR_EMPLOYEE
 
 ### 1) Hãy viết câu query lấy ra thông tin nhân viên của những nhân viên có join date từ năm 2010
@@ -87,48 +89,6 @@
     - Sử dụng CASE ... WHEN ... để tính tiền thâm niên theo từng khoảng thời gian
     - Tiền thâm niên được tính theo tháng, nên cần lấy số tháng thâm niên từ câu 4
 
-## Câu 6 - 8 sử dụng table THR_MONTH_SALARY
-
-### 6) Hãy viết câu query lấy ra thông tin lương thực lãnh của một nhân viên cụ thể trong toàn bộ thời gian làm việc
-
-    Thông tin gồm:
-    - Emp id
-    - full name
-    - join date
-    - left date
-    - tháng lương 
-    - NET amt
-
-### 7) từ câu query của bài 6, bỏ cột tháng lương và NET amt, tính tổng lương, lương trung bình, lương cao nhất, lương thấp nhất của nhân viên đó
-
-    Thông tin gồm:
-    - Emp id
-    - full name
-    - join date
-    - left date
-    - tổng lương
-    - lương trung bình
-    - lương cao nhất
-    - lương thấp nhất
-
-**Gợi ý:**
-    - Sử dụng hàm SUM, AVG, MAX, MIN để tính tổng lương, lương trung bình, lương cao nhất, lương thấp nhất
-
-### 8) từ câu query của bài 7, loại bỏ điều kiện nhân viên cụ thể
-
-    Thông tin gồm:
-    - Emp id
-    - full name
-    - join date
-    - left date
-    - tổng lương
-    - lương trung bình
-    - lương cao nhất
-    - lương thấp nhất
-
-**Gợi ý:**
-    - Sử dụng GROUP BY để nhóm theo Emp id, full name, join date, left date
-
 ## Tham Khảo Hàm Được Sử Dụng Trong Bài Tập
 
 ### Hàm Chuyển Đổi Ngày Tháng 
@@ -147,6 +107,104 @@
 ### Logic Điều Kiện
 - **CASE WHEN ... THEN ... ELSE ... END**: Tạo điều kiện phân nhánh trong SQL
 
+### Hàm Làm Tròn
+- **ROUND(number, decimal_places)**: Làm tròn số với số chữ số thập phân chỉ định
+- **FLOOR(number)**: Làm tròn xuống số nguyên gần nhất
+
+# QUERY VỚI GROUP BY VÀ ORDER BY
+
+## Câu 6 - 10 sử dụng table THR_MONTH_SALARY
+
+### 6) Hãy viết câu query lấy ra thông tin lương thực lãnh của một nhân viên cụ thể trong toàn bộ thời gian làm việc
+
+    Thông tin gồm:
+    - Emp id
+    - full name
+    - join date
+    - left date
+    - tháng lương 
+    - NET amt
+
+### 7.a) từ câu query của bài 6, bỏ cột tháng lương và NET amt và các cột thông tin nhân viên, tính tổng lương, lương trung bình, lương cao nhất, lương thấp nhất của nhân viên đó
+
+    Thông tin gồm:
+    - tổng lương
+    - lương trung bình
+    - lương cao nhất
+    - lương thấp nhất
+
+**Gợi ý:**
+
+    - Phần note trong Mệnh Đề GROUP BY về select KHÔNG sử dụng GROUP BY trong bài 5-group-by-and-aggregate-functions
+    - Sử dụng hàm SUM, AVG, MAX, MIN để tính tổng lương, lương trung bình, lương cao nhất, lương thấp nhất
+
+### 7.b) từ câu query của bài 6, loại bỏ điều kiện nhân viên cụ thể, tính tổng lương, lương trung bình, lương cao nhất, lương thấp nhất theo từng nhân viên, sắp xếp tăng dần theo mã nhân viên
+
+    Thông tin gồm:
+    - Emp id
+    - full name
+    - join date
+    - left date
+    - tổng lương
+    - lương trung bình
+    - lương cao nhất
+    - lương thấp nhất
+
+ **Gợi ý:**
+
+    - Mệnh Đề GROUP BY và lưu ý Phần note trong Mệnh Đề GROUP BY về select CÓ sử dụng GROUP BY trong bài 5-group-by-and-aggregate-functions
+    - Group by theo thông tin nhân viên Emp id, full name, join date, left date
+    - Sử dụng hàm SUM, AVG, MAX, MIN để tính tổng lương, lương trung bình, lương cao nhất, lương thấp nhất
+
+### 8) Thống kê lương thực lãnh của từng nhân viên trong một năm cụ thể, hiển thị 12 cột tháng lương của nhân viên đó, sắp xếp theo tổng lương giảm dần
+
+    Thông tin gồm:
+    - Emp id
+    - full name
+    - join date
+    - left date
+    - tháng 1
+    - tháng 2
+    - tháng 3
+    - tháng 4
+    - tháng 5
+    - tháng 6
+    - tháng 7
+    - tháng 8
+    - tháng 9
+    - tháng 10
+    - tháng 11
+    - tháng 12
+    - Tổng lương
+
+**Gợi ý:**
+
+    - Tương tự như câu 7.b, mỗi tháng lương sẽ là một cột, kết hợp hàm SUM và hàm CASE ... WHEN ... để phân tách theo từng tháng 
+
+### 9) Thống kê lương trong một tháng cụ thể bộ phận (3 cấp bộ phận), sắp xếp lại theo sequence của bộ phận (3 cấp bộ phận)
+
+    thông tin gồm:
+    - ORG_LEVEL1_NM
+    - ORG_LEVEL2_NM
+    - ORG_LEVEL3_NM
+    - tổng số lượng nhân viên
+    - số lượng nhân viên nghỉ việc
+    - tổng lương
+
+### 10) sử dụng câu query của bài 9, bổ sung thêm điều kiện lọc bộ phận có tổng lương <= 100 triệu và tổng số lượng nhân viên <= 10
+
+    thông tin gồm:
+    - ORG_LEVEL1_NM
+    - ORG_LEVEL2_NM
+    - ORG_LEVEL3_NM
+    - tổng số lượng nhân viên
+    - số lượng nhân viên nghỉ việc
+    - tổng lương
+
+
+
+## Tham Khảo Hàm Được Sử Dụng Trong Bài Tập
+
 ### Hàm Tổng Hợp (Aggregate Functions)
 - **SUM()**: Tính tổng các giá trị
 - **AVG()**: Tính giá trị trung bình
@@ -157,6 +215,3 @@
 ### Nhóm Dữ Liệu
 - **GROUP BY**: Nhóm các bản ghi theo một hoặc nhiều cột để sử dụng với hàm tổng hợp
 
-### Hàm Làm Tròn
-- **ROUND(number, decimal_places)**: Làm tròn số với số chữ số thập phân chỉ định
-- **FLOOR(number)**: Làm tròn xuống số nguyên gần nhất

@@ -37,7 +37,7 @@ Sau khi hoàn thành bài học này, bạn sẽ có thể:
 - `2-select-statements.md` - Hướng dẫn đầy đủ về câu lệnh SELECT và cú pháp cơ bản
 - `3-where-clause-filtering.md` - Kỹ thuật lọc dữ liệu và điều kiện
 - `4-sorting-order-by.md` - Sắp xếp và tổ chức kết quả truy vấn
-- `5-aggregate-functions.md` - Tóm tắt dữ liệu và các thao tác tổng hợp
+- `5-group-by-and-aggregate-functions.md` - Tóm tắt dữ liệu và các thao tác tổng hợp
 
 ## Ví Dụ Thực Hành
 - `../../src/basic-queries/oracle-datatypes-examples.sql` - Ví dụ toàn diện về kiểu dữ liệu

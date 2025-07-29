@@ -3,6 +3,8 @@
 ## Mục Lục
 1. [Khái Niệm Hàm Tổng Hợp](#1-khái-niệm-hàm-tổng-hợp)
 2. [Mệnh Đề GROUP BY](#2-mệnh-đề-group-by)
+- [So Sánh: Hàm Tổng Hợp Có và Không có GROUP BY](#so-sánh-hàm-tổng-hợp-có-và-không-có-group-by)
+- [LƯU Ý QUAN TRỌNG VỀ CỘT TRONG SELECT khi GROUP BY](#️-lưu-ý-quan-trọng-về-cột-trong-select-khi-group-by)
 3. [Mệnh Đề HAVING](#3-mệnh-đề-having)
 4. [So Sánh WHERE và HAVING](#4-so-sánh-where-và-having)
 5. [Thứ Tự Thực Thi Câu Lệnh SQL](#5-thứ-tự-thực-thi-câu-lệnh-sql)
@@ -119,7 +121,7 @@ ORDER BY department_id;
 ---
 
 
-### So Sánh: Hàm Tổng Hợp Với và Không GROUP BY
+### So Sánh: Hàm Tổng Hợp Có và Không có GROUP BY
 
 #### **KHÔNG có GROUP BY** → Tính toán trên toàn bộ bảng
 ```sql
@@ -193,6 +195,34 @@ KẾT QUẢ:
 | **Số hàng kết quả** | 1 hàng | Nhiều hàng (= số nhóm) |
 | **Cột có thể SELECT** | Chỉ hàm tổng hợp + hằng số | Cột GROUP BY + hàm tổng hợp |
 | **Câu hỏi trả lời** | "Tổng thể như thế nào?" | "Từng nhóm như thế nào?" |
+
+### ⚠️ LƯU Ý QUAN TRỌNG VỀ CỘT TRONG SELECT khi GROUP BY
+
+#### **KHÔNG có GROUP BY**: Chỉ được SELECT hàm tổng hợp hoặc hằng số
+```sql
+-- ✗ SAI: Không thể SELECT cột thường khi không có GROUP BY
+SELECT first_name, AVG(salary)
+FROM hr.employees;
+-- Lỗi: ORA-00937: not a single-group group function
+
+-- ✓ ĐÚNG: Chỉ SELECT hàm tổng hợp
+SELECT AVG(salary) AS luong_trung_binh
+FROM hr.employees;
+```
+
+#### **CÓ GROUP BY**: Cột thường phải có trong GROUP BY
+```sql
+-- ✗ SAI: department_name không có trong GROUP BY
+SELECT department_id, department_name, COUNT(*)
+FROM hr.employees
+GROUP BY department_id;
+-- Lỗi: ORA-00979: not a GROUP BY expression
+
+-- ✓ ĐÚNG: Tất cả cột thường đều có trong GROUP BY
+SELECT department_id, COUNT(*) AS so_nhan_vien
+FROM hr.employees
+GROUP BY department_id;
+```
 
 ### Ví Dụ Thực Tế So Sánh
 
