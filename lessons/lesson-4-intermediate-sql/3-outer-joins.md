@@ -1,42 +1,504 @@
-# Outer Joins trong Oracle Database
+# OUTER JOINs - Kết Nối Bao Gồm Dữ Liệu Không Khớp
 
 ## Mục Lục
+1. [Khái Niệm OUTER JOIN](#1-khái-niệm-outer-join)
+2. [Cách Hoạt Động của OUTER JOIN](#2-cách-hoạt-động-của-outer-join)
+3. [LEFT OUTER JOIN](#3-left-outer-join)
+4. [RIGHT OUTER JOIN](#4-right-outer-join)
+5. [FULL OUTER JOIN](#5-full-outer-join)
+6. [So Sánh Cú Pháp Oracle (+) và ANSI](#6-so-sánh-cú-pháp-oracle--và-ansi)
+7. [Xử Lý Giá Trị NULL](#7-xử-lý-giá-trị-null)
+8. [Lỗi Thường Gặp](#8-lỗi-thường-gặp)
 
-1. [Mục Tiêu Học Tập](#mục-tiêu-học-tập)
-2. [Giới Thiệu về Outer Joins](#giới-thiệu-về-outer-joins)
-3. [Dữ Liệu Mẫu cho Các Ví Dụ](#dữ-liệu-mẫu-cho-các-ví-dụ)
-4. [Các Loại Outer Joins](#các-loại-outer-joins)
-5. [Cú Pháp Truyền Thống (+) của Oracle](#cú-pháp-truyền-thống--của-oracle)
-6. [Ví Dụ Thực Tế](#ví-dụ-thực-tế)
-7. [Xử Lý NULL trong Outer Joins](#xử-lý-null-trong-outer-joins)
-8. [Cân Nhắc Về Hiệu Suất](#cân-nhắc-về-hiệu-suất)
-9. [Mẫu Phổ Biến và Thực Hành Tốt Nhất](#mẫu-phổ-biến-và-thực-hành-tốt-nhất)
-10. [Lỗi Thường Gặp Cần Tránh](#lỗi-thường-gặp-cần-tránh)
-11. [Bài Tập Thực Hành](#bài-tập-thực-hành)
-12. [Tóm Tắt](#tóm-tắt)
+---
 
-## Mục Tiêu Học Tập
-Đến cuối phần này, bạn sẽ hiểu:
-- Các loại outer join khác nhau (LEFT, RIGHT, FULL)
-- Khi nào và tại sao sử dụng outer joins
-- Cú pháp truyền thống (+) của Oracle so với cú pháp ANSI SQL
-- Ứng dụng thực tế của outer joins
-- Cân nhắc về hiệu suất
+## 1. Khái Niệm OUTER JOIN
 
-## Giới Thiệu về Outer Joins
+### Định Nghĩa
+**OUTER JOIN** kết hợp dữ liệu từ hai bảng nhưng **GIỮ LẠI** các hàng không khớp từ một hoặc cả hai bảng. Khác với INNER JOIN chỉ lấy dữ liệu khớp, OUTER JOIN bao gồm cả dữ liệu "mồ côi".
 
-Outer joins trả về tất cả các hàng từ một hoặc cả hai bảng, ngay cả khi không có hàng khớp trong bảng được nối. Khác với inner joins chỉ trả về các hàng khớp, outer joins bảo toàn các hàng không khớp bằng cách điền các giá trị thiếu với NULL.
+### Tại Sao Cần OUTER JOIN?
 
-### Tại Sao Sử Dụng Outer Joins?
+```
+TÌNH HUỐNG THỰC TẾ:
+├─ Tìm khách hàng CHƯA từng mua hàng
+├─ Liệt kê TẤT CẢ sản phẩm (kể cả chưa bán)  
+├─ Phòng ban nào KHÔNG có nhân viên
+└─ Nhân viên nào CHƯA được phân công
+```
 
-1. **Tìm Dữ Liệu Thiếu**: Xác định các bản ghi không có mục tương ứng
-2. **Báo Cáo Hoàn Chỉnh**: Bao gồm tất cả thực thể ngay cả không có dữ liệu liên quan
-3. **Phân Tích Dữ Liệu**: Phân tích khoảng trống và mối quan hệ thiếu
-4. **Business Intelligence**: Tạo báo cáo toàn diện
+### So Sánh với INNER JOIN
 
-## Dữ Liệu Mẫu cho Các Ví Dụ
+```
+INNER JOIN: Chỉ lấy KHỚP          OUTER JOIN: Lấy KHỚP + KHÔNG KHỚP
+┌─────────────────┐               ┌─────────────────┐
+│ A ∩ B           │               │ A ∪ B           │
+│ (Giao nhau)     │               │ (Hợp tập)       │
+└─────────────────┘               └─────────────────┘
+```
 
-Để hiểu rõ các loại Outer Joins, chúng ta sẽ sử dụng dữ liệu mẫu sau trong tất cả các ví dụ:
+---
+
+## 2. Cách Hoạt Động của OUTER JOIN
+
+### Dữ Liệu Mẫu
+Sử dụng trong tất cả ví dụ:
+
+```
+Bảng EMPLOYEES:                 Bảng DEPARTMENTS:
+┌─────┬─────┬─────────┐         ┌─────────┬─────────────┐
+│ EID │NAME │DEPT_ID  │         │DEPT_ID  │DEPT_NAME    │
+├─────┼─────┼─────────┤         ├─────────┼─────────────┤
+│ 100 │John │   10    │         │   10    │Sales        │
+│ 101 │Jane │   20    │         │   20    │Marketing    │  
+│ 102 │Bob  │  NULL   │         │   30    │HR           │
+│ 103 │Alice│   99    │         │   40    │Finance      │
+└─────┴─────┴─────────┘         └─────────┴─────────────┘
+
+PHÂN TÍCH:
+✓ John  (EID=100, DEPT=10) → Khớp với Sales
+✓ Jane  (EID=101, DEPT=20) → Khớp với Marketing  
+✗ Bob   (EID=102, DEPT=NULL) → Không khớp
+✗ Alice (EID=103, DEPT=99) → Không khớp (dept 99 không tồn tại)
+✗ HR    (DEPT=30) → Không có nhân viên
+✗ Finance (DEPT=40) → Không có nhân viên
+```
+
+### Nguyên Lý Hoạt Động
+
+```
+Bước 1: INNER JOIN (tìm khớp)
+┌─────┬─────┬─────────────┐
+│ EID │NAME │DEPT_NAME    │
+├─────┼─────┼─────────────┤
+│ 100 │John │Sales        │
+│ 101 │Jane │Marketing    │
+└─────┴─────┴─────────────┘
+
+Bước 2: THÊM dữ liệu không khớp (tùy loại OUTER JOIN)
+- LEFT: + Bob, Alice (nhân viên không có dept)
+- RIGHT: + HR, Finance (dept không có emp)  
+- FULL: + Cả hai
+```
+
+---
+
+## 3. LEFT OUTER JOIN
+
+### Khái Niệm
+**LEFT OUTER JOIN** giữ **TẤT CẢ** hàng từ bảng TRÁI + các hàng khớp từ bảng PHẢI.
+
+### Cú Pháp
+```sql
+SELECT cột1, cột2, ...
+FROM bảng_trái
+LEFT OUTER JOIN bảng_phải ON điều_kiện;
+
+-- Hoặc ngắn gọn
+SELECT cột1, cột2, ...  
+FROM bảng_trái
+LEFT JOIN bảng_phải ON điều_kiện;
+```
+
+### Biểu Diễn Trực Quan
+
+```sql
+SELECT e.name, d.dept_name
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.dept_id;
+```
+
+**Cách hoạt động:**
+```
+BẢNG TRÁI (EMPLOYEES) ←── GIỮ TẤT CẢ
+┌─────┬─────┬─────────┐
+│ 100 │John │   10    │ ──┐
+│ 101 │Jane │   20    │ ──┼─→ Tìm khớp trong DEPARTMENTS
+│ 102 │Bob  │  NULL   │ ──┼─→ NULL = không tìm được
+│ 103 │Alice│   99    │ ──┘   99 = không tồn tại
+└─────┴─────┴─────────┘
+
+KẾT QUẢ LEFT JOIN:
+┌─────┬─────────────┐
+│NAME │DEPT_NAME    │
+├─────┼─────────────┤
+│John │Sales        │ ← Khớp
+│Jane │Marketing    │ ← Khớp  
+│Bob  │NULL         │ ← Giữ lại (không khớp)
+│Alice│NULL         │ ← Giữ lại (không khớp)
+└─────┴─────────────┘
+
+🎯 Ý nghĩa: "Cho tôi TẤT CẢ nhân viên, có thông tin phòng ban thì hiển thị"
+```
+
+### Ứng Dụng Thực Tế
+
+```sql
+-- Tìm nhân viên CHƯA có phòng ban
+SELECT e.name
+FROM employees e  
+LEFT JOIN departments d ON e.dept_id = d.dept_id
+WHERE d.dept_id IS NULL;
+
+-- Liệt kê TẤT CẢ khách hàng với tổng đơn hàng (kể cả khách chưa mua)
+SELECT 
+    c.customer_name,
+    COUNT(o.order_id) AS total_orders
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_name;
+```
+
+---
+
+## 4. RIGHT OUTER JOIN
+
+### Khái Niệm
+**RIGHT OUTER JOIN** giữ **TẤT CẢ** hàng từ bảng PHẢI + các hàng khớp từ bảng TRÁI.
+
+### Cú Pháp
+```sql
+SELECT cột1, cột2, ...
+FROM bảng_trái
+RIGHT OUTER JOIN bảng_phải ON điều_kiện;
+
+-- Hoặc ngắn gọn
+SELECT cột1, cột2, ...
+FROM bảng_trái  
+RIGHT JOIN bảng_phải ON điều_kiện;
+```
+
+### Biểu Diễn Trực Quan
+
+```sql
+SELECT e.name, d.dept_name
+FROM employees e
+RIGHT JOIN departments d ON e.dept_id = d.dept_id;
+```
+
+**Cách hoạt động:**
+```
+                    BẢNG PHẢI (DEPARTMENTS) ←── GIỮ TẤT CẢ
+                    ┌─────────┬─────────────┐
+              ┌──── │   10    │Sales        │
+              │     │   20    │Marketing    │  
+Tìm emp có    │     │   30    │HR           │ ← Không có emp
+dept tương    │     │   40    │Finance      │ ← Không có emp
+ứng           └──── └─────────┴─────────────┘
+
+KẾT QUẢ RIGHT JOIN:
+┌─────┬─────────────┐
+│NAME │DEPT_NAME    │
+├─────┼─────────────┤
+│John │Sales        │ ← Khớp
+│Jane │Marketing    │ ← Khớp
+│NULL │HR           │ ← Giữ lại (không có emp)
+│NULL │Finance      │ ← Giữ lại (không có emp)  
+└─────┴─────────────┘
+
+🎯 Ý nghĩa: "Cho tôi TẤT CẢ phòng ban, có nhân viên thì hiển thị"
+```
+
+### Ứng Dụng Thực Tế
+
+```sql
+-- Tìm phòng ban TRỐNG (không có nhân viên)
+SELECT d.dept_name
+FROM employees e
+RIGHT JOIN departments d ON e.dept_id = d.dept_id  
+WHERE e.emp_id IS NULL;
+
+-- Liệt kê TẤT CẢ sản phẩm với doanh số (kể cả sản phẩm chưa bán)
+SELECT 
+    p.product_name,
+    COALESCE(SUM(s.amount), 0) AS total_sales
+FROM sales s
+RIGHT JOIN products p ON s.product_id = p.product_id
+GROUP BY p.product_name;
+```
+
+---
+
+## 5. FULL OUTER JOIN
+
+### Khái Niệm
+**FULL OUTER JOIN** giữ **TẤT CẢ** hàng từ **CẢ HAI** bảng, bất kể có khớp hay không.
+
+### Cú Pháp
+```sql
+SELECT cột1, cột2, ...
+FROM bảng1
+FULL OUTER JOIN bảng2 ON điều_kiện;
+
+-- Hoặc ngắn gọn
+SELECT cột1, cột2, ...
+FROM bảng1
+FULL JOIN bảng2 ON điều_kiện;
+```
+
+### Biểu Diễn Trực Quan
+
+```sql
+SELECT e.name, d.dept_name
+FROM employees e
+FULL OUTER JOIN departments d ON e.dept_id = d.dept_id;
+```
+
+**Cách hoạt động:**
+```
+BẢNG TRÁI ←── GIỮ TẤT CẢ     BẢNG PHẢI ←── GIỮ TẤT CẢ
+┌─────┬─────────┐            ┌─────────┬─────────────┐
+│ 100 │   10    │ ◄────────► │   10    │Sales        │
+│ 101 │   20    │ ◄────────► │   20    │Marketing    │
+│ 102 │  NULL   │            │   30    │HR           │
+│ 103 │   99    │            │   40    │Finance      │
+└─────┴─────────┘            └─────────┴─────────────┘
+
+KẾT QUẢ FULL OUTER JOIN:
+┌─────┬─────────────┐
+│NAME │DEPT_NAME    │
+├─────┼─────────────┤
+│John │Sales        │ ← Khớp
+│Jane │Marketing    │ ← Khớp
+│Bob  │NULL         │ ← Chỉ trong EMPLOYEES
+│Alice│NULL         │ ← Chỉ trong EMPLOYEES  
+│NULL │HR           │ ← Chỉ trong DEPARTMENTS
+│NULL │Finance      │ ← Chỉ trong DEPARTMENTS
+└─────┴─────────────┘
+
+🎯 Ý nghĩa: "Cho tôi TẤT CẢ nhân viên VÀ TẤT CẢ phòng ban"
+```
+
+### Công Thức FULL OUTER JOIN
+```
+FULL OUTER JOIN = LEFT JOIN ∪ RIGHT JOIN
+                = LEFT ONLY + MATCHES + RIGHT ONLY
+```
+
+### Ứng Dụng Thực Tế
+
+```sql
+-- Phân tích toàn diện: ai không có gì?
+SELECT 
+    COALESCE(e.name, 'Không có NV') AS employee,
+    COALESCE(d.dept_name, 'Không có phòng ban') AS department,
+    CASE 
+        WHEN e.emp_id IS NULL THEN 'Phòng ban trống'
+        WHEN d.dept_id IS NULL THEN 'NV chưa phân công'  
+        ELSE 'Đã khớp'
+    END AS status
+FROM employees e
+FULL OUTER JOIN departments d ON e.dept_id = d.dept_id;
+```
+
+---
+
+## 6. So Sánh Cú Pháp Oracle (+) và ANSI
+
+### Cú Pháp Oracle Truyền Thống (+)
+
+Oracle có cú pháp riêng sử dụng dấu `(+)` cho OUTER JOIN:
+
+```sql
+-- LEFT OUTER JOIN (ANSI)
+SELECT e.name, d.dept_name
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.dept_id;
+
+-- Tương đương với Oracle (+)
+SELECT e.name, d.dept_name  
+FROM employees e, departments d
+WHERE e.dept_id = d.dept_id(+);
+```
+
+### Quy Tắc Dấu (+)
+
+**Nguyên tắc:** Đặt `(+)` ở phía **CÓ THỂ NULL** (phía tùy chọn)
+
+```sql
+-- LEFT JOIN: Giữ tất cả LEFT, phải có thể NULL
+WHERE left.col = right.col(+)
+       ↑              ↑
+    Giữ tất cả    Có thể NULL
+
+-- RIGHT JOIN: Giữ tất cả RIGHT, trái có thể NULL  
+WHERE left.col(+) = right.col
+       ↑              ↑
+   Có thể NULL    Giữ tất cả
+```
+
+### Bảng So Sánh
+
+| **Khía Cạnh** | **Cú Pháp (+)** | **Cú Pháp ANSI** |
+|----------------|------------------|-------------------|
+| **Độ rõ ràng** | ❌ Khó hiểu | ✅ Rất rõ ràng |
+| **FULL OUTER JOIN** | ❌ Không hỗ trợ | ✅ Hỗ trợ |
+| **Tương thích** | ❌ Chỉ Oracle | ✅ Tất cả DBMS |
+| **Phức tạp** | ❌ Khó với nhiều bảng | ✅ Dễ mở rộng |
+| **Khuyến nghị** | 👎 Tránh sử dụng | 👍 Nên dùng |
+
+### **Khuyến Nghị: Sử Dụng Cú Pháp ANSI**
+
+---
+
+## 7. Xử Lý Giá Trị NULL
+
+### Hiểu Về NULL trong OUTER JOIN
+
+```
+OUTER JOIN tạo ra NULL khi:
+├─ LEFT JOIN: Bảng phải không có dữ liệu khớp
+├─ RIGHT JOIN: Bảng trái không có dữ liệu khớp
+└─ FULL JOIN: Một trong hai bảng không có dữ liệu khớp
+```
+
+### Các Hàm Xử Lý NULL
+
+```sql
+-- NVL: Thay thế NULL bằng giá trị khác
+SELECT 
+    e.name,
+    NVL(d.dept_name, 'Chưa phân công') AS department
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.dept_id;
+
+-- COALESCE: Lấy giá trị không NULL đầu tiên
+SELECT 
+    COALESCE(e.name, 'Không có NV') AS employee_name,
+    COALESCE(d.dept_name, 'Không có phòng ban') AS dept_name
+FROM employees e
+FULL JOIN departments d ON e.dept_id = d.dept_id;
+
+-- CASE: Logic phức tạp hơn
+SELECT 
+    e.name,
+    CASE 
+        WHEN d.dept_name IS NULL AND e.dept_id IS NULL THEN 'Chưa có phòng ban'
+        WHEN d.dept_name IS NULL AND e.dept_id IS NOT NULL THEN 'Phòng ban không tồn tại'
+        ELSE d.dept_name
+    END AS department_status
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.dept_id;
+```
+
+### Mẹo Tìm Dữ Liệu Không Khớp
+
+```sql
+-- Tìm bản ghi CHỈ trong bảng trái (LEFT ONLY)
+SELECT e.name
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.dept_id
+WHERE d.dept_id IS NULL;
+
+-- Tìm bản ghi CHỈ trong bảng phải (RIGHT ONLY)  
+SELECT d.dept_name
+FROM employees e
+RIGHT JOIN departments d ON e.dept_id = d.dept_id
+WHERE e.emp_id IS NULL;
+```
+
+---
+
+## 8. Lỗi Thường Gặp
+
+### Lỗi 1: Nhầm Lẫn LEFT và RIGHT
+
+```sql
+-- ❌ SAI: Muốn tất cả phòng ban nhưng dùng LEFT JOIN
+SELECT d.dept_name, e.name
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.dept_id;
+-- Kết quả: Tất cả nhân viên (không phải tất cả phòng ban)
+
+-- ✅ ĐÚNG: Tất cả phòng ban
+SELECT d.dept_name, e.name  
+FROM departments d
+LEFT JOIN employees e ON d.dept_id = e.dept_id;
+-- HOẶC
+SELECT d.dept_name, e.name
+FROM employees e
+RIGHT JOIN departments d ON e.dept_id = d.dept_id;
+```
+
+### Lỗi 2: WHERE Phá Vỡ OUTER JOIN
+
+```sql
+-- ❌ SAI: WHERE làm mất ý nghĩa OUTER JOIN
+SELECT e.name, d.dept_name
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.dept_id
+WHERE d.dept_name IS NOT NULL;  -- Loại bỏ NULL = thành INNER JOIN
+
+-- ✅ ĐÚNG: Dùng INNER JOIN nếu không muốn NULL
+SELECT e.name, d.dept_name
+FROM employees e  
+INNER JOIN departments d ON e.dept_id = d.dept_id;
+```
+
+### Lỗi 3: Xử Lý NULL Không Đúng
+
+```sql
+-- ❌ SAI: So sánh trực tiếp với NULL
+SELECT * FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.dept_id
+WHERE d.dept_name = NULL;  -- Luôn trả về 0 hàng
+
+-- ✅ ĐÚNG: Sử dụng IS NULL
+SELECT * FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.dept_id  
+WHERE d.dept_name IS NULL;
+```
+
+### Lỗi 4: Trộn Cú Pháp
+
+```sql
+-- ❌ SAI: Trộn ANSI và Oracle (+)
+SELECT e.name, d.dept_name, l.location
+FROM employees e, departments d
+LEFT JOIN locations l ON d.location_id = l.location_id
+WHERE e.dept_id = d.dept_id(+);
+
+-- ✅ ĐÚNG: Nhất quán cú pháp ANSI
+SELECT e.name, d.dept_name, l.location
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.dept_id
+LEFT JOIN locations l ON d.location_id = l.location_id;
+```
+
+---
+
+## Tóm Tắt Quan Trọng
+
+### So Sánh Các Loại JOIN
+
+| **Loại JOIN** | **Ý Nghĩa** | **Khi Nào Dùng** |
+|---------------|-------------|-------------------|
+| **INNER** | Chỉ khớp | Cần dữ liệu chính xác |
+| **LEFT OUTER** | Tất cả bên trái + khớp | Tất cả A, có B thì hiển thị |
+| **RIGHT OUTER** | Khớp + tất cả bên phải | Tất cả B, có A thì hiển thị |  
+| **FULL OUTER** | Tất cả từ cả hai | Tất cả A và tất cả B |
+
+### Biểu Đồ Venn
+```
+INNER:    LEFT:     RIGHT:    FULL:
+  A∩B      A∪(A∩B)   (A∩B)∪B   A∪B
+┌───┐    ┌█████┐    ┌───┐    ┌█████┐
+│ ● │    │██●██│    │ ●█│    │██●██│  
+└───┘    └───█┘    └███┘    └█████┘
+```
+
+### Thực Hành Tốt Nhất
+1. **Sử dụng cú pháp ANSI** thay vì Oracle (+)
+2. **Xử lý NULL** với NVL, COALESCE, CASE
+3. **Đặt tên bảng rõ ràng** (LEFT/RIGHT có ý nghĩa)
+4. **Kiểm tra kết quả** để đảm bảo logic đúng
+5. **Tránh WHERE** phá vỡ OUTER JOIN
+
+### Câu Hỏi Tự Kiểm Tra
+- Khi nào dùng LEFT vs RIGHT JOIN?
+- FULL OUTER JOIN khác gì với UNION?
+- Tại sao nên tránh cú pháp (+)?
+- Làm sao tìm dữ liệu chỉ ở một bảng?
 
 **Bảng EMPLOYEES (E)**
 ```

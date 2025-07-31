@@ -1,53 +1,372 @@
-# Joins Nâng Cao trong Oracle Database
+# ADVANCED JOINs - Kỹ Thuật Nối Nâng Cao
 
-## Mục Tiêu Học Tập
-Sau khi hoàn thành phần này, bạn sẽ hiểu được:
-- CROSS JOINs và tích Cartesian
-- NATURAL JOINs và tác động của chúng
-- Self-joins cho dữ liệu phân cấp
-- Joins nhiều bảng với điều kiện phức tạp
-- Anti-joins và semi-joins
-- Kỹ thuật tối ưu hóa join nâng cao
+## Mục Lục
+1. [CROSS JOIN - Tích Cartesian](#1-cross-join---tích-cartesian)
+2. [SELF JOIN - Nối Bảng Với Chính Nó](#2-self-join---nối-bảng-với-chính-nó)
+3. [NATURAL JOIN và USING](#3-natural-join-và-using)
+4. [Joins Nhiều Bảng Phức Tạp](#4-joins-nhiều-bảng-phức-tạp)
+5. [Lỗi Thường Gặp](#5-lỗi-thường-gặp)
 
-## Các Loại Join Nâng Cao
+---
 
-### 1. CROSS JOIN (Tích Cartesian)
+## 1. CROSS JOIN - Tích Cartesian
 
-CROSS JOIN trả về tích Cartesian của hai bảng, kết hợp mỗi hàng từ bảng đầu tiên với mỗi hàng từ bảng thứ hai.
+### Khái Niệm
+**CROSS JOIN** kết hợp **MỌI** hàng từ bảng thứ nhất với **MỌI** hàng từ bảng thứ hai. Không có điều kiện nối.
 
-**Cú pháp:**
-```sql
-SELECT columns
-FROM table1 CROSS JOIN table2;
-
--- Alternative syntax
-SELECT columns
-FROM table1, table2;
+### Công Thức
+```
+Kết quả = Số hàng bảng A × Số hàng bảng B
 ```
 
-**Trường hợp sử dụng:**
-- Tạo ra tất cả các kết hợp có thể
-- Tạo bộ dữ liệu kiểm thử
-- Tính toán toán học yêu cầu tất cả hoán vị
-- Tạo lịch/thời gian biểu
+### Biểu Diễn Trực Quan
 
-**Ví dụ: Kết hợp Sản phẩm-Kích thước**
+```
+Bảng A (3 hàng):        Bảng B (2 hàng):
+┌─────┬─────┐           ┌─────┬───────┐
+│ ID  │NAME │           │SIZE │PRICE  │
+├─────┼─────┤           ├─────┼───────┤
+│  1  │Tea  │           │  S  │ 10    │
+│  2  │Coffee│          │  L  │ 15    │
+│  3  │Juice│           └─────┴───────┘
+└─────┴─────┘
+
+CROSS JOIN → 3 × 2 = 6 hàng:
+┌─────┬─────┬─────┬───────┐
+│ ID  │NAME │SIZE │PRICE  │
+├─────┼─────┼─────┼───────┤
+│  1  │Tea  │  S  │  10   │ ← A[1] + B[1]
+│  1  │Tea  │  L  │  15   │ ← A[1] + B[2]
+│  2  │Coffee│ S  │  10   │ ← A[2] + B[1]
+│  2  │Coffee│ L  │  15   │ ← A[2] + B[2]
+│  3  │Juice│  S  │  10   │ ← A[3] + B[1]
+│  3  │Juice│  L  │  15   │ ← A[3] + B[2]
+└─────┴─────┴─────┴───────┘
+```
+
+### Cú Pháp
+
 ```sql
--- Generate all possible product-size combinations
+-- Cách 1: CROSS JOIN (ANSI)
+SELECT a.id, a.name, b.size, b.price
+FROM products a
+CROSS JOIN sizes b;
+
+-- Cách 2: Không có WHERE (Oracle cũ)
+SELECT a.id, a.name, b.size, b.price
+FROM products a, sizes b;
+```
+
+### Ứng Dụng Thực Tế
+
+```sql
+-- Tạo tất cả kết hợp sản phẩm-kích cỡ
 SELECT 
     p.product_name,
     s.size_name,
-    p.base_price * s.price_multiplier AS final_price
+    p.base_price * s.multiplier AS final_price
 FROM products p
 CROSS JOIN product_sizes s
 ORDER BY p.product_name, s.size_order;
+
+-- Tạo lịch làm việc (tất cả ngày × tất cả ca)
+SELECT 
+    d.work_date,
+    sh.shift_name,
+    sh.start_time,
+    sh.end_time
+FROM work_dates d
+CROSS JOIN shifts sh
+WHERE d.work_date BETWEEN DATE '2024-01-01' AND DATE '2024-01-31';
 ```
 
-**Cảnh báo:** CROSS JOINs có thể tạo ra kết quả rất lớn. Một bảng với 1000 hàng CROSS JOIN với bảng 1000 hàng khác sẽ tạo ra 1,000,000 hàng!
+### ⚠️ Cảnh Báo
+```
+1000 hàng × 1000 hàng = 1,000,000 hàng!
+→ Rất dễ tạo ra kết quả khổng lồ
+→ Luôn kiểm tra số lượng trước khi chạy
+```
 
-### 2. NATURAL JOIN
+---
 
-NATURAL JOIN tự động kết nối các bảng dựa trên các cột có cùng tên và kiểu dữ liệu. Oracle tự động xác định điều kiện join.
+## 2. SELF JOIN - Nối Bảng Với Chính Nó
+
+### Khái Niệm
+**SELF JOIN** nối một bảng với **chính nó** để so sánh các hàng trong cùng bảng hoặc tìm mối quan hệ phân cấp.
+
+### Dữ Liệu Mẫu - Bảng EMPLOYEES
+```
+┌─────┬─────┬────────────┬────────────┐
+│ EID │NAME │ MANAGER_ID │ SALARY     │
+├─────┼─────┼────────────┼────────────┤
+│ 100 │King │    NULL    │   24000    │ ← CEO
+│ 101 │John │    100     │   17000    │ ← Manager
+│ 102 │Jane │    100     │   17000    │ ← Manager  
+│ 103 │Bob  │    101     │   9000     │ ← Employee
+│ 104 │Alice│    101     │   9000     │ ← Employee
+└─────┴─────┴────────────┴────────────┘
+```
+
+### Trường Hợp 1: Tìm Nhân Viên và Quản Lý
+
+```sql
+SELECT 
+    emp.name AS employee_name,
+    mgr.name AS manager_name,
+    emp.salary AS employee_salary,
+    mgr.salary AS manager_salary
+FROM employees emp
+LEFT JOIN employees mgr ON emp.manager_id = mgr.emp_id;
+```
+
+**Kết quả:**
+```
+┌───────────────┬──────────────┬─────────────────┬────────────────┐
+│EMPLOYEE_NAME  │MANAGER_NAME  │EMPLOYEE_SALARY  │MANAGER_SALARY  │
+├───────────────┼──────────────┼─────────────────┼────────────────┤
+│King           │NULL          │     24000       │     NULL       │
+│John           │King          │     17000       │     24000      │
+│Jane           │King          │     17000       │     24000      │
+│Bob            │John          │      9000       │     17000      │
+│Alice          │John          │      9000       │     17000      │
+└───────────────┴──────────────┴─────────────────┴────────────────┘
+```
+
+### Trường Hợp 2: So Sánh Trong Cùng Bảng
+
+```sql
+-- Tìm nhân viên có lương cao hơn quản lý
+SELECT 
+    emp.name AS employee_name,
+    emp.salary AS employee_salary,
+    mgr.name AS manager_name,
+    mgr.salary AS manager_salary
+FROM employees emp
+INNER JOIN employees mgr ON emp.manager_id = mgr.emp_id
+WHERE emp.salary > mgr.salary;
+
+-- Tìm cặp nhân viên cùng lương
+SELECT 
+    e1.name AS employee1,
+    e2.name AS employee2,
+    e1.salary
+FROM employees e1
+INNER JOIN employees e2 ON e1.salary = e2.salary
+WHERE e1.emp_id < e2.emp_id;  -- Tránh trùng lặp
+```
+
+### Trường Hợp 3: Phân Cấp Nhiều Tầng
+
+```sql
+-- Hiển thị CEO → Manager → Employee
+SELECT 
+    ceo.name AS ceo_name,
+    mgr.name AS manager_name,  
+    emp.name AS employee_name
+FROM employees emp
+INNER JOIN employees mgr ON emp.manager_id = mgr.emp_id
+INNER JOIN employees ceo ON mgr.manager_id = ceo.emp_id;
+```
+
+### Quy Tắc Quan Trọng
+
+```sql
+-- ✅ PHẢI sử dụng alias khác nhau
+FROM employees emp    -- emp = nhân viên
+JOIN employees mgr    -- mgr = quản lý
+
+-- ❌ KHÔNG được dùng cùng alias
+FROM employees emp
+JOIN employees emp    -- LỖI!
+```
+
+---
+
+## 3. NATURAL JOIN và USING
+
+### NATURAL JOIN
+
+**NATURAL JOIN** tự động nối dựa trên **tất cả cột cùng tên**.
+
+```sql
+-- Oracle tự động tìm cột chung
+SELECT employee_id, first_name, department_name
+FROM employees NATURAL JOIN departments;
+
+-- Tương đương với:
+SELECT e.employee_id, e.first_name, d.department_name
+FROM employees e
+INNER JOIN departments d ON e.department_id = d.department_id;
+```
+
+### USING Clause
+
+**USING** chỉ định **cột cụ thể** để nối.
+
+```sql
+-- Chỉ định cột department_id
+SELECT employee_id, first_name, department_name  
+FROM employees 
+JOIN departments USING (department_id);
+
+-- Nhiều cột
+SELECT *
+FROM employees 
+JOIN job_history USING (employee_id, job_id);
+```
+
+### So Sánh và Khuyến Nghị
+
+| **Khía Cạnh** | **NATURAL JOIN** | **USING** | **ON** |
+|----------------|------------------|-----------|---------|
+| **Kiểm soát** | ❌ Tự động | ⚠️ Một phần | ✅ Hoàn toàn |
+| **Rõ ràng** | ❌ Không rõ | ⚠️ Trung bình | ✅ Rất rõ |
+| **An toàn** | ❌ Dễ lỗi | ⚠️ Tương đối | ✅ An toàn |
+| **Khuyến nghị** | 👎 Tránh | 👌 Thỉnh thoảng | 👍 Luôn dùng |
+
+**Lý do tránh NATURAL JOIN:**
+- Không rõ cột nào được dùng để nối
+- Dễ lỗi khi thay đổi structure bảng
+- Khó debug và maintain
+
+---
+
+## 4. Joins Nhiều Bảng Phức Tạp
+
+### Chiến Lược Nối Nhiều Bảng
+
+```sql
+-- Thông tin nhân viên đầy đủ (6 bảng)
+SELECT 
+    e.employee_id,
+    e.first_name || ' ' || e.last_name AS full_name,
+    j.job_title,
+    d.department_name,
+    l.city,
+    c.country_name,
+    mgr.first_name || ' ' || mgr.last_name AS manager_name
+FROM employees e                                    -- Bảng chính
+    INNER JOIN jobs j ON e.job_id = j.job_id       -- Thông tin công việc  
+    INNER JOIN departments d ON e.department_id = d.department_id  -- Phòng ban
+    INNER JOIN locations l ON d.location_id = l.location_id        -- Địa điểm
+    INNER JOIN countries c ON l.country_id = c.country_id          -- Quốc gia
+    LEFT JOIN employees mgr ON e.manager_id = mgr.employee_id      -- Quản lý
+WHERE e.salary > 10000
+ORDER BY c.country_name, l.city, d.department_name;
+```
+
+### Nguyên Tắc Tối Ưu
+
+```
+1. ĐẶT BẢNG CHÍNH TRƯỚC (bảng có nhiều điều kiện WHERE)
+2. NỐI THEO CHUỖI LOGIC (không nhảy cóc)
+3. SỬ DỤNG LEFT JOIN cho dữ liệu tùy chọn
+4. LỌC SỚM với WHERE
+5. KIỂM TRA EXECUTION PLAN
+```
+
+### Joins Có Điều Kiện Phức Tạp
+
+```sql
+-- Nối với điều kiện phụ thuộc vào dữ liệu
+SELECT 
+    o.order_id,
+    c.customer_name,
+    p.product_name,
+    CASE 
+        WHEN o.order_date >= DATE '2024-01-01' THEN p.current_price
+        ELSE ph.historical_price
+    END AS effective_price
+FROM orders o
+    INNER JOIN customers c ON o.customer_id = c.customer_id
+    INNER JOIN order_items oi ON o.order_id = oi.order_id
+    INNER JOIN products p ON oi.product_id = p.product_id
+    LEFT JOIN price_history ph ON p.product_id = ph.product_id 
+        AND o.order_date BETWEEN ph.start_date AND ph.end_date
+WHERE o.order_date >= DATE '2023-01-01';
+```
+
+---
+
+## 5. Lỗi Thường Gặp
+
+### Lỗi 1: CROSS JOIN Không Cố Ý
+
+```sql
+-- ❌ SAI: Thiếu điều kiện JOIN
+SELECT e.name, d.dept_name, l.city
+FROM employees e, departments d, locations l
+WHERE e.salary > 5000;
+-- Kết quả: employee_count × dept_count × location_count hàng
+
+-- ✅ ĐÚNG: Có đầy đủ điều kiện JOIN  
+SELECT e.name, d.dept_name, l.city
+FROM employees e
+    INNER JOIN departments d ON e.dept_id = d.dept_id
+    INNER JOIN locations l ON d.location_id = l.location_id
+WHERE e.salary > 5000;
+```
+
+### Lỗi 2: Self-Join Alias Trùng
+
+```sql
+-- ❌ SAI: Cùng alias
+SELECT e.name, e.name AS manager_name
+FROM employees e
+JOIN employees e ON e.manager_id = e.employee_id;
+
+-- ✅ ĐÚNG: Alias khác nhau
+SELECT emp.name, mgr.name AS manager_name
+FROM employees emp
+JOIN employees mgr ON emp.manager_id = mgr.employee_id;
+```
+
+### Lỗi 3: NATURAL JOIN Không Kiểm Soát
+
+```sql
+-- ❌ RỦI RO: Không biết nối trên cột nào
+SELECT * FROM employees NATURAL JOIN departments;
+
+-- ✅ RÕ RÀNG: Chỉ định cột nối
+SELECT e.*, d.department_name  
+FROM employees e
+INNER JOIN departments d ON e.department_id = d.department_id;
+```
+
+---
+
+## Tóm Tắt Quan Trọng
+
+### Bảng Tóm Tắt Các Loại JOIN
+
+| **Loại JOIN** | **Mục Đích** | **Khi Nào Dùng** |
+|---------------|--------------|-------------------|
+| **CROSS** | Tất cả kết hợp | Tạo data test, lịch làm việc |
+| **SELF** | So sánh trong cùng bảng | Phân cấp, tìm duplicate |
+| **NATURAL** | Tự động nối | ❌ Tránh sử dụng |
+| **USING** | Nối cột cụ thể | Khi cột cùng tên, ít dùng |
+
+### Nguyên Tắc Thực Hành
+
+1. **Luôn dùng alias** có ý nghĩa cho bảng
+2. **Tránh NATURAL JOIN** trong production
+3. **Kiểm tra execution plan** với nhiều bảng
+4. **Lọc sớm** với WHERE để giảm dữ liệu
+5. **Sử dụng DISTINCT** khi cần loại bỏ trùng lặp
+
+### Decision Tree
+
+```
+🤔 Cần loại JOIN nào?
+
+├─ Tất cả kết hợp có thể → CROSS JOIN
+├─ So sánh trong cùng bảng → SELF JOIN  
+├─ Tự động nối cột cùng tên → NATURAL JOIN (không khuyến nghị)
+├─ Nối cột cụ thể → USING
+└─ Kết hợp nhiều bảng → INNER/OUTER JOIN
+```
+
+**Lưu ý cuối:** Advanced JOINs rất mạnh nhưng cần cẩn thận về hiệu suất và logic. Luôn test với dữ liệu thực và kiểm tra execution plan!
 
 **Cú pháp:**
 ```sql

@@ -1,44 +1,399 @@
 # INNER JOINs - Kết Hợp Dữ Liệu Khớp
 
-INNER JOINs là loại join được sử dụng phổ biến nhất trong SQL. Chúng chỉ trả về các hàng có giá trị khớp trong cả hai bảng được nối. Bài học này bao gồm mọi thứ bạn cần biết về INNER JOINs, từ cú pháp cơ bản đến các tình huống nhiều bảng phức tạp.
-
 ## Mục Lục
-1. [Hiểu về INNER JOINs](#hiểu-về-inner-joins)
-2. [Cú Pháp INNER JOIN Cơ Bản](#cú-pháp-inner-join-cơ-bản)
-3. [Điều Kiện Join và Mối Quan Hệ](#điều-kiện-join-và-mối-quan-hệ)
-4. [Bí Danh Bảng và Khả Năng Đọc](#bí-danh-bảng-và-khả-năng-đọc)
-5. [JOINs Nhiều Bảng](#joins-nhiều-bảng)
-6. [Kỹ Thuật JOIN Nâng Cao](#kỹ-thuật-join-nâng-cao)
-7. [Cân Nhắc Về Hiệu Suất](#cân-nhắc-về-hiệu-suất)
-8. [Mẫu Phổ Biến và Trường Hợp Sử Dụng](#mẫu-phổ-biến-và-trường-hợp-sử-dụng)
+1. [Khái Niệm INNER JOIN](#1-khái-niệm-inner-join)
+2. [Cách Hoạt Động của INNER JOIN](#2-cách-hoạt-động-của-inner-join)
+3. [Cú Pháp và So Sánh](#3-cú-pháp-và-so-sánh)
+4. [Bí Danh Bảng](#4-bí-danh-bảng)
+5. [INNER JOIN Nhiều Bảng](#5-inner-join-nhiều-bảng)
+6. [Lỗi Thường Gặp](#6-lỗi-thường-gặp)
 
-## Hiểu về INNER JOINs
+---
 
-### INNER JOIN là gì?
+## 1. Khái Niệm INNER JOIN
 
-INNER JOIN kết hợp các hàng từ hai hoặc nhiều bảng dựa trên cột liên quan giữa chúng. Nó chỉ trả về các hàng có sự khớp trong cả hai bảng.
+### Định Nghĩa
+**INNER JOIN** kết hợp dữ liệu từ hai hoặc nhiều bảng dựa trên điều kiện khớp. Chỉ trả về các dòng có giá trị khớp trong **TẤT CẢ** các bảng được nối.
 
 ### Biểu Diễn Trực Quan
 
 ```
-Bảng A          Bảng B          Kết Quả INNER JOIN
-┌─────┬─────┐   ┌─────┬─────┐   ┌─────┬─────┬─────┐
-│ ID  │Name │   │ ID  │City │   │ ID  │Name │City │
-├─────┼─────┤   ├─────┼─────┤   ├─────┼─────┼─────┤
-│  1  │John │   │  1  │NYC  │   │  1  │John │NYC  │
-│  2  │Jane │   │  2  │LA   │   │  2  │Jane │LA   │
-│  3  │Bob  │   │  4  │SF   │   └─────┴─────┴─────┘
-└─────┴─────┘   └─────┴─────┘   
+Bảng EMPLOYEES           Bảng DEPARTMENTS         Kết Quả INNER JOIN
+┌─────┬─────┬──────┐     ┌──────┬─────────────┐    ┌─────┬─────┬─────────────┐
+│ EID │NAME │DEPT_ID│     │DEPT_ID│DEPT_NAME   │    │ EID │NAME │DEPT_NAME    │
+├─────┼─────┼──────┤     ├──────┼─────────────┤    ├─────┼─────┼─────────────┤
+│ 100 │Alice│  10  │ ◄──►│  10  │Sales        │───►│ 100 │Alice│Sales        │
+│ 101 │Bob  │  20  │ ◄──►│  20  │Marketing    │───►│ 101 │Bob  │Marketing    │
+│ 102 │Carol│  99  │  ✗  │  30  │HR           │    │ 103 │Dave │HR           │
+│ 103 │Dave │  30  │ ◄──►└──────┴─────────────┘    └─────┴─────┴─────────────┘
+└─────┴─────┴──────┘
+      ↑                                                      ↑
+   Carol bị loại                                    Chỉ có 3 dòng khớp
+   (DEPT_ID=99 không tồn tại)
 ```
 
-Lưu ý: Hàng 3 (Bob) và Hàng 4 (SF) không xuất hiện trong kết quả vì không có ID khớp.
+### Đặc Điểm Quan Trọng
+- **Chỉ lấy dữ liệu khớp**: Bỏ qua các dòng không có cặp khớp
+- **Kết quả nhỏ hơn hoặc bằng**: Số dòng kết quả ≤ số dòng của bảng nhỏ nhất
+- **Lọc tự động**: Loại bỏ dữ liệu "mồ côi" (orphaned data)
 
-### Khi Nào Sử Dụng INNER JOINs
+---
 
-- Khi bạn cần dữ liệu tồn tại trong cả hai bảng
-- Cho mối quan hệ master-detail (đơn hàng và mục đơn hàng)
-- Khi bạn muốn loại trừ các bản ghi không có mối quan hệ
-- Cho xác thực dữ liệu và báo cáo
+## 2. Cách Hoạt Động của INNER JOIN
+
+### Thuật Toán Cơ Bản
+
+```
+Bước 1: QUÉT BẢNG THỨ NHẤT
+┌─────────────────────────┐
+│ Lấy từng dòng từ bảng A │
+└─────────────────────────┘
+            │
+            ▼
+Bước 2: TÌM KIẾM KHỚP
+┌─────────────────────────┐
+│ Với mỗi dòng A, tìm tất │
+│ cả dòng khớp trong B    │
+└─────────────────────────┘
+            │
+            ▼
+Bước 3: KẾT HỢP DỮ LIỆU
+┌─────────────────────────┐
+│ Ghép cột từ A và B      │
+│ thành 1 dòng kết quả    │
+└─────────────────────────┘
+```
+
+### Ví Dụ Minh Họa
+
+Dữ liệu mẫu:
+```sql
+-- Bảng EMPLOYEES
+EMP_ID | NAME  | DEPT_ID
+   100 | Alice |      10
+   101 | Bob   |      20  
+   102 | Carol |      99  -- Không khớp
+
+-- Bảng DEPARTMENTS  
+DEPT_ID | DEPT_NAME
+     10 | Sales
+     20 | Marketing
+     30 | HR          -- Không khớp
+```
+
+Quá trình thực thi:
+```sql
+-- dòng 1: Alice (DEPT_ID=10)
+-- Tìm trong DEPARTMENTS: Tìm thấy → Kết hợp
+-- Kết quả: 100, Alice, 10, Sales
+
+-- dòng 2: Bob (DEPT_ID=20)  
+-- Tìm trong DEPARTMENTS: Tìm thấy → Kết hợp
+-- Kết quả: 101, Bob, 20, Marketing
+
+-- dòng 3: Carol (DEPT_ID=99)
+-- Tìm trong DEPARTMENTS: KHÔNG tìm thấy → Bỏ qua
+```
+
+### Kết Quả Cuối Cùng
+```
+EMP_ID | NAME  | DEPT_ID | DEPT_NAME
+   100 | Alice |      10 | Sales
+   101 | Bob   |      20 | Marketing
+```
+
+---
+
+## 3. Cú Pháp và So Sánh
+
+### Cú Pháp JOIN (ANSI SQL - Khuyến nghị)
+
+```sql
+SELECT cột1, cột2, ...  
+FROM bảng1
+INNER JOIN bảng2 ON bảng1.cột = bảng2.cột;
+```
+
+**Ví dụ:**
+```sql
+SELECT e.emp_id, e.name, d.dept_name
+FROM employees e
+INNER JOIN departments d ON e.dept_id = d.dept_id;
+```
+
+### Cú Pháp WHERE (Oracle truyền thống)
+
+```sql
+SELECT cột1, cột2, ...
+FROM bảng1, bảng2  
+WHERE bảng1.cột = bảng2.cột;
+```
+
+**Ví dụ:**
+```sql
+SELECT e.emp_id, e.name, d.dept_name
+FROM employees e, departments d
+WHERE e.dept_id = d.dept_id;
+```
+
+### So Sánh Chi Tiết
+
+| **Khía Cạnh** | **Cú Pháp JOIN** | **Cú Pháp WHERE** |
+|----------------|-------------------|--------------------|
+| **Độ rõ ràng** | ✅ Rất rõ ràng | ❌ Dễ nhầm lẫn |
+| **Tách biệt logic** | ✅ JOIN riêng, WHERE riêng | ❌ Trộn lẫn điều kiện |
+| **Đọc hiểu** | ✅ Dễ đọc với nhiều bảng | ❌ Khó đọc khi phức tạp |
+| **Ngăn lỗi Cartesian** | ✅ Bắt buộc có điều kiện | ❌ Dễ quên điều kiện |
+| **Chuẩn SQL** | ✅ ANSI SQL chuẩn | ❌ Cú pháp cũ |
+| **Hiệu suất** | ✅ Tương đương | ✅ Tương đương |
+
+### Ví Dụ So Sánh Thực Tế
+
+**Trường hợp đơn giản (2 bảng):**
+```sql
+-- JOIN: Rõ ràng
+SELECT e.name, d.dept_name
+FROM employees e
+INNER JOIN departments d ON e.dept_id = d.dept_id
+WHERE e.salary > 5000;
+
+-- WHERE: Vẫn OK
+SELECT e.name, d.dept_name  
+FROM employees e, departments d
+WHERE e.dept_id = d.dept_id
+  AND e.salary > 5000;
+```
+
+**Trường hợp phức tạp (4 bảng):**
+```sql
+-- JOIN: Dễ đọc và hiểu
+SELECT e.name, d.dept_name, l.city, c.country_name
+FROM employees e
+INNER JOIN departments d ON e.dept_id = d.dept_id
+INNER JOIN locations l ON d.location_id = l.location_id  
+INNER JOIN countries c ON l.country_id = c.country_id
+WHERE e.salary > 5000;
+
+-- WHERE: Khó đọc, dễ sai
+SELECT e.name, d.dept_name, l.city, c.country_name
+FROM employees e, departments d, locations l, countries c
+WHERE e.dept_id = d.dept_id
+  AND d.location_id = l.location_id
+  AND l.country_id = c.country_id
+  AND e.salary > 5000;
+```
+
+### **Khuyến Nghị: Sử Dụng Cú Pháp JOIN**
+
+**Lý do:**
+1. **Tách biệt rõ ràng**: Điều kiện nối ≠ Điều kiện lọc
+2. **Dễ bảo trì**: Thêm/bớt bảng không ảnh hưởng WHERE
+3. **Ngăn lỗi**: Bắt buộc phải có ON, tránh Cartesian Product
+4. **Chuẩn mực**: Tuân thủ chuẩn SQL hiện đại
+
+---
+
+## 4. Bí Danh Bảng
+
+### Tại Sao Cần Bí Danh?
+
+```sql
+-- ✗ KHÔNG dùng bí danh: Dài dòng, khó đọc
+SELECT employees.employee_id, employees.first_name, departments.department_name
+FROM hr.employees
+INNER JOIN hr.departments ON employees.department_id = departments.department_id;
+
+-- ✓ DÙNG bí danh: Ngắn gọn, rõ ràng  
+SELECT e.employee_id, e.first_name, d.department_name
+FROM hr.employees e
+INNER JOIN hr.departments d ON e.department_id = d.department_id;
+```
+
+### Quy Tắc Bí Danh Tốt
+
+```sql
+-- ✓ BÍ DANH CÓ Ý NGHĨA
+SELECT emp.employee_id, emp.first_name, dept.department_name
+FROM hr.employees emp
+INNER JOIN hr.departments dept ON emp.department_id = dept.department_id;
+
+-- ✗ Bí danh khó hiểu
+SELECT x.employee_id, x.first_name, y.department_name  
+FROM hr.employees x
+INNER JOIN hr.departments y ON x.department_id = y.department_id;
+```
+
+### Phân Biệt Cột Trùng Tên
+
+```sql
+-- Bắt buộc khi cột trùng tên
+SELECT 
+    e.employee_id,        -- Chỉ có trong employees
+    e.first_name,         -- Chỉ có trong employees  
+    e.department_id,      -- CÓ TRONG CẢ HAI BẢNG → Phải chỉ rõ
+    d.department_id,      -- CÓ TRONG CẢ HAI BẢNG → Phải chỉ rõ
+    d.department_name     -- Chỉ có trong departments
+FROM hr.employees e
+INNER JOIN hr.departments d ON e.department_id = d.department_id;
+```
+
+---
+
+## 5. INNER JOIN Nhiều Bảng
+
+### Cách Hoạt Động
+
+```
+Bước 1: A JOIN B = Kết quả AB
+┌─────┐    ┌─────┐    ┌─────────┐
+│  A  │ +  │  B  │ =  │   AB    │
+└─────┘    └─────┘    └─────────┘
+
+Bước 2: AB JOIN C = Kết quả ABC  
+┌─────────┐    ┌─────┐    ┌─────────┐
+│   AB    │ +  │  C  │ =  │   ABC   │
+└─────────┘    └─────┘    └─────────┘
+```
+
+### Ví Dụ 3 Bảng
+
+```sql
+-- Nhân viên → Phòng ban → Địa điểm
+SELECT 
+    e.first_name,
+    e.last_name,
+    d.department_name,
+    l.city
+FROM hr.employees e
+INNER JOIN hr.departments d ON e.department_id = d.department_id
+INNER JOIN hr.locations l ON d.location_id = l.location_id;
+```
+
+**Cách hoạt động:**
+```
+1. employees INNER JOIN departments  
+   → Lấy nhân viên có phòng ban
+
+2. Kết quả bước 1 INNER JOIN locations
+   → Lấy những nhân viên có phòng ban VÀ phòng ban có địa điểm
+```
+
+### Ví Dụ 4 Bảng
+
+```sql
+-- Chuỗi quan hệ: Nhân viên → Phòng ban → Địa điểm → Quốc gia
+SELECT 
+    e.first_name,
+    d.department_name,
+    l.city,
+    c.country_name
+FROM hr.employees e
+INNER JOIN hr.departments d ON e.department_id = d.department_id  
+INNER JOIN hr.locations l ON d.location_id = l.location_id
+INNER JOIN hr.countries c ON l.country_id = c.country_id;
+```
+
+### Lưu Ý Quan Trọng
+
+⚠️ **Thứ tự JOIN quan trọng:**
+```sql
+-- ✓ ĐÚNG: Nối theo chuỗi logic
+FROM employees e
+INNER JOIN departments d ON e.department_id = d.department_id  -- e → d
+INNER JOIN locations l ON d.location_id = l.location_id        -- d → l
+
+-- ✗ SAI: Không thể nối trực tiếp
+FROM employees e  
+INNER JOIN locations l ON e.??? = l.???  -- Không có cột liên kết trực tiếp
+```
+
+---
+
+## 6. Lỗi Thường Gặp
+
+### Lỗi 1: Cột Nhập Nhằng (Ambiguous Column)
+
+```sql
+-- ✗ LỖI: Oracle không biết department_id của bảng nào
+SELECT employee_id, department_id, department_name
+FROM hr.employees
+INNER JOIN hr.departments ON employees.department_id = departments.department_id;
+-- ORA-00918: column ambiguously defined
+
+-- ✓ SỬA: Chỉ rõ bảng chứa cột
+SELECT e.employee_id, e.department_id, d.department_name  
+FROM hr.employees e
+INNER JOIN hr.departments d ON e.department_id = d.department_id;
+```
+
+### Lỗi 2: Thiếu Điều Kiện JOIN (Cartesian Product)
+
+```sql
+-- ✗ SAI: Thiếu điều kiện nối
+SELECT e.first_name, d.department_name
+FROM hr.employees e, hr.departments d;
+-- Kết quả: employee_count × department_count dòng
+
+-- ✓ ĐÚNG: Có điều kiện nối
+SELECT e.first_name, d.department_name
+FROM hr.employees e
+INNER JOIN hr.departments d ON e.department_id = d.department_id;
+```
+
+### Lỗi 3: Điều Kiện JOIN Sai
+
+```sql
+-- ✗ SAI: Nối sai cột
+SELECT e.first_name, d.department_name
+FROM hr.employees e
+INNER JOIN hr.departments d ON e.employee_id = d.department_id;
+-- Logic sai: so sánh employee_id với department_id
+
+-- ✓ ĐÚNG: Nối đúng cột
+SELECT e.first_name, d.department_name  
+FROM hr.employees e
+INNER JOIN hr.departments d ON e.department_id = d.department_id;
+```
+
+### Lỗi 4: Quên Alias Khi Cần Thiết
+
+```sql
+-- ✗ SAI: Self-join không có alias
+SELECT * 
+FROM hr.employees
+INNER JOIN hr.employees ON employees.manager_id = employees.employee_id;
+-- Không thể phân biệt nhân viên và quản lý
+
+-- ✓ ĐÚNG: Self-join với alias
+SELECT 
+    emp.first_name AS employee_name,
+    mgr.first_name AS manager_name
+FROM hr.employees emp
+INNER JOIN hr.employees mgr ON emp.manager_id = mgr.employee_id;
+```
+
+---
+
+## Tóm Tắt Quan Trọng
+
+### Điểm Chính
+- **INNER JOIN**: Chỉ lấy dữ liệu khớp từ tất cả bảng
+- **Cú pháp JOIN**: Rõ ràng hơn, dễ bảo trì hơn cú pháp WHERE
+- **Bí danh bảng**: Bắt buộc khi có cột trùng tên hoặc self-join
+- **Nhiều bảng**: Nối theo chuỗi logic, từng cặp một
+
+### Thực Hành Tốt Nhất
+1. **Luôn dùng cú pháp INNER JOIN** thay vì WHERE
+2. **Đặt alias có ý nghĩa** cho tất cả bảng  
+3. **Chỉ rõ tên bảng** cho tất cả cột
+4. **Kiểm tra logic JOIN** trước khi chạy
+5. **Format code** dễ đọc với nhiều bảng
+
+### Câu Hỏi Tự Kiểm Tra  
+- Tại sao INNER JOIN tốt hơn cú pháp WHERE?
+- Khi nào bắt buộc phải dùng alias?
+- Làm sao tránh Cartesian Product?
+- Thứ tự JOIN có quan trọng không?
 
 ## Cú Pháp INNER JOIN Cơ Bản
 
@@ -525,7 +880,7 @@ SELECT
     d.department_name
 FROM hr.employees e
 INNER JOIN hr.departments d ON e.department_id = d.department_id
-WHERE e.department_id != d.department_id;  -- Không nên trả về hàng nào
+WHERE e.department_id != d.department_id;  -- Không nên trả về dòng nào
 ```
 
 ## Bước Tiếp Theo

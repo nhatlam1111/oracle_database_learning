@@ -266,7 +266,7 @@ group by q.thr_emp_pk
 order by e.emp_id;
 ```
 
-### 14) Trước đây cty không có quy định về nhập mã nhân viên, hiện tại cty đã có quy định về mã nhân viên như sau: mã nhân viên là 6 ký tự, chỉ bao gồm số, ví dụ "000001", "000002", "000003", v.v. Hãy viết câu query để xuất ra danh sách nhân viên HIỆN ĐANG ACTIVE ( status = 'A' hoặc có left date > sysdate) theo thứ tự join date tăng dần bao gồm các cột sau:
+### 14) Trước đây cty không có quy định về nhập mã nhân viên nên mã nhân viên nhập ko theo quy tắc, hiện tại cty đã có quy định về mã nhân viên như sau: mã nhân viên là 6 ký tự, chỉ bao gồm số, ví dụ "000001", "000002", "000003", v.v. Hãy viết câu query để xuất ra danh sách nhân viên HIỆN ĐANG ACTIVE ( status = 'A' hoặc có left date > sysdate) theo thứ tự join date tăng dần bao gồm các cột sau:
 
     - Emp id
     - full name
