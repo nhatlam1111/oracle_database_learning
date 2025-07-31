@@ -215,3 +215,88 @@
 ### Nhóm Dữ Liệu
 - **GROUP BY**: Nhóm các bản ghi theo một hoặc nhiều cột để sử dụng với hàm tổng hợp
 
+# TÌM LỖI, ĐIỀU KIỆN BỊ THIẾU HOẶC ĐOẠN KHÔNG HỢP LÝ VÀ CHỈNH SỬA LẠI
+
+### 11) Tổng hợp thông tin lương thực lãnh theo từng nhân viên:
+```sql
+select s.emp_id
+    , sum(s.full_name) as full_name
+    , sum(nvl(s.NET_AMT, 0)) as NET_AMT
+from thr_month_salary s
+where s.del_if = 0
+and s.work_mon = '202506'
+group by s.emp_id;
+```
+
+### 12) Sắp xếp nhân viên active theo thứ tự join date giảm dần:
+```sql 
+select e.emp_id
+    , e.full_name
+    , to_char( to_date(e.join_dt, 'yyyymmdd') ,'dd/mm/yyyy') as join_dt
+from thr_employee e
+where e.del_if = 0
+order by to_char( to_date(e.join_dt, 'yyyymmdd') ,'dd/mm/yyyy') desc;
+```
+
+### 13) Lấy ra danh sách nhân viên có TỔNG số giờ làm việc thực tế theo ca trong năm 2024 dưới 200 giờ:
+```sql
+select max(e.emp_id) as emp_id
+    , max(e.full_name) as full_name
+    , to_char( to_date(max(e.join_dt), 'yyyymmdd') ,'dd/mm/yyyy') as join_dt
+    , to_char( to_date(max(e.left_dt), 'yyyymmdd') ,'dd/mm/yyyy') as left_dt
+    , sum( decode(substr(q.work_dt, 5, 2), '01', q.work_time ) ) as month_01
+    , sum( decode(substr(q.work_dt, 5, 2), '02', q.work_time ) ) as month_02
+    , sum( decode(substr(q.work_dt, 5, 2), '03', q.work_time ) ) as month_03
+    , sum( decode(substr(q.work_dt, 5, 2), '04', q.work_time ) ) as month_04
+    , sum( decode(substr(q.work_dt, 5, 2), '05', q.work_time ) ) as month_05
+    , sum( decode(substr(q.work_dt, 5, 2), '06', q.work_time ) ) as month_06
+    , sum( decode(substr(q.work_dt, 5, 2), '07', q.work_time ) ) as month_07
+    , sum( decode(substr(q.work_dt, 5, 2), '08', q.work_time ) ) as month_08
+    , sum( decode(substr(q.work_dt, 5, 2), '09', q.work_time ) ) as month_09
+    , sum( decode(substr(q.work_dt, 5, 2), '10', q.work_time ) ) as month_10
+    , sum( decode(substr(q.work_dt, 5, 2), '11', q.work_time ) ) as month_11
+    , sum( decode(substr(q.work_dt, 5, 2), '12', q.work_time ) ) as month_12
+from thr_time_machine q, thr_employee e
+where q.del_if = 0 and e.del_if = 0
+and e.pk = q.thr_emp_pk
+and q.hol_type is null 
+and nvl(q.WORK_TIME, 0) <= 200
+and substr(q.work_dt, 1, 4) = '2024'
+group by q.thr_emp_pk
+order by e.emp_id;
+```
+
+### 14) Trước đây cty không có quy định về nhập mã nhân viên, hiện tại cty đã có quy định về mã nhân viên như sau: mã nhân viên là 6 ký tự, chỉ bao gồm số, ví dụ "000001", "000002", "000003", v.v. Hãy viết câu query để xuất ra danh sách nhân viên HIỆN ĐANG ACTIVE ( status = 'A' hoặc có left date > sysdate) theo thứ tự join date tăng dần bao gồm các cột sau:
+
+    - Emp id
+    - full name
+    - join date
+    - new emp id (mã nhân viên mới theo quy định)
+
+```sql
+select q.*
+    , lpad(rownum, 6, '0') as new_emp_id
+from (
+    select e.emp_id, e.full_name, e.join_dt
+    from thr_employee e
+    where e.del_if = 0
+    order by e.join_dt, e.crt_dt 
+) q
+```
+
+### 15) Tìm nhân viên nữ có status = 'A' và join date từ năm 2020 hoặc có left date trong năm 2025 và thâm niên >= 5 năm
+```sql
+select e.emp_id
+    , e.full_name
+    , e.sex
+    , to_char(to_date(e.join_dt, 'yyyymmdd'), 'dd/mm/yyyy') as join_dt
+    , to_char(to_date(e.left_dt, 'yyyymmdd'), 'dd/mm/yyyy') as left_dt
+    , round(months_between(sysdate, to_date(e.join_dt, 'yyyymmdd')) / 12, 2) as thamnien
+from thr_employee e
+where e.del_if = 0
+and e.status = 'A' and substr(e.join_dt, 1, 4) >= '2020' 
+    or e.left_dt is not null and substr(e.left_dt, 1, 4) >= '2025' and months_between(sysdate, to_date(e.join_dt, 'yyyymmdd')) / 12 >= 5
+and e.sex = 'F'
+order by join_dt
+;
+```
