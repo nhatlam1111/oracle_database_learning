@@ -261,12 +261,12 @@ where q.del_if = 0 and e.del_if = 0
 and e.pk = q.thr_emp_pk
 and q.hol_type is null 
 and nvl(q.WORK_TIME, 0) <= 200
-and substr(q.work_dt, 1, 4) = '2024'
+and substr(q.work_dt, -4) = '2024'
 group by q.thr_emp_pk
 order by e.emp_id;
 ```
 
-### 14) Trước đây cty không có quy định về nhập mã nhân viên nên mã nhân viên nhập ko theo quy tắc, hiện tại cty đã có quy định về mã nhân viên như sau: mã nhân viên là 6 ký tự, chỉ bao gồm số, ví dụ "000001", "000002", "000003", v.v. Hãy viết câu query để xuất ra danh sách nhân viên HIỆN ĐANG ACTIVE ( status = 'A' hoặc có left date > sysdate) theo thứ tự join date tăng dần bao gồm các cột sau:
+### 14) Trước đây cty không có quy định về nhập mã nhân viên nên mã nhân viên nhập ko theo quy tắc, hiện tại cty đã có quy định về mã nhân viên như sau: mã nhân viên là 6 ký tự, chỉ bao gồm số, ví dụ "000001", "000002", "000003", v.v. Hãy viết câu query để xuất ra danh sách nhân viên HIỆN ĐANG LÀM VIỆC theo thứ tự join date tăng dần bao gồm các cột sau:
 
     - Emp id
     - full name
@@ -281,7 +281,7 @@ from (
     from thr_employee e
     where e.del_if = 0
     order by e.join_dt, e.crt_dt 
-) q
+) q;
 ```
 
 ### 15) Tìm nhân viên nữ có status = 'A' và join date từ năm 2020 hoặc có left date trong năm 2025 và thâm niên >= 5 năm
