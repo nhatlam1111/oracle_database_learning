@@ -300,3 +300,110 @@ and e.sex = 'F'
 order by join_dt
 ;
 ```
+
+
+# TỔNG HỢP
+
+### 16) Viết câu query tìm kiếm danh sách nhân viên hiện đang làm việc có ngày sinh nhật trong tháng hiện tại (sysdate) hoặc có ngày nghỉ việc sau ngày sinh nhật trong tháng hiện tại (sysdate) sắp xếp theo ngày sinh tăng dần, hiển thị các cột sau:
+
+    - Emp id
+    - full name
+    - join date
+    - giới tính
+    - ngày sinh nhật (format 'dd/mm')
+
+* Lưu ý: 
+  
+    - do hệ thống cũ nên ngày sinh trước đây nhập tự do, có 2 dạng format chính là 'yyyy' và 'yyyymmdd', hãy dựa vào length(birth date) để phân biệt đối với ngày sinh có định dạng 'yyyy' thì có thể xem ngày sinh là 01/01 của năm đó, với ngày sinh có định dạng 'yyyymmdd' thì lấy ngày tháng từ chuỗi này
+
+
+### 17) Viết câu query tìm kiếm danh sách nhân viên có ngày sinh nhật trong 3 tháng tới (tháng sau của tháng hiện tại sysdate) sắp xếp theo ngày sinh tăng dần, hiển thị các cột sau:
+
+    - Emp id
+    - full name
+    - join date
+    - giới tính
+    - ngày sinh nhật (format 'dd/mm')
+
+* Lưu ý: 
+  
+    - do hệ thống cũ nên ngày sinh trước đây nhập tự do, có 2 dạng format chính là 'yyyy' và 'yyyymmdd', hãy dựa vào length(birth date) để phân biệt đối với ngày sinh có định dạng 'yyyy' thì có thể xem ngày sinh là 01/01 của năm đó, với ngày sinh có định dạng 'yyyymmdd' thì lấy ngày tháng từ chuỗi này
+
+### 18) viết câu query thống kê số lượng nhân viên (format dạng text, ví dụ: **'Nữ 23, Nam 32'**) có ngày sinh nhật trong năm 2024 theo từng tháng, điều kiện nhân viên phải có thâm niên tính đến ngày sinh nhật trong năm 2024 >= 2 tháng, nếu nhân viên có ngày nghỉ việc cùng tháng sinh nhật thì kiểm tra ngày sinh nhật trước ngày nghỉ việc thì vẫn được tính, hiển thị các cột sau:
+
+    - tháng 1
+    - tháng 2
+    - tháng 3
+    - tháng 4
+    - tháng 5
+    - tháng 6
+    - tháng 7
+    - tháng 8
+    - tháng 9
+    - tháng 10
+    - tháng 11
+    - tháng 12
+
+### 19) viết câu query tìm kiếm danh sách nhân viên hiện đang làm việc hoặc có ngày left date > LAST_DAY(sysdate) và đến tuổi nghỉ hưu (tính theo giới tính: nam 60, nữ 55) trong tháng này (tính đến ngày cuối tháng theo tháng sysdate) sắp xếp theo giới tính nam xếp trước và ngày sinh tăng dần , hiển thị các cột sau:
+
+    - Emp id
+    - full name
+    - join date
+    - left date
+    - giới tính
+    - ngày sinh (format 'dd/mm')
+    - tuổi nghỉ hưu (tính theo giới tính: nam 60, nữ 55)
+
+* Lưu ý: 
+  
+    - do hệ thống cũ nên ngày sinh trước đây nhập tự do, có 2 dạng format chính là 'yyyy' và 'yyyymmdd', hãy dựa vào length(birth date) để phân biệt đối với ngày sinh có định dạng 'yyyy' thì có thể xem ngày sinh là 01/01 của năm đó, với ngày sinh có định dạng 'yyyymmdd' thì lấy ngày tháng từ chuỗi này
+
+**Gợi ý:**
+
+    - Ngày cuối tháng hiện tại có thể sử dụng LAST_DAY(sysdate) để lấy
+
+
+### 20) dựa trên câu query của bài 19, hãy thống kê số lượng nhân viên đến tuổi nghỉ hưu theo giới tính, hiển thị các cột sau:
+
+    - tháng (mm/yyyy)
+    - nam (số lượng nhân viên nam đến tuổi nghỉ hưu)
+    - nữ (số lượng nhân viên nữ đến tuổi nghỉ hưu)
+    - tổng (số lượng nhân viên đến tuổi nghỉ hưu)
+    - tổng số nhân viên nghỉ việc từ tháng sau (left date > LAST_DAY(sysdate))
+
+
+### 21) viết câu query thống kê nhân viên hiện đang làm việc theo họ (từ đầu tiên trong full_name), hiển thị các cột sau:
+
+    - họ (từ đầu tiên trong full_name)
+    - tổng số nhân viên có họ đó
+    - tỉ lệ phần trăm so với tổng số nhân viên hiện đang làm việc
+
+**Gợi ý: Sử dụng hàm SUBSTR và INSTR để lấy họ từ full_name**
+```sql
+SUBSTR(full_name, 1, INSTR(full_name, ' ') - 1) as last_name
+``` 
+**Trong đó: INSTR(full_name, ' ') sẽ trả về vị trí của khoảng trắng đầu tiên trong full_name, từ đó SUBSTR sẽ lấy phần họ từ đầu đến khoảng trắng đó.**
+
+
+### 22) viết câu query tìm kiếm danh sách nhân viên được nhập vào hệ thống trong tháng 07/2025, tuy nhiên không tính những nhân viên được nhập vào hệ thống trong khoảng thời gian 09/07/2025 đến 15/07/2025, hiển thị các cột sau:
+
+    - Emp id
+    - full name
+    - join date
+    - left date
+    - create date
+    - create by
+
+
+### 23) viết câu query thống kê số lượng nhân viên đã được nhập vào hệ thống trong khoảng thời gian 09/07/2025 đến 15/07/2025 theo từng user đã nhập (trừ user bắt đầu bằng 'vng-'), hiển thị các cột sau:
+
+    - create by
+    - số nhân viên nhập vào ngày 09/07/2025
+    - số nhân viên nhập vào ngày 10/07/2025
+    - số nhân viên nhập vào ngày 11/07/2025
+    - số nhân viên nhập vào ngày 12/07/2025
+    - số nhân viên nhập vào ngày 13/07/2025
+    - số nhân viên nhập vào ngày 14/07/2025
+    - số nhân viên nhập vào ngày 15/07/2025
+    - tổng số nhân viên đã được nhập vào hệ thống trong khoảng thời gian 09/07/2025 đến 15/07/2025
+    - kỷ luật (nếu tổng số nhân viên đã nhập >=3 thì hiển thị 'X' nếu không thì bỏ trống)
